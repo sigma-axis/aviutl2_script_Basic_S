@@ -27,15 +27,12 @@
 初期状態だと「オブジェクトを追加」や「フィルタ効果を追加」メニューの「Basic_S」以下に各種オブジェクトやフィルタ効果などが追加されています．
 - 「オブジェクト追加メニューの設定」や「トラックバー移動メニューの設定」の「ラベル」項目で分類を変更できます．
 
-### For English/Chinese users
+### For non-Japanese speaking users
 
-This script contains English and Simplified Chinese translation files, which enable names and parameters of the scripts to be displayed in those languages.
+You may be able to find language translation file for this script from [this repository](https://github.com/sigma-axis/aviutl2_translations_sigma-axis). 
+Translation files enable names and parameters of the scripts / filters to be displayed in other languages.
 
-To install languages for this script, copy the file `<language name>.Basic_S.aul2` to `Language` folder, then restart AviUtl2 and select that language in the language setting menu.
-
-- To find `Language` folder, click in the main menu “Others” :arrow_right: “Application Data” :arrow_right: “Language File Folder”.
-
-Usage documentations for this script in languages other than Japanese are not available now.
+Although, usage documentations for this script in languages other than Japanese are not available now.
 
 ##  詳しい解説について
 
