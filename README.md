@@ -474,6 +474,12 @@ https://github.com/user-attachments/assets/65a2eb86-3b2a-406d-829b-ccdbaa29f123
     - 背景となる画像のアルファ値でマスクして合成します．元画像の透明度を保ったままグランジ素材を合成するなどの使い方ができます．
 
   - フィルタ効果「色チャンネル入れ替え」を追加．
+  - 他言語への翻訳ファイルを含まないようにした．No longer contains language translation files.
+    - Basic_S 以外のスクリプトも含めて，翻訳ファイルは別リポジトリに配置・管理・更新する方針に変更．I created a new repository where language translation files are placed, managed and updated, for scripts including Basic_S and ones that I have written:
+
+      https://github.com/sigma-axis/aviutl2_translations_sigma-axis
+
+  - `beta29` での動作確認．
 
 - **v1.76 (for beta28a)** (2026-01-16)
 
