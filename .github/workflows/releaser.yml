@@ -32,7 +32,6 @@ jobs:
         cp *.anm2 pack
         cp *.obj2 pack
         cp *.tra2 pack
-        cp *.aul2 pack
         cp *.md pack
         cp LICENSE pack/LICENSE
         cd pack

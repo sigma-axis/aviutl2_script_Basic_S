@@ -23,7 +23,7 @@ SOFTWARE.
 https://mit-license.org/
 ]]
 @角丸矩形
---information:角丸矩形@Basic_S v1.76 (for beta28a) by σ軸
+--information:角丸矩形@Basic_S v1.80 (for beta29) by σ軸
 --label:Basic_S\図形
 --track@width:幅,0,4000,100,1
 --track@height:高さ,0,4000,100,1
@@ -158,7 +158,7 @@ obj.pixelshader("combine", "object", { "object", "tempbuffer" }, {
 });
 
 @楕円
---information:楕円@Basic_S v1.76 (for beta28a) by σ軸
+--information:楕円@Basic_S v1.80 (for beta29) by σ軸
 --label:Basic_S\図形
 --track@width:幅,0,4000,100,1
 --track@height:高さ,0,4000,100,1
@@ -266,7 +266,7 @@ obj.pixelshader("combine", "object", { "object", "tempbuffer" }, {
 });
 
 @菱形
---information:菱形@Basic_S v1.76 (for beta28a) by σ軸
+--information:菱形@Basic_S v1.80 (for beta29) by σ軸
 --label:Basic_S\図形
 --track@width:幅,0,4000,100,1
 --track@height:高さ,0,4000,100,1
@@ -374,7 +374,7 @@ obj.pixelshader("combine", "object", { "object", "tempbuffer" }, {
 });
 
 @スーパー楕円
---information:スーパー楕円@Basic_S v1.76 (for beta28a) by σ軸
+--information:スーパー楕円@Basic_S v1.80 (for beta29) by σ軸
 --label:Basic_S\図形
 --track@exponent:膨らみ,-300,300,-60,0.001
 --track@width:幅,0,4000,100,1
@@ -485,7 +485,7 @@ if not do_fill then
 end
 
 @別レイヤー
---information:別レイヤー@Basic_S v1.76 (for beta28a) by σ軸
+--information:別レイヤー@Basic_S v1.80 (for beta29) by σ軸
 --label:Basic_S
 --select@index_base:レイヤー位置=1,絶対指定=0,相対指定=1
 --value@index:番号,-1
