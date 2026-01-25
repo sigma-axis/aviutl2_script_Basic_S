@@ -1218,6 +1218,7 @@ local obj, math, tonumber, type = obj, math, tonumber, type;
 		comp_R:		string?,
 		comp_G:		string?,
 		comp_B:		string?,
+		comp_A:		string?,
 		premult:	boolean|number|nil,
 	}
 ]==]

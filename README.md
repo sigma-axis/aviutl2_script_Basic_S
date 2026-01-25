@@ -158,6 +158,8 @@ Although, usage documentations for this script in languages other than Japanese 
 
 各ピクセルの色成分，赤・緑・青・アルファ値を別の成分に差し替えたり，個別に反転したりできます．
 
+:arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/色チャンネル入れ替え)
+
 ### 回転中心
 
 オブジェクトの回転中心を移動します．標準のフィルタ効果の「座標」の回転中心版です．
