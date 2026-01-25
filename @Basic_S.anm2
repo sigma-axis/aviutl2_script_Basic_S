@@ -23,7 +23,7 @@ SOFTWARE.
 https://mit-license.org/
 ]]
 @四隅丸め
---information:四隅丸め@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:四隅丸め@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\クリッピング
 --filter
 --track@radius:半径,0,2000,40,0.01
@@ -282,7 +282,7 @@ obj.pixelshader("carve", "object", nil, {
 }, "mask");
 
 @背景角丸矩形
---information:背景角丸矩形@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:背景角丸矩形@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\装飾
 --track@pad_X:余白X,-1000,1000,10,1
 --track@pad_Y:余白Y,-1000,1000,10,1
@@ -586,7 +586,7 @@ end
 obj.cx, obj.cy = obj.cx + (L - R) / 2, obj.cy + (T - B) / 2;
 
 @背景楕円
---information:背景楕円@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:背景楕円@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\装飾
 --track@pad_X:余白X,-1000,1000,10,1
 --track@pad_Y:余白Y,-1000,1000,10,1
@@ -700,7 +700,7 @@ obj.effect("背景角丸矩形@Basic_S", "クリッピング", clip,
 		pad_L, pad_R, pad_T, pad_B, line_x, line_y, back_x, back_y));
 
 @背景菱形
---information:背景菱形@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:背景菱形@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\装飾
 --track@pad_X:余白X,-1000,1000,10,1
 --track@pad_Y:余白Y,-1000,1000,10,1
@@ -817,7 +817,7 @@ obj.effect("背景角丸矩形@Basic_S", "クリッピング", clip,
 		pad_L, pad_R, pad_T, pad_B, line_x, line_y, back_x, back_y));
 
 @透明度適用
---information:透明度適用@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:透明度適用@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\加工
 --filter
 --track@alpha:透明度,-100,100,0,0.01
@@ -837,7 +837,7 @@ if apply_former then obj.alpha, alpha = 1, alpha * obj.alpha end
 if alpha ~= 1 then obj.pixelshader("const_alpha", "object", nil, { alpha }, "mask") end
 
 @透明度二値化
---information:透明度二値化@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:透明度二値化@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\加工
 --filter
 --track@alpha:基準透明度,0,100,50,0.01
@@ -879,7 +879,7 @@ if alpha > 0 or buffer < 1 then
 end
 
 @色調補正
---information:色調補正@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:色調補正@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\色調整
 --filter
 --track@add_light:明るさ,0,200,100,0.01
@@ -1169,8 +1169,114 @@ else
 	});
 end
 
+@色チャンネル入れ替え
+--information:色チャンネル入れ替え@Basic_S v1.80-beta2 (for beta29) by σ軸
+--label:Basic_S\色調整
+--filter
+--select@comp_R:赤適用元=1,0固定=0,赤=1,緑=2,青=3,アルファ=4,赤反転=5,緑反転=6,青反転=7,アルファ反転=8,1固定=9
+--select@comp_G:緑適用元=2,0固定=0,赤=1,緑=2,青=3,アルファ=4,赤反転=5,緑反転=6,青反転=7,アルファ反転=8,1固定=9
+--select@comp_B:青適用元=3,0固定=0,赤=1,緑=2,青=3,アルファ=4,赤反転=5,緑反転=6,青反転=7,アルファ反転=8,1固定=9
+--select@comp_A:アルファ適用元=4,0固定=0,赤=1,緑=2,青=3,アルファ=4,赤反転=5,緑反転=6,青反転=7,アルファ反転=8,1固定=9
+--group:その他,false
+--check@premult:乗算済みα,true
+--value@PI:PI,{}
+--[[pixelshader@premult:
+Texture2D src : register(t0);
+cbuffer constant0 : register(b0) {
+	float4 v;
+	float4x4 mat;
+};
+float4 premult(float4 pos : SV_Position) : SV_Target
+{
+	float4 c = src.Load(int3(pos.xy, 0));
+	c = v + mul(mat, c);
+	c.a = saturate(c.a);
+	c.rgb = clamp(c.rgb, 0, c.a);
+	return c;
+}
+]]
+--[[pixelshader@nonmult:
+Texture2D src : register(t0);
+cbuffer constant0 : register(b0) {
+	float4 v;
+	float4x4 mat;
+};
+float4 nonmult(float4 pos : SV_Position) : SV_Target
+{
+	float4 c = src.Load(int3(pos.xy, 0));
+	c.rgb = c.a > 0 ? c.rgb / c.a : 0;
+	c = saturate(v + mul(mat, c));
+	c.rgb *= c.a;
+	return c;
+}
+]]
+local obj, math, tonumber, type = obj, math, tonumber, type;
+
+-- take parameters.
+--[==[
+	PI = {
+		comp_R:		string?,
+		comp_G:		string?,
+		comp_B:		string?,
+		premult:	boolean|number|nil,
+	}
+]==]
+local function as_bool(t, v)
+	if type(t) == "boolean" then return t;
+	elseif type(t) == "number" then return t ~= 0;
+	else return v end
+end
+local name2num = {
+	["0固定"] = 0,
+	["赤"] = 1, ["緑"] = 2, ["青"] = 3, ["アルファ"] = 4,
+	["赤反転"] = 5, ["緑反転"] = 6, ["青反転"] = 7, ["アルファ反転"] = 8,
+	["1固定"] = 9,
+};
+if type(PI.comp_R) == "string" then
+	comp_R = name2num[PI.comp_R] or comp_R;
+end
+if type(PI.comp_G) == "string" then
+	comp_G = name2num[PI.comp_G] or comp_G;
+end
+if type(PI.comp_B) == "string" then
+	comp_B = name2num[PI.comp_B] or comp_B;
+end
+if type(PI.comp_A) == "string" then
+	comp_A = name2num[PI.comp_A] or comp_A;
+end
+premult = as_bool(PI.premult, premult);
+if comp_R == 1 and comp_G == 2 and comp_B == 3 and comp_A ==4 then return end
+
+-- normalize parameters.
+comp_R = math.min(math.max(comp_R, 0), 9);
+comp_G = math.min(math.max(comp_G, 0), 9);
+comp_B = math.min(math.max(comp_B, 0), 9);
+comp_A = math.min(math.max(comp_A, 0), 9);
+
+-- further calculations.
+local params = {
+	0, 0, 0, 0; -- constant vector.
+	0, 0, 0, 0, -- column-major matrix.
+	0, 0, 0, 0,
+	0, 0, 0, 0,
+	0, 0, 0, 0;
+};
+for i, comp in ipairs{ comp_R, comp_G, comp_B, comp_A } do
+	local inv = comp >= 5;
+	if inv then
+		params[i] = 1;
+		comp = (comp + 1) % 5;
+	end
+	if comp > 0 then
+		params[4 * comp + i] = inv and -1 or 1;
+	end
+end
+
+-- apply shader.
+obj.pixelshader(premult and "premult" or "nonmult", "object", "object", params);
+
 @回転中心
---information:回転中心@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:回転中心@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\配置
 --track@X:X,-4000,4000,0,0.01
 --track@Y:Y,-4000,4000,0,0.01
@@ -1180,7 +1286,7 @@ obj.cy = obj.cy + Y;
 obj.cz = obj.cz + Z;
 
 @回転中心アンカー指定
---information:回転中心アンカー指定@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:回転中心アンカー指定@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\配置
 --track0:X,-4000,4000,0,0.01
 --track1:Y,-4000,4000,0,0.01
@@ -1229,7 +1335,7 @@ obj.ox,	obj.oy,	obj.oz = obj.ox + dx, obj.oy + dy, obj.oz + dz;
 obj.cx,obj.cy,obj.cz = cx, cy, cz;
 
 @上下左右揃え
---information:上下左右揃え@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:上下左右揃え@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\配置
 --track@X:左右%,-100,100,0,0.001
 --track@Y:上下%,-100,100,0,0.001
@@ -1252,7 +1358,7 @@ if cx ~= obj.cx or cy ~= obj.cy then
 end
 
 @直角回転
---information:直角回転@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:直角回転@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\配置
 --select@rot:方向=0,なし=0,90°時計回り=1,180°反転=2,90°反時計回り=3,左右反転=4,上下反転=5,右上軸反転=6,左上軸反転=7
 --check@move_center:中心の位置を変更,false
@@ -1299,7 +1405,7 @@ obj.copybuffer("object", "tempbuffer");
 if not move_center then obj.cx, obj.cy = obj.cx + (cx - cx0), obj.cy + (cy - cy0) end
 
 @XYZ追加回転
---information:XYZ追加回転@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:XYZ追加回転@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\配置
 --track@X:X,-720,720,0,0.01
 --track@Y:Y,-720,720,0,0.01
@@ -1368,7 +1474,7 @@ if angle ~= 0 or draw then
 end
 
 @任意軸追加回転
---information:任意軸追加回転@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:任意軸追加回転@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\配置
 --track@angle:角度,-720,720,0,0.01
 --track0:回転軸X,-512,512,0,0.001
@@ -1616,7 +1722,7 @@ else
 end
 
 @傾斜
---information:傾斜@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:傾斜@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\変形
 --track@angle:角度,-80,80,0,0.001
 --track@slope:傾き%,-500,500,0,0.001
@@ -1695,7 +1801,7 @@ obj.copybuffer("object", "tempbuffer");
 obj.cx, obj.cy = obj.cx - cx, obj.cy - cy;
 
 @XY軸変形
---information:XY軸変形@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:XY軸変形@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\変形
 --value@axis_X:X軸,{100,0}
 --check@stretch_X:X長さ変更,false
@@ -1751,7 +1857,7 @@ obj.drawpoly(
 obj.copybuffer("object", "tempbuffer");
 
 @領域サイズ変更
---information:領域サイズ変更@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:領域サイズ変更@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\クリッピング
 --track@T:上,-4000,4000,0,1
 --track@B:下,-4000,4000,0,1
@@ -1839,7 +1945,7 @@ end
 obj.cx, obj.cy = cx, cy;
 
 @領域割合サイズ変更
---information:領域割合サイズ変更@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:領域割合サイズ変更@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\クリッピング
 --track@T:上%,-100,100,0,0.001
 --track@B:下%,-100,100,0,0.001
@@ -1894,7 +2000,7 @@ if L ~= 0 or R ~= 0 or T ~= 0 or B ~= 0 then
 end
 
 @領域サイズ指定
---information:領域サイズ指定@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:領域サイズ指定@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\クリッピング
 --track0:X,-4000,4000,0,0.1
 --track1:Y,-4000,4000,0,0.1
@@ -1991,7 +2097,7 @@ elseif L ~= 0 or R ~= 0 or T ~= 0 or B ~= 0 then
 end
 
 @カットずらし
---information:カットずらし@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:カットずらし@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\クリッピング
 --track0:ずれX,-4000,4000,40,1
 --track1:ずれY,-4000,4000,0,1
@@ -2202,7 +2308,7 @@ if not move_center then
 end
 
 @中抜きクリッピング
---information:中抜きクリッピング@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:中抜きクリッピング@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\クリッピング
 --track0:X,-4000,4000,0,0.1
 --track1:Y,-4000,4000,0,0.1
@@ -2305,7 +2411,7 @@ else
 end
 
 @小数ぼかし
---information:小数ぼかし@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:小数ぼかし@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\ぼかし
 --filter
 --track@range:範囲,0,1000,5,0.01
@@ -2452,7 +2558,7 @@ if luma_weight > 0 then
 end
 
 @縁取りα
---information:縁取りα@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:縁取りα@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\装飾
 --track@size:サイズ,-500,500,5,1
 --track@blur:ぼかし,0,100,5,1
@@ -2631,7 +2737,7 @@ elseif alpha_front > 0 then
 end
 
 @四角縁取り
---information:四角縁取り@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:四角縁取り@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\装飾
 --track@size:サイズ,-500,500,5,0.01
 --track@aspect:縦横比,-100,100,0,0.001
@@ -2875,7 +2981,7 @@ else
 end
 
 @内側シャドウ
---information:内側シャドウ@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:内側シャドウ@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\装飾
 --filter
 --track@X:X,-1000,1000,-40,0.01
@@ -3030,7 +3136,7 @@ obj.copybuffer("object", "tempbuffer");
 obj.pixelshader("identity", "object", cache_name, nil, "mask");
 
 @画像ファイル合成
---information:画像ファイル合成@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:画像ファイル合成@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\加工
 --filter
 --file@file:画像ファイル
@@ -3333,7 +3439,7 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
 @動画ファイル合成
---information:動画ファイル合成@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:動画ファイル合成@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\加工
 --filter
 --file@file:動画ファイル
@@ -3654,7 +3760,7 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
 @別レイヤー同期
---information:別レイヤー同期@Basic_S v1.80-beta1 (for beta29) by σ軸
+--information:別レイヤー同期@Basic_S v1.80-beta2 (for beta29) by σ軸
 --label:Basic_S\配置
 --select@index_base:レイヤー位置=1,絶対指定=0,相対指定=1
 --value@index:番号,-1

@@ -154,6 +154,10 @@ Although, usage documentations for this script in languages other than Japanese 
 
 :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/色調補正)
 
+### 色チャンネル入れ替え
+
+各ピクセルの色成分，赤・緑・青・アルファ値を別の成分に差し替えたり，個別に反転したりできます．
+
 ### 回転中心
 
 オブジェクトの回転中心を移動します．標準のフィルタ効果の「座標」の回転中心版です．
@@ -468,6 +472,8 @@ https://github.com/user-attachments/assets/65a2eb86-3b2a-406d-829b-ccdbaa29f123
 
   - 「画像ファイル合成」「動画ファイル合成」のパラメタ「モード」に「前方から合成(クリッピング)」「後方から合成(クリッピング)」を追加．
     - 背景となる画像のアルファ値でマスクして合成します．元画像の透明度を保ったままグランジ素材を合成するなどの使い方ができます．
+
+  - フィルタ効果「色チャンネル入れ替え」を追加．
 
 - **v1.76 (for beta28a)** (2026-01-16)
 
