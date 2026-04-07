@@ -1,8 +1,14 @@
-# Basic_S AviUtl ExEdit2 スクリプト
+# Basic_S AviUtl ExEdit2 汎用スクリプト集
 
 汎用的な基本効果や基本図形などをまとめた AviUtl ExEdit2 用のスクリプト集です．丸角四角形の生成や斜め軸での回転，回転中心のマウス操作移動や傾斜変形，内側シャドウや内側縁取りなどができます．
 
 [ダウンロードはこちら．](https://github.com/sigma-axis/aviutl2_script_Basic_S/releases) [紹介動画．](https://www.nicovideo.jp/watch/sm45523651)
+
+##  お願い
+
+このプラグインを使った動画では，ニコニコの親作品にこのプラグインの紹介動画を登録してくれると嬉しいです．任意ではありますが，登録してくれたほうが励みになります．
+
+- 登録 ID: `sm45523651`
 
 ##  動作要件
 
@@ -10,29 +16,22 @@
 
   http://spring-fragrance.mints.ne.jp/aviutl
 
-  - `beta29` で動作確認済み．
+  - `beta40a` で動作確認済み．
 
 ##  導入方法
 
-`Basic_S.anm2`, `Basic_S.obj2`, `Basic_S.tra2` の 3 つのファイルに対して，以下のいずれかの操作をしてください．
-
-1.  AviUtl2 のプレビュー画面にドラッグ&ドロップ．
-
-1.  以下のフォルダのいずれかにコピー．
-
-    1.  スクリプトフォルダ
-        - AviUtl2 のメニューの「その他」 :arrow_right: 「アプリケーションデータ」 :arrow_right: 「スクリプトフォルダ」で表示されます．
-    1.  (1) のフォルダにある任意の名前のフォルダ
+ダウンロードした `aviutl2_script_Basic_S-v*.**.au2pkg.zip` を AviUtl2 のウィンドウにドラッグ & ドロップしてください．
 
 初期状態だと「オブジェクトを追加」や「フィルタ効果を追加」メニューの「Basic_S」以下に各種オブジェクトやフィルタ効果などが追加されています．
 - 「オブジェクト追加メニューの設定」や「トラックバー移動メニューの設定」の「ラベル」項目で分類を変更できます．
 
 ### For non-Japanese speaking users
 
-You may be able to find language translation file for this script from [this repository](https://github.com/sigma-axis/aviutl2_translations_sigma-axis). 
-Translation files enable names and parameters of the scripts / filters to be displayed in other languages.
+You may be able to find language translation file for this script / plugin from [this repository](https://github.com/sigma-axis/aviutl2_translations_sigma-axis).
 
-Although, usage documentations for this script in languages other than Japanese are not available now.
+Translation files enable names, parameters and commands of the scripts / plugins to be displayed in other languages.
+
+Although, usage documentations for this script / plugin in languages other than Japanese are not available now.
 
 ##  詳しい解説について
 
@@ -81,6 +80,12 @@ Although, usage documentations for this script in languages other than Japanese 
 別レイヤーと同じ画像を読み込みます．座標や拡大率などの情報もある程度は復元できます．
 
 :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/別レイヤー)
+
+### バッファ読み込み
+
+「仮想バッファ出力」や各種スクリプトの一時描画先などとして保存されている「仮想バッファ」や，一時保存先の「キャッシュバッファ」などを，読み込みます．
+
+<!-- :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/バッファ読み込み) -->
 
 ##  追加されるフィルタ効果
 
@@ -270,6 +275,15 @@ https://github.com/user-attachments/assets/6fc13047-fde8-4ec9-8984-2083661129f2
 
 :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/中抜きクリッピング)
 
+
+### 部分ループ
+
+TODO: image.
+
+上下左右から指定した距離だけ内側の部分のみに画像ループを適用します．通常のループだけではなく，ミラーしながらのループや，引き伸ばしによる補間などにも切り替えられます．縦横で別のループ形式を指定したりもできます．
+
+<!-- :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/部分ループ) -->
+
 ### 小数ぼかし
 
 標準の「ぼかし」とは異なり，小数点以下のピクセル数の精度で画像をぼかします．
@@ -398,6 +412,12 @@ https://github.com/user-attachments/assets/65a2eb86-3b2a-406d-829b-ccdbaa29f123
 
 :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/時間制御繰り返し)
 
+### 時間制御繰り返し往復(秒) / 時間制御繰り返し往復(フレーム) / 時間制御繰り返し往復(Hz) / 時間制御繰り返し往復(BPM)
+
+[時間制御繰り返し](#時間制御繰り返し秒--時間制御繰り返しフレーム--時間制御繰り返しhz--時間制御繰り返しbpm)と似ていますが，2つの数値の間を往復する変化になります．
+
+<!-- :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/時間制御繰り返し往復) -->
+
 ### 対数補間 / 対数補間(全体時間制御)
 
 数値を線形補間 (直線移動) で変化させるのではなく，対数を線形補間するように変化させます．単位時間当たり定数倍になるような，指数関数的な変化になります．拡大率や音量など，比率系のパラメタに適用すると均一な変化に感じる場面があります．
@@ -469,6 +489,28 @@ https://github.com/user-attachments/assets/65a2eb86-3b2a-406d-829b-ccdbaa29f123
   リズミカルイージングがなければこのスクリプトの発想もなかったかもしれませんし，スクリプト機能の要望も AviUtl2 の制作者であるＫＥＮくん様に届かなかったかもしれません．このような場で恐縮ですが，ことぶき様には感謝申し上げます．
 
 ##  改版履歴
+
+- **v1.90 (for beta40a)** (2026-??-??)
+
+  - トラックバー移動スクリプト「時間制御繰り返し往復」を 4 系統追加．
+  - 各種周期変化のトラックバー移動スクリプトに「周期ずれ」のパラメタを追加．
+  - 「バッファ読み込み」オブジェクトを追加．
+  - フィルタ効果「部分ループ」を追加．
+  - 「領域割合サイズ変更」のピクセル数への整数丸めを微調整．
+    - 「左%」「上%」はちょうど半整数だった場合は正方向に，「右%」「下%」は負方向に丸めるように変更．以前は両方とも正方向だった．
+
+  - 配布形式を `.au2pkg.zip` (AviUtl2 のパッケージ形式) に変更．
+    - **以前のバージョンから更新する際は，以前の導入時にコピーしたファイルを一度削除してから導入してください．**
+
+      同名ファイルが複数フォルダに分散して重複して認識されないようにするためで，次のファイルが削除対象です:
+
+      1.  `@Basic_S.anm2`
+      1.  `@Basic_S.obj2`
+      1.  `@Basic_S.tra2`
+
+      スクリプトフォルダ，またはその 1 階層下のサブフォルダ内に配置されています．
+
+  - `beta40a` での動作確認．
 
 - **v1.80 (for beta29)** (2026-01-25)
 
