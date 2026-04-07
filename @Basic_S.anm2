@@ -23,7 +23,7 @@ SOFTWARE.
 https://mit-license.org/
 ]]
 @四隅丸め
---information:四隅丸め@Basic_S v1.80 (for beta29) by σ軸
+--information:四隅丸め@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --filter
 --track@radius:半径,0,2000,40,0.01
@@ -282,7 +282,7 @@ obj.pixelshader("carve", "object", nil, {
 }, "mask");
 
 @背景角丸矩形
---information:背景角丸矩形@Basic_S v1.80 (for beta29) by σ軸
+--information:背景角丸矩形@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --track@pad_X:余白X,-1000,1000,10,1
 --track@pad_Y:余白Y,-1000,1000,10,1
@@ -586,7 +586,7 @@ end
 obj.cx, obj.cy = obj.cx + (L - R) / 2, obj.cy + (T - B) / 2;
 
 @背景楕円
---information:背景楕円@Basic_S v1.80 (for beta29) by σ軸
+--information:背景楕円@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --track@pad_X:余白X,-1000,1000,10,1
 --track@pad_Y:余白Y,-1000,1000,10,1
@@ -700,7 +700,7 @@ obj.effect("背景角丸矩形@Basic_S", "クリッピング", clip,
 		pad_L, pad_R, pad_T, pad_B, line_x, line_y, back_x, back_y));
 
 @背景菱形
---information:背景菱形@Basic_S v1.80 (for beta29) by σ軸
+--information:背景菱形@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --track@pad_X:余白X,-1000,1000,10,1
 --track@pad_Y:余白Y,-1000,1000,10,1
@@ -817,7 +817,7 @@ obj.effect("背景角丸矩形@Basic_S", "クリッピング", clip,
 		pad_L, pad_R, pad_T, pad_B, line_x, line_y, back_x, back_y));
 
 @透明度適用
---information:透明度適用@Basic_S v1.80 (for beta29) by σ軸
+--information:透明度適用@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
 --track@alpha:透明度,-100,100,0,0.01
@@ -837,7 +837,7 @@ if apply_former then obj.alpha, alpha = 1, alpha * obj.alpha end
 if alpha ~= 1 then obj.pixelshader("const_alpha", "object", nil, { alpha }, "mask") end
 
 @透明度二値化
---information:透明度二値化@Basic_S v1.80 (for beta29) by σ軸
+--information:透明度二値化@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
 --track@alpha:基準透明度,0,100,50,0.01
@@ -879,7 +879,7 @@ if alpha > 0 or buffer < 1 then
 end
 
 @色調補正
---information:色調補正@Basic_S v1.80 (for beta29) by σ軸
+--information:色調補正@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\色調整
 --filter
 --track@add_light:明るさ,0,200,100,0.01
@@ -1170,7 +1170,7 @@ else
 end
 
 @色チャンネル入れ替え
---information:色チャンネル入れ替え@Basic_S v1.80 (for beta29) by σ軸
+--information:色チャンネル入れ替え@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\色調整
 --filter
 --select@comp_R:赤適用元=1,0固定=0,赤=1,緑=2,青=3,アルファ=4,赤反転=5,緑反転=6,青反転=7,アルファ反転=8,1固定=9
@@ -1277,7 +1277,7 @@ end
 obj.pixelshader(premult and "premult" or "nonmult", "object", "object", params);
 
 @回転中心
---information:回転中心@Basic_S v1.80 (for beta29) by σ軸
+--information:回転中心@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\配置
 --track@X:X,-4000,4000,0,0.01
 --track@Y:Y,-4000,4000,0,0.01
@@ -1287,7 +1287,7 @@ obj.cy = obj.cy + Y;
 obj.cz = obj.cz + Z;
 
 @回転中心アンカー指定
---information:回転中心アンカー指定@Basic_S v1.80 (for beta29) by σ軸
+--information:回転中心アンカー指定@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\配置
 --track0:X,-4000,4000,0,0.01
 --track1:Y,-4000,4000,0,0.01
@@ -1336,7 +1336,7 @@ obj.ox,	obj.oy,	obj.oz = obj.ox + dx, obj.oy + dy, obj.oz + dz;
 obj.cx,obj.cy,obj.cz = cx, cy, cz;
 
 @上下左右揃え
---information:上下左右揃え@Basic_S v1.80 (for beta29) by σ軸
+--information:上下左右揃え@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\配置
 --track@X:左右%,-100,100,0,0.001
 --track@Y:上下%,-100,100,0,0.001
@@ -1359,7 +1359,7 @@ if cx ~= obj.cx or cy ~= obj.cy then
 end
 
 @直角回転
---information:直角回転@Basic_S v1.80 (for beta29) by σ軸
+--information:直角回転@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\配置
 --select@rot:方向=0,なし=0,90°時計回り=1,180°反転=2,90°反時計回り=3,左右反転=4,上下反転=5,右上軸反転=6,左上軸反転=7
 --check@move_center:中心の位置を変更,false
@@ -1406,7 +1406,7 @@ obj.copybuffer("object", "tempbuffer");
 if not move_center then obj.cx, obj.cy = obj.cx + (cx - cx0), obj.cy + (cy - cy0) end
 
 @XYZ追加回転
---information:XYZ追加回転@Basic_S v1.80 (for beta29) by σ軸
+--information:XYZ追加回転@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\配置
 --track@X:X,-720,720,0,0.01
 --track@Y:Y,-720,720,0,0.01
@@ -1475,7 +1475,7 @@ if angle ~= 0 or draw then
 end
 
 @任意軸追加回転
---information:任意軸追加回転@Basic_S v1.80 (for beta29) by σ軸
+--information:任意軸追加回転@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\配置
 --track@angle:角度,-720,720,0,0.01
 --track0:回転軸X,-512,512,0,0.001
@@ -1723,7 +1723,7 @@ else
 end
 
 @傾斜
---information:傾斜@Basic_S v1.80 (for beta29) by σ軸
+--information:傾斜@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\変形
 --track@angle:角度,-80,80,0,0.001
 --track@slope:傾き%,-500,500,0,0.001
@@ -1802,7 +1802,7 @@ obj.copybuffer("object", "tempbuffer");
 obj.cx, obj.cy = obj.cx - cx, obj.cy - cy;
 
 @XY軸変形
---information:XY軸変形@Basic_S v1.80 (for beta29) by σ軸
+--information:XY軸変形@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\変形
 --value@axis_X:X軸,{100,0}
 --check@stretch_X:X長さ変更,false
@@ -1858,7 +1858,7 @@ obj.drawpoly(
 obj.copybuffer("object", "tempbuffer");
 
 @領域サイズ変更
---information:領域サイズ変更@Basic_S v1.80 (for beta29) by σ軸
+--information:領域サイズ変更@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --track@T:上,-4000,4000,0,1
 --track@B:下,-4000,4000,0,1
@@ -1946,7 +1946,7 @@ end
 obj.cx, obj.cy = cx, cy;
 
 @領域割合サイズ変更
---information:領域割合サイズ変更@Basic_S v1.80 (for beta29) by σ軸
+--information:領域割合サイズ変更@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --track@T:上%,-100,100,0,0.001
 --track@B:下%,-100,100,0,0.001
@@ -1989,9 +1989,9 @@ R = math.min(math.max(R / 100, -1), 1);
 
 -- further calculations.
 L = math.floor(0.5 + obj.w * L);
-R = math.floor(0.5 + obj.w * R);
+R = math.ceil(-0.5 + obj.w * R);
 T = math.floor(0.5 + obj.h * T);
-B = math.floor(0.5 + obj.h * B);
+B = math.ceil(-0.5 + obj.h * B);
 
 -- apply effect.
 if L ~= 0 or R ~= 0 or T ~= 0 or B ~= 0 then
@@ -2001,7 +2001,7 @@ if L ~= 0 or R ~= 0 or T ~= 0 or B ~= 0 then
 end
 
 @領域サイズ指定
---information:領域サイズ指定@Basic_S v1.80 (for beta29) by σ軸
+--information:領域サイズ指定@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --track0:X,-4000,4000,0,0.1
 --track1:Y,-4000,4000,0,0.1
@@ -2098,7 +2098,7 @@ elseif L ~= 0 or R ~= 0 or T ~= 0 or B ~= 0 then
 end
 
 @カットずらし
---information:カットずらし@Basic_S v1.80 (for beta29) by σ軸
+--information:カットずらし@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --track0:ずれX,-4000,4000,40,1
 --track1:ずれY,-4000,4000,0,1
@@ -2309,7 +2309,7 @@ if not move_center then
 end
 
 @中抜きクリッピング
---information:中抜きクリッピング@Basic_S v1.80 (for beta29) by σ軸
+--information:中抜きクリッピング@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --track0:X,-4000,4000,0,0.1
 --track1:Y,-4000,4000,0,0.1
@@ -2411,8 +2411,187 @@ else
 		obj.cy + math.floor(0.5 + (gap_y - height) * (1 - align_y) / 2);
 end
 
+@部分ループ
+--information:部分ループ@Basic_S v1.90-beta3 (for beta40a) by σ軸
+--label:Basic_S\配置
+--track@width:幅,0,4000,1,1
+--track@height:高さ,0,4000,1,1
+--group:余白設定,true
+--track@margin_u:上余白,0,2000,0,1
+--track@margin_d:下余白,0,2000,0,1
+--track@margin_l:左余白,0,2000,0,1
+--track@margin_r:右余白,0,2000,0,1
+--group:整列,false
+--track@align_x:水平揃え,-100,100,0,0.001
+--track@align_y:垂直揃え,-100,100,0,0.001
+--group:ループ設定,false
+--select@unit_x:幅指定=0,繰り返し回数=0,近似サイズ=1,上限サイズ=2,下限サイズ=3,全体近似サイズ=4,全体上限サイズ=5,全体下限サイズ=6
+--select@unit_y:高さ指定=0,繰り返し回数=0,近似サイズ=1,上限サイズ=2,下限サイズ=3,全体近似サイズ=4,全体上限サイズ=5,全体下限サイズ=6
+--select@loop_x:ループX=0,ループ=0,ミラー=1,ミラー(半ピクセル端)=2,引き伸ばし=3
+--select@loop_y:ループY=0,ループ=0,ミラー=1,ミラー(半ピクセル端)=2,引き伸ばし=3
+--group:その他,false
+--value@PI:PI,{}
+--[[pixelshader@mid_loop:
+Texture2D src : register(t0);
+SamplerState smp : register(s0);
+cbuffer constant0 : register(b0) {
+	float4 margin;
+	float2 inv_size;
+	float2 mid, dlen, mode_f;
+};
+float calc_coord(uint mode, float x, float2 mgn, float m, float l)
+{
+	float x2 = x - mgn[0];
+	switch (mode) {
+	case 0:
+	{
+		x2 = fmod(x2, m);
+		break;
+	}
+	case 1: case 2:
+	{
+		x2 = fmod(x2, m);
+		x2 = min(x2, m - x2);
+		break;
+	}
+	case 3: default:
+	{
+		x2 = x2 * m / (l + m);
+		break;
+	}
+	}
+	return x <= mgn[0] ? x :
+		x < mgn[1] ? x2 + mgn[0] :
+		x - l;
+}
+float4 mid_loop(float4 pos : SV_Position) : SV_Target
+{
+	static const uint2 mode = uint2(mode_f);
+	return src.Sample(smp, inv_size * float2(
+		calc_coord(mode.x, pos.x, margin.xz, mid.x, dlen.x),
+		calc_coord(mode.y, pos.y, margin.yw, mid.y, dlen.y)));
+}
+]]
+local obj, math, tonumber, type = obj, math, tonumber, type;
+
+-- take parameters.
+--[==[
+	PI = {
+		width:		number?,
+		height:		number?,
+		margin_u:	number?,
+		margin_d:	number?,
+		margin_l:	number?,
+		margin_r:	number?,
+		align_x:	number?,
+		align_y:	number?,
+		unit_x:		string?,
+		unit_y:		string?,
+		loop_x:		string?,
+		loop_y:		string?,
+	}
+]==]
+width = tonumber(PI.width) or width;
+height = tonumber(PI.height) or height;
+margin_u = tonumber(PI.margin_u) or margin_u;
+margin_d = tonumber(PI.margin_d) or margin_d;
+margin_l = tonumber(PI.margin_l) or margin_l;
+margin_r = tonumber(PI.margin_r) or margin_r;
+align_x = tonumber(PI.align_x) or align_x;
+align_y = tonumber(PI.align_y) or align_y;
+do local name2num = { ["繰り返し回数"] = 0, ["近似サイズ"] = 1, ["上限サイズ"] = 2, ["下限サイズ"] = 3, ["全体近似サイズ"] = 4, ["全体上限サイズ"] = 5, ["全体下限サイズ"] = 6 };
+	if type(PI.unit_x) == "string" then unit_x = name2num[PI.unit_x] or unit_x end
+	if type(PI.unit_y) == "string" then unit_y = name2num[PI.unit_y] or unit_y end
+end
+do local name2num = { ["ループ"] = 0, ["ミラー"] = 1, ["ミラー(半ピクセル端)"] = 2, ["引き伸ばし"] = 3 };
+	if type(PI.loop_x) == "string" then loop_x = name2num[PI.loop_x] or loop_x end
+	if type(PI.loop_y) == "string" then loop_y = name2num[PI.loop_y] or loop_y end
+end
+
+-- normalize parameters.
+width = math.max(math.floor(0.5 + width), 0);
+height = math.max(math.floor(0.5 + height), 0);
+margin_u = math.max(math.floor(0.5 + margin_u), 0);
+margin_d = math.max(math.floor(0.5 + margin_d), 0);
+margin_l = math.max(math.floor(0.5 + margin_l), 0);
+margin_r = math.max(math.floor(0.5 + margin_r), 0);
+align_x = math.min(math.max(align_x / 100, -1), 1);
+align_y = math.min(math.max(align_y / 100, -1), 1);
+unit_x = math.min(math.max(math.floor(0.5 + unit_x), 0), 6);
+unit_y = math.min(math.max(math.floor(0.5 + unit_y), 0), 6);
+loop_x = math.min(math.max(math.floor(0.5 + loop_x), 0), 3);
+loop_y = math.min(math.max(math.floor(0.5 + loop_y), 0), 3);
+
+-- further calculations.
+local w, h = obj.w, obj.h;
+local mid_x, mid_y, len0_x, len0_y, len1_x, len1_y;
+local function adjust_margin(m1, m2, sz, len, unit, loop)
+	if loop >= 2 then
+		-- for the cases mirror (half edge) and streth,
+		-- align to half pixel.
+		m1, m2 = m1 + 0.5, m2 + 0.5;
+	end
+	-- cap margins.
+	local SZ = sz + (loop == 3 and 1 or 0);
+	if m1 + m2 >= SZ then
+		local d = m1 + m2 - SZ;
+		m1 = m1 - math.floor((d + 2) / 2);
+		m2 = m2 - math.floor((d + 1) / 2);
+	end
+
+	-- adjust the mirror case, merging the final pattern to the second margin.
+	local mid, pad = sz - m1 - m2, 0;
+	if loop == 1 or loop == 2 then
+		pad, m2, mid = mid, m2 + mid, 2 * mid;
+	end
+
+	-- adjust the length.
+	if unit > 0 then
+		-- len is given as a bare length.
+		len = math.max(len - (unit < 4 and pad or (m1 + m2)), 0);
+		if mid > 0 and loop ~= 3 then -- if not stretching.
+			local rnd = unit % 3;
+			len = rnd == 1 and math.floor(0.5 + len / mid) * mid
+				or rnd == 2 and math.floor(len / mid) * mid
+				or math.ceil(len / mid) * mid;
+		end
+	else
+		-- len is given as a loop count.
+		if pad > 0 then
+			-- when mirroring, only odd count is accepted.
+			len = math.floor((len - 1) / 2);
+		end
+		len = len * mid;
+	end
+
+	return m1, m2, mid, sz - m1 - m2, len;
+end
+margin_l, margin_r, mid_x, len0_x, len1_x = adjust_margin(margin_l, margin_r, w, width, unit_x, loop_x);
+margin_u, margin_d, mid_y, len0_y, len1_y = adjust_margin(margin_u, margin_d, h, height, unit_y, loop_y);
+
+-- handle the zero-sized case.
+local W, H = margin_l + len1_x + margin_r, margin_u + len1_y + margin_d;
+if W == 0 or H == 0 then
+	obj.setoption("draw_state", true);
+	return;
+end
+
+-- invoke shader.
+obj.copybuffer("tempbuffer", "object");
+obj.clearbuffer("object", W, H);
+obj.pixelshader("mid_loop", "object", "tempbuffer", {
+	margin_l, margin_u, len1_x + margin_l, len1_y + margin_u;
+	1 / w, 1 / h;
+	mid_x, mid_y; len1_x - len0_x, len1_y - len0_y; loop_x, loop_y;
+}, "copy", "clip");
+
+-- adjust the center.
+obj.cx, obj.cy =
+	obj.cx - (len1_x - len0_x) * align_x / 2,
+	obj.cy - (len1_y - len0_y) * align_y / 2;
+
 @小数ぼかし
---information:小数ぼかし@Basic_S v1.80 (for beta29) by σ軸
+--information:小数ぼかし@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\ぼかし
 --filter
 --track@range:範囲,0,1000,5,0.01
@@ -2559,7 +2738,7 @@ if luma_weight > 0 then
 end
 
 @縁取りα
---information:縁取りα@Basic_S v1.80 (for beta29) by σ軸
+--information:縁取りα@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --track@size:サイズ,-500,500,5,1
 --track@blur:ぼかし,0,100,5,1
@@ -2738,7 +2917,7 @@ elseif alpha_front > 0 then
 end
 
 @四角縁取り
---information:四角縁取り@Basic_S v1.80 (for beta29) by σ軸
+--information:四角縁取り@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --track@size:サイズ,-500,500,5,0.01
 --track@aspect:縦横比,-100,100,0,0.001
@@ -2982,7 +3161,7 @@ else
 end
 
 @内側シャドウ
---information:内側シャドウ@Basic_S v1.80 (for beta29) by σ軸
+--information:内側シャドウ@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --filter
 --track@X:X,-1000,1000,-40,0.01
@@ -3137,7 +3316,7 @@ obj.copybuffer("object", "tempbuffer");
 obj.pixelshader("identity", "object", cache_name, nil, "mask");
 
 @画像ファイル合成
---information:画像ファイル合成@Basic_S v1.80 (for beta29) by σ軸
+--information:画像ファイル合成@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
 --file@file:画像ファイル
@@ -3440,7 +3619,7 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
 @動画ファイル合成
---information:動画ファイル合成@Basic_S v1.80 (for beta29) by σ軸
+--information:動画ファイル合成@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
 --file@file:動画ファイル
@@ -3761,7 +3940,7 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
 @別レイヤー同期
---information:別レイヤー同期@Basic_S v1.80 (for beta29) by σ軸
+--information:別レイヤー同期@Basic_S v1.90-beta3 (for beta40a) by σ軸
 --label:Basic_S\配置
 --select@index_base:レイヤー位置=1,絶対指定=0,相対指定=1
 --value@index:番号,-1
