@@ -23,7 +23,7 @@ SOFTWARE.
 https://mit-license.org/
 ]]
 @四隅丸め
---information:四隅丸め@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:四隅丸め@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --filter
 --track@radius:半径,0,2000,40,0.01
@@ -282,7 +282,7 @@ obj.pixelshader("carve", "object", nil, {
 }, "mask");
 
 @背景角丸矩形
---information:背景角丸矩形@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:背景角丸矩形@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --track@pad_X:余白X,-1000,1000,10,1
 --track@pad_Y:余白Y,-1000,1000,10,1
@@ -586,7 +586,7 @@ end
 obj.cx, obj.cy = obj.cx + (L - R) / 2, obj.cy + (T - B) / 2;
 
 @背景楕円
---information:背景楕円@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:背景楕円@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --track@pad_X:余白X,-1000,1000,10,1
 --track@pad_Y:余白Y,-1000,1000,10,1
@@ -700,7 +700,7 @@ obj.effect("背景角丸矩形@Basic_S", "クリッピング", clip,
 		pad_L, pad_R, pad_T, pad_B, line_x, line_y, back_x, back_y));
 
 @背景菱形
---information:背景菱形@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:背景菱形@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --track@pad_X:余白X,-1000,1000,10,1
 --track@pad_Y:余白Y,-1000,1000,10,1
@@ -817,7 +817,7 @@ obj.effect("背景角丸矩形@Basic_S", "クリッピング", clip,
 		pad_L, pad_R, pad_T, pad_B, line_x, line_y, back_x, back_y));
 
 @透明度適用
---information:透明度適用@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:透明度適用@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
 --track@alpha:透明度,-100,100,0,0.01
@@ -837,7 +837,7 @@ if apply_former then obj.alpha, alpha = 1, alpha * obj.alpha end
 if alpha ~= 1 then obj.pixelshader("const_alpha", "object", nil, { alpha }, "mask") end
 
 @透明度二値化
---information:透明度二値化@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:透明度二値化@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
 --track@alpha:基準透明度,0,100,50,0.01
@@ -879,7 +879,7 @@ if alpha > 0 or buffer < 1 then
 end
 
 @色調補正
---information:色調補正@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:色調補正@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\色調整
 --filter
 --track@add_light:明るさ,0,200,100,0.01
@@ -1170,7 +1170,7 @@ else
 end
 
 @色チャンネル入れ替え
---information:色チャンネル入れ替え@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:色チャンネル入れ替え@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\色調整
 --filter
 --select@comp_R:赤適用元=1,0固定=0,赤=1,緑=2,青=3,アルファ=4,赤反転=5,緑反転=6,青反転=7,アルファ反転=8,1固定=9
@@ -1277,7 +1277,7 @@ end
 obj.pixelshader(premult and "premult" or "nonmult", "object", "object", params);
 
 @回転中心
---information:回転中心@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:回転中心@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\配置
 --track@X:X,-4000,4000,0,0.01
 --track@Y:Y,-4000,4000,0,0.01
@@ -1287,7 +1287,7 @@ obj.cy = obj.cy + Y;
 obj.cz = obj.cz + Z;
 
 @回転中心アンカー指定
---information:回転中心アンカー指定@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:回転中心アンカー指定@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\配置
 --track0:X,-4000,4000,0,0.01
 --track1:Y,-4000,4000,0,0.01
@@ -1336,7 +1336,7 @@ obj.ox,	obj.oy,	obj.oz = obj.ox + dx, obj.oy + dy, obj.oz + dz;
 obj.cx,obj.cy,obj.cz = cx, cy, cz;
 
 @上下左右揃え
---information:上下左右揃え@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:上下左右揃え@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\配置
 --track@X:左右%,-100,100,0,0.001
 --track@Y:上下%,-100,100,0,0.001
@@ -1359,7 +1359,7 @@ if cx ~= obj.cx or cy ~= obj.cy then
 end
 
 @直角回転
---information:直角回転@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:直角回転@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\配置
 --select@rot:方向=0,なし=0,90°時計回り=1,180°反転=2,90°反時計回り=3,左右反転=4,上下反転=5,右上軸反転=6,左上軸反転=7
 --check@move_center:中心の位置を変更,false
@@ -1406,7 +1406,7 @@ obj.copybuffer("object", "tempbuffer");
 if not move_center then obj.cx, obj.cy = obj.cx + (cx - cx0), obj.cy + (cy - cy0) end
 
 @XYZ追加回転
---information:XYZ追加回転@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:XYZ追加回転@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\配置
 --track@X:X,-720,720,0,0.01
 --track@Y:Y,-720,720,0,0.01
@@ -1475,7 +1475,7 @@ if angle ~= 0 or draw then
 end
 
 @任意軸追加回転
---information:任意軸追加回転@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:任意軸追加回転@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\配置
 --track@angle:角度,-720,720,0,0.01
 --track0:回転軸X,-512,512,0,0.001
@@ -1723,7 +1723,7 @@ else
 end
 
 @傾斜
---information:傾斜@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:傾斜@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\変形
 --track@angle:角度,-80,80,0,0.001
 --track@slope:傾き%,-500,500,0,0.001
@@ -1802,7 +1802,7 @@ obj.copybuffer("object", "tempbuffer");
 obj.cx, obj.cy = obj.cx - cx, obj.cy - cy;
 
 @XY軸変形
---information:XY軸変形@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:XY軸変形@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\変形
 --value@axis_X:X軸,{100,0}
 --check@stretch_X:X長さ変更,false
@@ -1858,7 +1858,7 @@ obj.drawpoly(
 obj.copybuffer("object", "tempbuffer");
 
 @領域サイズ変更
---information:領域サイズ変更@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:領域サイズ変更@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --track@T:上,-4000,4000,0,1
 --track@B:下,-4000,4000,0,1
@@ -1946,7 +1946,7 @@ end
 obj.cx, obj.cy = cx, cy;
 
 @領域割合サイズ変更
---information:領域割合サイズ変更@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:領域割合サイズ変更@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --track@T:上%,-100,100,0,0.001
 --track@B:下%,-100,100,0,0.001
@@ -2001,7 +2001,7 @@ if L ~= 0 or R ~= 0 or T ~= 0 or B ~= 0 then
 end
 
 @領域サイズ指定
---information:領域サイズ指定@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:領域サイズ指定@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --track0:X,-4000,4000,0,0.1
 --track1:Y,-4000,4000,0,0.1
@@ -2098,7 +2098,7 @@ elseif L ~= 0 or R ~= 0 or T ~= 0 or B ~= 0 then
 end
 
 @カットずらし
---information:カットずらし@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:カットずらし@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --track0:ずれX,-4000,4000,40,1
 --track1:ずれY,-4000,4000,0,1
@@ -2112,17 +2112,12 @@ end
 --value@PI:PI,{}
 --[[pixelshader@place:
 Texture2D src : register(t0);
+SamplerState smp : register(s0);
 cbuffer constant0 : register(b0) {
 	float2 size, offset, line_n, move;
 	float c1, crop, gap, mode_f;
 };
 
-SamplerState s;
-float4 pick(float2 pos)
-{
-	const float2 t = saturate(min(pos, size - pos) + 0.5);
-	return (t.x * t.y) * src.Sample(s, saturate(pos / size));
-}
 float4 place(float4 pos : SV_Position) : SV_Target
 {
 	const float4
@@ -2137,7 +2132,7 @@ float4 place(float4 pos : SV_Position) : SV_Target
 	case 0: default: col3 = 0; break;
 	case 1: col3 = (col1 + col2) / 2; break;
 	case 2: col3 = lerp(col1, col2, saturate(phase)); break;
-	case 3: col3 = pick(pos.xy - offset - phase * move); break;
+	case 3: col3 = src.Sample(smp, (pos.xy - offset - phase * move) / size); break;
 	}
 
 	return lerp(col1, lerp(col3, col2,
@@ -2300,7 +2295,7 @@ obj.clearbuffer("tempbuffer", R - L, B - T);
 obj.pixelshader("place", "tempbuffer", "object", {
 	obj.w, obj.h; -L - obj.w / 2, -T - obj.h / 2 ; dy, -dx; X, Y;
 	c - (L * dy - T * dx); crop; gap; mode;
-});
+}, "copy", "clip");
 obj.copybuffer("object", "tempbuffer");
 
 -- adjust center.
@@ -2309,7 +2304,7 @@ if not move_center then
 end
 
 @中抜きクリッピング
---information:中抜きクリッピング@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:中抜きクリッピング@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --track0:X,-4000,4000,0,0.1
 --track1:Y,-4000,4000,0,0.1
@@ -2412,7 +2407,7 @@ else
 end
 
 @部分ループ
---information:部分ループ@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:部分ループ@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\配置
 --track@width:幅,0,4000,1,1
 --track@height:高さ,0,4000,1,1
@@ -2591,7 +2586,7 @@ obj.cx, obj.cy =
 	obj.cy - (len1_y - len0_y) * align_y / 2;
 
 @小数ぼかし
---information:小数ぼかし@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:小数ぼかし@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\ぼかし
 --filter
 --track@range:範囲,0,1000,5,0.01
@@ -2738,7 +2733,7 @@ if luma_weight > 0 then
 end
 
 @縁取りα
---information:縁取りα@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:縁取りα@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --track@size:サイズ,-500,500,5,1
 --track@blur:ぼかし,0,100,5,1
@@ -2756,7 +2751,7 @@ Texture2D src : register(t0);
 Texture2D eff : register(t1);
 cbuffer constant0 : register(b0) {
 	float4 color;
-	float size;
+	float2 size;
 };
 float4 carve(float4 pos : SV_Position) : SV_Target
 {
@@ -2784,7 +2779,8 @@ float4 recolor(float4 pos : SV_Position) : SV_Target
 Texture2D img1 : register(t0);
 Texture2D img2 : register(t1);
 cbuffer constant0 : register(b0) {
-	float a1, a2, size;
+	float2 size;
+	float a1, a2;
 };
 float4 blend(float4 pos : SV_Position) : SV_Target
 {
@@ -2870,7 +2866,7 @@ if size > 0 then
 		bit.band(color, 0xff0000) / 0xff0000,
 		bit.band(color, 0x00ff00) / 0x00ff00,
 		bit.band(color, 0x0000ff) / 0x0000ff, 1;
-		size;
+		size, size;
 	});
 else
 	-- inner border.
@@ -2912,12 +2908,14 @@ if size < 0 then
 	});
 elseif alpha_front > 0 then
 	obj.pixelshader("blend", "object", { "tempbuffer", "object" }, {
-		alpha_front, alpha, size,
+		size, size; alpha_front, alpha,
 	});
+elseif alpha < 1 then
+	obj.effect("透明度適用@Basic_S", "透明度", 100 * (1 - alpha));
 end
 
 @四角縁取り
---information:四角縁取り@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:四角縁取り@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --track@size:サイズ,-500,500,5,0.01
 --track@aspect:縦横比,-100,100,0,0.001
@@ -2981,64 +2979,6 @@ float4 convol_v(float4 pos : SV_Position) : SV_Target
 	if (inv >= 0) a = inv - a;
 
 	return saturate(blur * a) * color;
-}
-]]
---[[pixelshader@carve:
-Texture2D src : register(t0);
-Texture2D eff : register(t1);
-cbuffer constant0 : register(b0) {
-	float4 color;
-	float2 size;
-};
-float4 carve(float4 pos : SV_Position) : SV_Target
-{
-	const float
-		a = src.Load(int3(pos.xy - 0.5 - size, 0)).a,
-		A = eff.Load(int3(pos.xy, 0)).a;
-	return saturate(A - a) * color;
-}
-]]
---[[pixelshader@recolor:
-Texture2D mask : register(t0);
-Texture2D img : register(t1);
-cbuffer constant0 : register(b0) {
-	float2 offset, size_f;
-};
-float4 recolor(float4 pos : SV_Position) : SV_Target
-{
-	static const uint2 size = size_f;
-	int2 pt = floor(pos.xy - 0.5 - offset);
-	pt = pt >= 0 ? uint2(pt) % size : size - 1 - int2(uint2(-1 - pt) % size);
-	return mask.Load(int3(pos.xy, 0)).a * img.Load(int3(pt, 0));
-}
-]]
---[[pixelshader@blend:
-Texture2D img1 : register(t0);
-Texture2D img2 : register(t1);
-cbuffer constant0 : register(b0) {
-	float2 size;
-	float a1, a2;
-};
-float4 blend(float4 pos : SV_Position) : SV_Target
-{
-	const float4
-		col1 = img1.Load(int3(pos.xy - 0.5 - size, 0)),
-		col2 = img2.Load(int3(pos.xy, 0));
-	return a1 * col1 + a2 * col2;
-}
-]]
---[[pixelshader@combine:
-Texture2D src_i : register(t0);
-Texture2D src_o : register(t1);
-cbuffer constant0 : register(b0) {
-	float a_i, a_o;
-};
-float4 combine(float4 pos : SV_Position) : SV_Target
-{
-	const float4
-		col_i = src_i.Load(int3(pos.xy, 0)),
-		col_o = src_o.Load(int3(pos.xy, 0)) * a_o;
-	return col_i.a * col_o + a_i * (1 - col_o.a) * col_i;
 }
 ]]
 local obj, math, bit, tonumber, type = obj, math, bit, tonumber, type;
@@ -3123,7 +3063,7 @@ obj.pixelshader("convol_v", "tempbuffer", "tempbuffer", {
 	size > 0 and -1 or size_xy;
 });
 if size > 0 then
-	obj.pixelshader("carve", "tempbuffer", { "object", "tempbuffer" }, {
+	obj.pixelshader("carve@縁取りα@Basic_S", "tempbuffer", { "object", "tempbuffer" }, {
 		col_r, col_g, col_b, 1;
 		size_x_i + 1, size_y_i + 1;
 	});
@@ -3137,7 +3077,7 @@ if has_image then
 
 	obj.load("image", file_image);
 	if obj.w > 0 or obj.h > 0 then
-		obj.pixelshader("recolor", "tempbuffer", { "tempbuffer", "object" }, {
+		obj.pixelshader("recolor@縁取りα@Basic_S", "tempbuffer", { "tempbuffer", "object" }, {
 			math.floor((W - obj.w) / 2) + X, math.floor((H - obj.h) / 2) + Y;
 			obj.w, obj.h;
 		});
@@ -3149,19 +3089,19 @@ end
 
 -- combine by shaders.
 if size > 0 then
-	obj.pixelshader("blend", "tempbuffer", { "object", "tempbuffer" }, {
+	obj.pixelshader("blend@縁取りα@Basic_S", "tempbuffer", { "object", "tempbuffer" }, {
 		size_x_i + 1, size_y_i + 1;
 		alpha_front, alpha,
 	});
 	obj.copybuffer("object", "tempbuffer");
 else
-	obj.pixelshader("combine", "object", { "object", "tempbuffer" }, {
-		alpha_front, alpha, size,
+	obj.pixelshader("combine@縁取りα@Basic_S", "object", { "object", "tempbuffer" }, {
+		alpha_front, alpha,
 	});
 end
 
 @内側シャドウ
---information:内側シャドウ@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:内側シャドウ@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --filter
 --track@X:X,-1000,1000,-40,0.01
@@ -3200,14 +3140,6 @@ float4 recol_one(float4 pos : SV_Position) : SV_Target
 {
 	const float4 col = src.Load(int3(pos.xy, 0));
 	return (1 - col.a) * color;
-}
-]]
---[[pixelshader@unalpha:
-Texture2D src : register(t0);
-float4 unalpha(float4 pos : SV_Position) : SV_Target
-{
-	const float4 col = src.Load(int3(pos.xy, 0));
-	return float4(col.a > 0 ? col.rgb / col.a : 0, 1);
 }
 ]]
 --[[pixelshader@identity:
@@ -3303,7 +3235,7 @@ if not has_image then
 end
 
 -- prepare the target to draw.
-obj.pixelshader("unalpha", "tempbuffer", cache_name);
+obj.pixelshader("unalpha@画像ファイル合成@Basic_S", "tempbuffer", cache_name);
 
 -- draw using the selected blend mode.
 obj.setoption("drawtarget", "tempbuffer");
@@ -3316,7 +3248,7 @@ obj.copybuffer("object", "tempbuffer");
 obj.pixelshader("identity", "object", cache_name, nil, "mask");
 
 @画像ファイル合成
---information:画像ファイル合成@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:画像ファイル合成@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
 --file@file:画像ファイル
@@ -3619,7 +3551,7 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
 @動画ファイル合成
---information:動画ファイル合成@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:動画ファイル合成@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
 --file@file:動画ファイル
@@ -3642,96 +3574,6 @@ obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 --select@blend:合成モード=0,通常=0,加算=1,減算=2,乗算=3,スクリーン=4,オーバーレイ=5,比較(明)=6,比較(暗)=7,輝度=8,色差=9,陰影=10,明暗=11,差分=12
 --group:その他,false
 --value@PI:PI,{}
---[[pixelshader@tile:
-Texture2D src : register(t0);
-cbuffer constant0 : register(b0) {
-	float2 size, move;
-	float2x2 rot;
-	float2 tile_f;
-	float no_smooth;
-};
-float2 wrap(float2 p)
-{
-	p /= size;
-	return size * (tile_f > 0 ? p - floor(p) : p);
-}
-int2 wrap_i(int2 p)
-{
-	return tile_f > 0 ? uint2(p) % uint2(size) : p;
-}
-float4 tile(float4 pos : SV_Position) : SV_Target
-{
-	float2 fr = wrap(mul(rot, pos.xy) + move - 0.5);
-	const int2 p00 = floor(fr),
-		p10 = wrap_i(p00 + int2(1, 0)),
-		p01 = wrap_i(p00 + int2(0, 1)),
-		p11 = wrap_i(p00 + int2(1, 1));
-	fr -= p00;
-	if (no_smooth > 0) fr = floor(fr + 0.5);
-
-	return lerp(
-		lerp(src.Load(int3(p00, 0)), src.Load(int3(p10, 0)), fr.x),
-		lerp(src.Load(int3(p01, 0)), src.Load(int3(p11, 0)), fr.x), fr.y);
-}
-]]
---[[pixelshader@mask:
-Texture2D src : register(t0);
-cbuffer constant0 : register(b0) {
-	float intensity;
-};
-float4 mask(float4 pos : SV_Position) : SV_Target
-{
-	return float4(0, 0, 0,
-		1 - intensity * (1 - src.Load(int3(pos.xy, 0)).a));
-}
-]]
---[[pixelshader@unalpha:
-Texture2D src : register(t0);
-float4 unalpha(float4 pos : SV_Position) : SV_Target
-{
-	float4 c = src.Load(int3(pos.xy, 0));
-	return float4(c.a > 0 ? c.rgb / c.a : 0, 1);
-}
-]]
---[[pixelshader@replace_col:
-Texture2D dst : register(t0);
-Texture2D src : register(t1);
-cbuffer constant0 : register(b0) {
-	float intensity;
-};
-float4 replace_col(float4 pos : SV_Position) : SV_Target
-{
-	const float4 c0 = dst.Load(int3(pos.xy, 0)), c1 = src.Load(int3(pos.xy, 0));
-	const float a0 = max(c0.a, 0);
-	return lerp(c0, c1 * (a0 < c1.a ? a0 / c1.a : 1), intensity);
-}
-]]
---[[pixelshader@luma_as_alpha:
-Texture2D dst : register(t0);
-Texture2D src : register(t1);
-cbuffer constant0 : register(b0) {
-	float intensity;
-};
-float4 luma_as_alpha(float4 pos : SV_Position) : SV_Target
-{
-	static const float3 luma_coeff = { 0.299, 0.587, 0.114 };
-	const float4 c0 = dst.Load(int3(pos.xy, 0));
-	const float a1 = max(dot(luma_coeff, src.Load(int3(pos.xy, 0)).rgb), 0);
-	return c0 * (1 - intensity * (1 - (c0.a > a1 ? a1 / c0.a : 1)));
-}
-]]
---[[pixelshader@mask_by_luma:
-Texture2D src : register(t0);
-cbuffer constant0 : register(b0) {
-	float intensity;
-};
-float4 mask_by_luma(float4 pos : SV_Position) : SV_Target
-{
-	static const float3 luma_coeff = { 0.299, 0.587, 0.114 };
-	return float4(0, 0, 0,
-		1 - intensity * (1 - dot(luma_coeff, src.Load(int3(pos.xy, 0)).rgb)));
-}
-]]
 local obj, math, type, tonumber = obj, math, type, tonumber;
 
 -- set anchors.
@@ -3847,7 +3689,7 @@ if video_len > 0 and W > 0 and H > 0 then
 	-- process rotate / zoom / tile.
 	if alpha > 0 then
 		obj.clearbuffer("tempbuffer", R - L, B - T);
-		obj.pixelshader("tile", "tempbuffer", "object", {
+		obj.pixelshader("tile@画像ファイル合成@Basic_S", "tempbuffer", "object", {
 			W, H;
 			(c * (L - X) + s * (T - Y)) / zoom + W / 2,
 			(-s * (L - X) + c * (T - Y)) / zoom + H / 2;
@@ -3861,19 +3703,19 @@ if video_len > 0 and W > 0 and H > 0 then
 	if mode_draw == 4 then
 		-- mask.
 		obj.copybuffer("object", cache_name);
-		obj.pixelshader("mask", "object", "tempbuffer", { alpha }, "mask");
+		obj.pixelshader("mask@画像ファイル合成@Basic_S", "object", "tempbuffer", { alpha }, "mask");
 	elseif mode_draw == 5 then
 		-- replace color.
 		obj.copybuffer("object", cache_name);
-		obj.pixelshader("replace_col", "object", { "object", "tempbuffer" }, { alpha });
+		obj.pixelshader("replace_col@画像ファイル合成@Basic_S", "object", { "object", "tempbuffer" }, { alpha });
 	elseif mode_draw == 6 then
 		-- replace luma with alpha.
 		obj.copybuffer("object", cache_name);
-		obj.pixelshader("luma_as_alpha", "object", { "object", "tempbuffer" }, { alpha });
+		obj.pixelshader("luma_as_alpha@画像ファイル合成@Basic_S", "object", { "object", "tempbuffer" }, { alpha });
 	elseif mode_draw >= 7 then
 		-- multiply luma to alpha.
 		obj.copybuffer("object", cache_name);
-		obj.pixelshader("mask_by_luma", "object", "tempbuffer", { alpha }, "mask");
+		obj.pixelshader("mask_by_luma@画像ファイル合成@Basic_S", "object", "tempbuffer", { alpha }, "mask");
 	elseif alpha > 0 then
 		obj.setoption("drawtarget", "tempbuffer");
 		if mode_draw < 2 then
@@ -3887,13 +3729,13 @@ if video_len > 0 and W > 0 and H > 0 then
 			obj.copybuffer("tempbuffer", cache_name);
 			if mode_draw == 1 then
 				-- unalpha
-				obj.pixelshader("unalpha", "tempbuffer", cache_name);
+				obj.pixelshader("unalpha@画像ファイル合成@Basic_S", "tempbuffer", cache_name);
 			end
 			obj.setoption("blend", blend);
 			obj.draw(0, 0, 0, 1, alpha);
 			if mode_draw == 1 then
 				-- re-alpha
-				obj.pixelshader("mask", "tempbuffer", cache_name, { 1 }, "mask");
+				obj.pixelshader("mask@画像ファイル合成@Basic_S", "tempbuffer", cache_name, { 1 }, "mask");
 			end
 		else -- combine from back.
 			if alpha ~= 1 then
@@ -3905,13 +3747,13 @@ if video_len > 0 and W > 0 and H > 0 then
 			if mode_draw == 3 then
 				-- unalpha
 				obj.copybuffer(cache_name, "tempbuffer");
-				obj.pixelshader("unalpha", "tempbuffer", cache_name);
+				obj.pixelshader("unalpha@画像ファイル合成@Basic_S", "tempbuffer", cache_name);
 			end
 			obj.setoption("blend", blend);
 			obj.draw(dcx, dcy);
 			if mode_draw == 3 then
 				-- re-alpha
-				obj.pixelshader("mask", "tempbuffer", cache_name, { 1 }, "mask");
+				obj.pixelshader("mask@画像ファイル合成@Basic_S", "tempbuffer", cache_name, { 1 }, "mask");
 			end
 		end
 		obj.setoption("blend", "none");
@@ -3940,7 +3782,7 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
 @別レイヤー同期
---information:別レイヤー同期@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:別レイヤー同期@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S\配置
 --select@index_base:レイヤー位置=1,絶対指定=0,相対指定=1
 --value@index:番号,-1
@@ -4060,7 +3902,7 @@ if sync_rot ~= 0 then
 end
 
 @バッファに保存
---information:バッファに保存@Basic_S v1.90-beta4 (for beta40a) by σ軸
+--information:バッファに保存@Basic_S v1.90-beta5 (for beta40a) by σ軸
 --label:Basic_S
 --select@buffer_type:バッファ=0,仮想バッファ=0,一時キャッシュ=1,フレームバッファ=2
 --string@cache_name:キャッシュ名,my_cache
