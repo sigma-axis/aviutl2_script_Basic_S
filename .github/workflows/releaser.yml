@@ -26,16 +26,23 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Set package version
+      run: |
+        cd assets
+        sed -i 's/\${ver}/${{ github.ref_name }}/g' package.ini
+
     - name: Pack and compress
       run: |
-        mkdir pack
-        cp *.anm2 pack
-        cp *.obj2 pack
-        cp *.tra2 pack
-        cp *.md pack
-        cp LICENSE pack/LICENSE
+        mkdir -p pack/Script/${{ env.REPOSITORY_NAME }}
+        cp *.anm2 pack/Script
+        cp *.obj2 pack/Script
+        cp *.tra2 pack/Script
+        cp *.md pack/Script/${{ env.REPOSITORY_NAME }}
+        cp LICENSE pack/Script/${{ env.REPOSITORY_NAME }}/LICENSE
+        cp assets/package.txt pack
+        cp assets/package.ini pack
         cd pack
-        zip -r ../aviutl2_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.zip *
+        zip -r ../aviutl2_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.au2pkg.zip *
       # rename .zip file for downloading if necessary.
 
     - name: Prepare release notes
@@ -45,7 +52,7 @@ jobs:
         echo "### 更新内容" >> ReleaseNotes.txt
         phase=0
         IFS=$'\n'
-        cat pack/README.md | while read line; do
+        cat README.md | while read line; do
           if [[ $phase == 0 ]]; then
             if [[ $line =~ ^##*[[:space:]]{1,}'改版履歴'[[:space:]]*$ ]]; then phase=1; fi
           elif [[ $phase == 1 ]]; then
