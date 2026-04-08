@@ -2456,14 +2456,14 @@ local l, t =
 if width ~= 0 or gap_x ~= 0 then
 	obj.effect("カットずらし@Basic_S", "中心の位置を変更", 1,
 		"余白処理", mode_padding, "重複処理", mode_overlap, "PI",
-		("X=%d,Y=0,crack={%f,0,%f,1},crop=%d,move_center=0"):format(
+		("X=%d,Y=0,crack_X1=%f,crack_Y1=0,crack_X2=%f,crack_Y2=1,crop=%d,move_center=0"):format(
 			gap_x - width, l - w / 2, l - w / 2, width));
 	if not (obj.w > 0 and obj.h > 0) then return end -- entirely cropped.
 end
 if height ~= 0 or gap_y ~= 0 then
 	obj.effect("カットずらし@Basic_S", "中心の位置を変更", 1,
 		"余白処理", mode_padding, "重複処理", mode_overlap, "PI",
-		("X=0,Y=%d,crack={1,%f,0,%f},crop=%d,move_center=0"):format(
+		("X=0,Y=%d,crack_X1=1,crack_Y1=%f,crack_X2=0,crack_Y2=%f,crop=%d,move_center=0"):format(
 			gap_y - height, t - h / 2, t - h / 2, height));
 	if not (obj.w > 0 and obj.h > 0) then return end -- entirely cropped.
 end
