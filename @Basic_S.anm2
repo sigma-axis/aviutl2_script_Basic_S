@@ -23,7 +23,7 @@ SOFTWARE.
 https://mit-license.org/
 ]]
 @四隅丸め
---information:四隅丸め@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:四隅丸め@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --filter
 --require:2004001
@@ -283,7 +283,7 @@ obj.pixelshader("carve", "object", nil, {
 }, "mask");
 
 @背景角丸矩形
---information:背景角丸矩形@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:背景角丸矩形@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --require:2004001
 --track@pad_X:余白X,-1000,1000,10,1
@@ -588,7 +588,7 @@ end
 obj.cx, obj.cy = obj.cx + (L - R) / 2, obj.cy + (T - B) / 2;
 
 @背景楕円
---information:背景楕円@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:背景楕円@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --require:2004001
 --track@pad_X:余白X,-1000,1000,10,1
@@ -703,7 +703,7 @@ obj.effect("背景角丸矩形@Basic_S", "クリッピング", clip,
 		pad_L, pad_R, pad_T, pad_B, line_x, line_y, back_x, back_y));
 
 @背景菱形
---information:背景菱形@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:背景菱形@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --require:2004001
 --track@pad_X:余白X,-1000,1000,10,1
@@ -821,7 +821,7 @@ obj.effect("背景角丸矩形@Basic_S", "クリッピング", clip,
 		pad_L, pad_R, pad_T, pad_B, line_x, line_y, back_x, back_y));
 
 @透明度適用
---information:透明度適用@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:透明度適用@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
 --require:2004001
@@ -842,7 +842,7 @@ if apply_former then obj.alpha, alpha = 1, alpha * obj.alpha end
 if alpha ~= 1 then obj.pixelshader("const_alpha", "object", nil, { alpha }, "mask") end
 
 @透明度二値化
---information:透明度二値化@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:透明度二値化@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
 --require:2004001
@@ -885,7 +885,7 @@ if alpha > 0 or buffer < 1 then
 end
 
 @色調補正
---information:色調補正@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:色調補正@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\色調整
 --filter
 --require:2004001
@@ -1177,7 +1177,7 @@ else
 end
 
 @色チャンネル入れ替え
---information:色チャンネル入れ替え@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:色チャンネル入れ替え@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\色調整
 --filter
 --require:2004001
@@ -1285,29 +1285,31 @@ end
 obj.pixelshader(premult and "premult" or "nonmult", "object", "object", params);
 
 @回転中心
---information:回転中心@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:回転中心@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\配置
 --require:2004001
 --track@X:X,-4000,4000,0,0.01
 --track@Y:Y,-4000,4000,0,0.01
 --track@Z:Z,-4000,4000,0,0.01
+--trackgroup@X,Y,Z:pos
 obj.cx = obj.cx + X;
 obj.cy = obj.cy + Y;
 obj.cz = obj.cz + Z;
 
 @回転中心アンカー指定
---information:回転中心アンカー指定@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:回転中心アンカー指定@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\配置
 --require:2004001
---track0:X,-4000,4000,0,0.01
---track1:Y,-4000,4000,0,0.01
---track2:Z,-4000,4000,0,0.01
+--track@X:X,-4000,4000,0,0.01
+--track@Y:Y,-4000,4000,0,0.01
+--track@Z:Z,-4000,4000,0,0.01
+--trackgroup@X,Y,Z:pos
 --group:その他,false
 --value@PI:PI,{}
 local obj, math, tonumber = obj, math, tonumber;
 
 -- set anchors.
-obj.setanchor("track", 0, "xyz", "line");
+obj.setanchor("X,Y,Z", 0, "xyz", "line");
 
 -- take parameters.
 --[==[
@@ -1315,10 +1317,9 @@ obj.setanchor("track", 0, "xyz", "line");
 		X, Y, Z:	number?,
 	}
 ]==]
-local X, Y, Z =
-	tonumber(PI.X) or obj.track0,
-	tonumber(PI.Y) or obj.track1,
-	tonumber(PI.Z) or obj.track2;
+X = tonumber(PI.X) or X;
+Y = tonumber(PI.Y) or Y;
+Z = tonumber(PI.Z) or Z;
 
 -- further calculations.
 local cx, cy, cz =
@@ -1346,11 +1347,12 @@ obj.ox,	obj.oy,	obj.oz = obj.ox + dx, obj.oy + dy, obj.oz + dz;
 obj.cx,obj.cy,obj.cz = cx, cy, cz;
 
 @上下左右揃え
---information:上下左右揃え@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:上下左右揃え@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\配置
 --require:2004001
 --track@X:左右%,-100,100,0,0.001
 --track@Y:上下%,-100,100,0,0.001
+--trackgroup@X,Y:pos
 --check@fix_pos:描画位置を固定,false
 --group:縦横無効化,false
 --check@x_enabled:左右有効,true
@@ -1370,7 +1372,7 @@ if cx ~= obj.cx or cy ~= obj.cy then
 end
 
 @直角回転
---information:直角回転@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:直角回転@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\配置
 --require:2004001
 --select@rot:方向=0,なし=0,90°時計回り=1,180°反転=2,90°反時計回り=3,左右反転=4,上下反転=5,右上軸反転=6,左上軸反転=7
@@ -1418,12 +1420,13 @@ obj.copybuffer("object", "tempbuffer");
 if not move_center then obj.cx, obj.cy = obj.cx + (cx - cx0), obj.cy + (cy - cy0) end
 
 @XYZ追加回転
---information:XYZ追加回転@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:XYZ追加回転@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\配置
 --require:2004001
 --track@X:X,-720,720,0,0.01
 --track@Y:Y,-720,720,0,0.01
 --track@Z:Z,-720,720,0,0.01
+--trackgroup@X,Y,Z:rot
 --track@intensity:回転量,-200,200,100,0.01
 --group:描画処理,false
 --check@draw:描画する,false
@@ -1488,13 +1491,14 @@ if angle ~= 0 or draw then
 end
 
 @任意軸追加回転
---information:任意軸追加回転@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:任意軸追加回転@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\配置
 --require:2004001
 --track@angle:角度,-720,720,0,0.01
---track0:回転軸X,-512,512,0,0.001
---track1:回転軸Y,-512,512,0,0.001
---track2:回転軸Z,-512,512,128,0.001
+--track@X:回転軸X,-512,512,0,0.001
+--track@Y:回転軸Y,-512,512,0,0.001
+--track@Z:回転軸Z,-512,512,128,0.001
+--trackgroup@X,Y,Z:axis
 --group:描画処理,false
 --check@draw:描画する,false
 --check@grouped:グループ制御,false
@@ -1503,8 +1507,7 @@ end
 local obj, math, tonumber, type = obj, math, tonumber, type;
 
 -- set anchors.
-obj.setanchor("track", 0, "xyz");
-local X, Y, Z = obj.track0, obj.track1, obj.track2;
+obj.setanchor("X,Y,Z", 0, "xyz");
 local cx, cy, cz =
 	obj.cx + obj.getvalue("cx"),
 	obj.cy + obj.getvalue("cy"),
@@ -1737,7 +1740,7 @@ else
 end
 
 @傾斜
---information:傾斜@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:傾斜@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\変形
 --require:2004001
 --track@angle:角度,-80,80,0,0.001
@@ -1817,7 +1820,7 @@ obj.copybuffer("object", "tempbuffer");
 obj.cx, obj.cy = obj.cx - cx, obj.cy - cy;
 
 @XY軸変形
---information:XY軸変形@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:XY軸変形@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\変形
 --require:2004001
 --value@axis_X:X軸,{100,0}
@@ -1874,7 +1877,7 @@ obj.drawpoly(
 obj.copybuffer("object", "tempbuffer");
 
 @領域サイズ変更
---information:領域サイズ変更@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:領域サイズ変更@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004001
 --track@T:上,-4000,4000,0,1
@@ -1963,7 +1966,7 @@ end
 obj.cx, obj.cy = cx, cy;
 
 @領域割合サイズ変更
---information:領域割合サイズ変更@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:領域割合サイズ変更@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004001
 --track@T:上%,-100,100,0,0.001
@@ -2019,11 +2022,12 @@ if L ~= 0 or R ~= 0 or T ~= 0 or B ~= 0 then
 end
 
 @領域サイズ指定
---information:領域サイズ指定@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:領域サイズ指定@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004001
---track0:X,-4000,4000,0,0.1
---track1:Y,-4000,4000,0,0.1
+--track@X:X,-4000,4000,0,0.1
+--track@Y:Y,-4000,4000,0,0.1
+--trackgroup@X,Y:pos
 --track@width:幅,1,4000,256,1
 --track@height:高さ,1,4000,256,1
 --check@move_center:中心の位置を変更,false
@@ -2040,7 +2044,7 @@ end
 local obj, math, tonumber, type = obj, math, tonumber, type;
 
 -- set anchors.
-if not move_center then obj.setanchor("track", 0, "line") end
+if not move_center then obj.setanchor("X,Y", 0, "line") end
 
 -- take parameters.
 --[==[
@@ -2063,9 +2067,8 @@ local function as_bool(t, v)
 	elseif type(t) == "number" then return t ~= 0;
 	else return v end
 end
-local X, Y =
-	tonumber(PI.X) or obj.track0,
-	tonumber(PI.Y) or obj.track1;
+X = tonumber(PI.X) or X;
+Y = tonumber(PI.Y) or Y;
 width = tonumber(PI.width) or width;
 align_x = tonumber(PI.align_x) or align_x;
 x_enabled = as_bool(PI.x_enabled, x_enabled);
@@ -2118,11 +2121,12 @@ elseif L ~= 0 or R ~= 0 or T ~= 0 or B ~= 0 then
 end
 
 @カットずらし
---information:カットずらし@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:カットずらし@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004001
---track0:ずれX,-4000,4000,40,1
---track1:ずれY,-4000,4000,0,1
+--track@X:ずれX,-4000,4000,40,1
+--track@Y:ずれY,-4000,4000,0,1
+--trackgroup@X,Y:pos
 --value@crack:切り取り線,{0,-100,0,100}
 --track@crop:切り取り幅,-4000,4000,0,0.01
 --check@move_center:中心の位置を変更,false
@@ -2165,7 +2169,7 @@ local obj, math, tonumber, type = obj, math, tonumber, type;
 
 -- set anchors.
 if not move_center then
-	obj.setanchor("track", 0, "arm");
+	obj.setanchor("X,Y", 0, "arm");
 	obj.setanchor("crack", 2, "line", "color", 0x4040ff);
 end
 
@@ -2186,8 +2190,8 @@ local function as_bool(t, v)
 	elseif type(t) == "number" then return t ~= 0;
 	else return v end
 end
-X = tonumber(PI.X) or obj.track0;
-Y = tonumber(PI.Y) or obj.track1;
+X = tonumber(PI.X) or X;
+Y = tonumber(PI.Y) or Y;
 if type(PI.crack) == "table" then
 	local x1, y1, x2, y2 =
 		tonumber(PI.crack[1]), tonumber(PI.crack[2]),
@@ -2325,11 +2329,12 @@ if not move_center then
 end
 
 @中抜きクリッピング
---information:中抜きクリッピング@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:中抜きクリッピング@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004001
---track0:X,-4000,4000,0,0.1
---track1:Y,-4000,4000,0,0.1
+--track@X:X,-4000,4000,0,0.1
+--track@Y:Y,-4000,4000,0,0.1
+--trackgroup@X,Y:pos
 --track@width:幅,-4000,4000,0,1
 --track@gap_x:余白幅,-4000,4000,0,1
 --track@height:高さ,-4000,4000,0,1
@@ -2347,7 +2352,7 @@ local obj, math, tonumber, type = obj, math, tonumber, type;
 
 -- set anchors
 if not move_center then
-	obj.setanchor("track", 0, "line");
+	obj.setanchor("X,Y", 0, "line");
 end
 
 -- take parameters.
@@ -2371,9 +2376,8 @@ local function as_bool(t, v)
 	elseif type(t) == "number" then return t ~= 0;
 	else return v end
 end
-local X, Y =
-	tonumber(PI.X) or obj.track0,
-	tonumber(PI.Y) or obj.track1;
+X = tonumber(PI.X) or X;
+Y = tonumber(PI.Y) or Y;
 width = tonumber(PI.width) or width;
 align_x = tonumber(PI.align_x) or align_x;
 gap_x = tonumber(PI.gap_x) or gap_x;
@@ -2429,7 +2433,7 @@ else
 end
 
 @部分ループ
---information:部分ループ@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:部分ループ@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\配置
 --require:2004001
 --track@width:幅,0,4000,1,1
@@ -2609,7 +2613,7 @@ obj.cx, obj.cy =
 	obj.cy - (len1_y - len0_y) * align_y / 2;
 
 @小数ぼかし
---information:小数ぼかし@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:小数ぼかし@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\ぼかし
 --filter
 --require:2004001
@@ -2756,7 +2760,7 @@ if luma_weight > 0 then
 end
 
 @縁取りα
---information:縁取りα@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:縁取りα@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --require:2004001
 --track@size:サイズ,-500,500,5,1
@@ -2766,8 +2770,9 @@ end
 --track@alpha_front:前景透明度,0,100,0,0.01
 --group:パターン画像,false
 --file@file_image:パターン画像
---track0:画像X,-4000,4000,0,1
---track1:画像Y,-4000,4000,0,1
+--track@X:画像X,-4000,4000,0,1
+--track@Y:画像Y,-4000,4000,0,1
+--trackgroup@X,Y:pos
 --group:その他,false
 --value@PI:PI,{}
 --[[pixelshader@carve:
@@ -2832,7 +2837,7 @@ local obj, math, bit, tonumber, type = obj, math, bit, tonumber, type;
 
 -- set anchors.
 if #file_image >= 4 then
-	obj.setanchor("track", 0, "line");
+	obj.setanchor("X,Y", 0, "line");
 end
 
 -- take parameters.
@@ -2853,9 +2858,8 @@ blur = tonumber(PI.blur) or blur;
 alpha = tonumber(PI.alpha) or alpha;
 color = tonumber(PI.color) or color;
 file_image = type(PI.file_image) == "string" and PI.file_image or file_image;
-local X, Y =
-	tonumber(PI.X) or obj.track0,
-	tonumber(PI.Y) or obj.track1;
+X = tonumber(PI.X) or X;
+Y = tonumber(PI.Y) or Y;
 alpha_front = tonumber(PI.alpha_front) or alpha_front;
 
 -- normalize parameters.
@@ -2939,7 +2943,7 @@ elseif alpha < 1 then
 end
 
 @四角縁取り
---information:四角縁取り@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:四角縁取り@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --require:2004001
 --track@size:サイズ,-500,500,5,0.01
@@ -2950,8 +2954,9 @@ end
 --track@alpha_front:前景透明度,0,100,0,0.01
 --group:パターン画像,false
 --file@file_image:パターン画像
---track0:画像X,-4000,4000,0,1
---track1:画像Y,-4000,4000,0,1
+--track@X:画像X,-4000,4000,0,1
+--track@Y:画像Y,-4000,4000,0,1
+--trackgroup@X,Y:pos
 --group:その他,false
 --value@PI:PI,{}
 --[[computeshader@convol_h:
@@ -3012,7 +3017,7 @@ float4 convol_v(float4 pos : SV_Position) : SV_Target
 local obj, math, bit, tonumber, type = obj, math, bit, tonumber, type;
 
 if #file_image >= 4 then
-	obj.setanchor("track", 0, "line");
+	obj.setanchor("X,Y", 0, "line");
 end
 
 -- take parameters.
@@ -3035,9 +3040,8 @@ blur = tonumber(PI.blur) or blur;
 alpha = tonumber(PI.alpha) or alpha;
 color = tonumber(PI.color) or color;
 file_image = type(PI.file_image) == "string" and PI.file_image or file_image;
-local X, Y =
-	tonumber(PI.X) or obj.track0,
-	tonumber(PI.Y) or obj.track1;
+X = tonumber(PI.X) or X;
+Y = tonumber(PI.Y) or Y;
 alpha_front = tonumber(PI.alpha_front) or alpha_front;
 
 -- normalize parameters.
@@ -3130,20 +3134,22 @@ else
 end
 
 @内側シャドウ
---information:内側シャドウ@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:内側シャドウ@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --filter
 --require:2004001
 --track@X:X,-1000,1000,-40,0.01
 --track@Y:Y,-1000,1000,24,0.01
+--trackgroup@X,Y:pos
 --track@alpha:濃さ,0,100,40,0.01
 --track@blur:拡散,0,500,10,0.01
 --color@color:影色,0x000000
 --select@blend:合成モード=0,通常=0,加算=1,減算=2,乗算=3,スクリーン=4,オーバーレイ=5,比較(明)=6,比較(暗)=7,輝度=8,色差=9,陰影=10,明暗=11,差分=12
 --group:パターン画像,false
 --file@file_image:パターン画像
---track0:画像X,-4000,4000,0,1
---track1:画像Y,-4000,4000,0,1
+--track@img_X:画像X,-4000,4000,0,1
+--track@img_Y:画像Y,-4000,4000,0,1
+--trackgroup@img_X,img_Y:img_pos
 --group:その他,false
 --value@PI:PI,{}
 --[[pixelshader@recol_img:
@@ -3182,7 +3188,7 @@ float4 identity(float4 pos : SV_Position) : SV_Target
 local obj,math,bit,tonumber,type=obj,math,bit,tonumber,type;
 
 -- set anchors.
-if #file_image >= 4 then obj.setanchor("track", 0, "line") end
+if #file_image >= 4 then obj.setanchor("img_X,img_Y", 0, "line") end
 
 -- take parameters.
 --[==[
@@ -3204,9 +3210,8 @@ alpha = tonumber(PI.alpha) or alpha;
 blur = tonumber(PI.blur) or blur;
 color = tonumber(PI.color) or color;
 file_image = type(PI.file_image) == "string" and PI.file_image or file_image;
-local img_X, img_Y =
-	tonumber(PI.img_X) or obj.track0,
-	tonumber(PI.img_Y) or obj.track1;
+img_X = tonumber(PI.img_X) or img_X;
+img_Y = tonumber(PI.img_Y) or img_Y;
 blend = math.min(math.max(math.floor(0.5 + blend), 0), 12);
 if type(PI.blend) == "string" then
 	blend = ({
@@ -3278,14 +3283,15 @@ obj.copybuffer("object", "tempbuffer");
 obj.pixelshader("identity", "object", cache_name, nil, "mask");
 
 @画像ファイル合成
---information:画像ファイル合成@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:画像ファイル合成@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
 --require:2004001
 --file@file:画像ファイル
 --group:描画,true
---track0:X,-4000,4000,0,0.01
---track1:Y,-4000,4000,0,0.01
+--track@X:X,-4000,4000,0,0.01
+--track@Y:Y,-4000,4000,0,0.01
+--trackgroup@X,Y:pos
 --track@zoom:拡大率,0,5000,100,0.001
 --track@rotate:回転,-720,720,0,0.01
 --track@alpha:透明度,0,100,0,0.01
@@ -3392,7 +3398,7 @@ local obj, math, type, tonumber = obj, math, type, tonumber;
 
 -- set anchors.
 if #file >= 4 then
-	obj.setanchor("track", 0, "line");
+	obj.setanchor("X,Y", 0, "line");
 end
 
 -- take parameters.
@@ -3417,7 +3423,8 @@ local function as_bool(t, v)
 	else return v end
 end
 file = type(PI.file) == "string" and PI.file or file;
-local X, Y = tonumber(PI.X) or obj.track0, tonumber(PI.Y) or obj.track1;
+X = tonumber(PI.X) or X;
+Y = tonumber(PI.Y) or Y;
 zoom = tonumber(PI.zoom) or zoom;
 rotate = tonumber(PI.rotate) or rotate;
 alpha = tonumber(PI.alpha) or alpha;
@@ -3582,7 +3589,7 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
 @動画ファイル合成
---information:動画ファイル合成@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:動画ファイル合成@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
 --require:2004001
@@ -3592,8 +3599,9 @@ obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 --track@rate:再生速度,-2000,2000,100,0.001
 --check@loop:ループ再生,false
 --group:描画,true
---track0:X,-4000,4000,0,0.01
---track1:Y,-4000,4000,0,0.01
+--track@X:X,-4000,4000,0,0.01
+--track@Y:Y,-4000,4000,0,0.01
+--trackgroup@X,Y:pos
 --track@zoom:拡大率,0,5000,100,0.001
 --track@rotate:回転,-720,720,0,0.01
 --track@alpha:透明度,0,100,0,0.01
@@ -3610,7 +3618,7 @@ local obj, math, type, tonumber = obj, math, type, tonumber;
 
 -- set anchors.
 if #file >= 4 then
-	obj.setanchor("track", 0, "line");
+	obj.setanchor("X,Y", 0, "line");
 end
 
 -- take parameters.
@@ -3641,7 +3649,8 @@ file = type(PI.file) == "string" and PI.file or file;
 start = tonumber(PI.start) or start;
 rate = tonumber(PI.rate) or rate;
 loop = as_bool(PI.loop, loop);
-local X, Y = tonumber(PI.X) or obj.track0, tonumber(PI.Y) or obj.track1;
+X = tonumber(PI.X) or X;
+Y = tonumber(PI.Y) or Y;
 zoom = tonumber(PI.zoom) or zoom;
 rotate = tonumber(PI.rotate) or rotate;
 alpha = tonumber(PI.alpha) or alpha;
@@ -3814,7 +3823,7 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
 @テキスト合成
---information:テキスト合成@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:テキスト合成@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
 --text@text:テキスト,
@@ -4124,7 +4133,7 @@ obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 end
 
 @別レイヤー同期
---information:別レイヤー同期@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:別レイヤー同期@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S\配置
 --require:2004001
 --select@index_base:レイヤー位置=1,絶対指定=0,相対指定=1
@@ -4215,12 +4224,12 @@ if sync_cx ~= 0 or sync_cy ~= 0 or sync_cz ~= 0 then
 		gv(hdr..".cz") * sync_cz;
 
 	local sx, sy, sz, rx, ry, rz =
-		obj.sx * obj.getvalue("sx"),
-		obj.sy * obj.getvalue("sy"),
-		obj.sz * obj.getvalue("sz"),
-		math.pi / 180 * (obj.rx + obj.getvalue("rx")),
-		math.pi / 180 * (obj.ry + obj.getvalue("ry")),
-		math.pi / 180 * (obj.rz + obj.getvalue("rz"));
+		obj.sx * gv("sx"),
+		obj.sy * gv("sy"),
+		obj.sz * gv("sz"),
+		math.pi / 180 * (obj.rx + gv("rx")),
+		math.pi / 180 * (obj.ry + gv("ry")),
+		math.pi / 180 * (obj.rz + gv("rz"));
 	local c_x, s_x, c_y, s_y, c_z, s_z =
 		math.cos(rx), -math.sin(rx), math.cos(ry), -math.sin(ry), math.cos(rz), -math.sin(rz);
 	cy, cz = c_x * cy - s_x * cz, s_x * cy + c_x * cz;
@@ -4245,7 +4254,7 @@ if sync_rot ~= 0 then
 end
 
 @バッファをコピー
---information:バッファをコピー@Basic_S v1.90-beta9 (for beta40a) by σ軸
+--information:バッファをコピー@Basic_S v1.90-beta10 (for beta40a) by σ軸
 --label:Basic_S
 --filter
 --require:2004001
