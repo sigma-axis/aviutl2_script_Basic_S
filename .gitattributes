@@ -1,6 +1,9 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
+assets/package.txt text eol=crlf working-tree-encoding=utf8
+assets/package.ini text eol=crlf working-tree-encoding=utf8
+
 ###############################################################################
 *.obj text eol=crlf linguist-language=Lua working-tree-encoding=cp932
 *.anm text eol=crlf linguist-language=Lua working-tree-encoding=cp932
