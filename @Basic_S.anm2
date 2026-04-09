@@ -23,7 +23,7 @@ SOFTWARE.
 https://mit-license.org/
 ]]
 @四隅丸め
---information:四隅丸め@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:四隅丸め@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --filter
 --require:2004001
@@ -283,7 +283,7 @@ obj.pixelshader("carve", "object", nil, {
 }, "mask");
 
 @背景角丸矩形
---information:背景角丸矩形@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:背景角丸矩形@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --require:2004001
 --track@pad_X:余白X,-1000,1000,10,1
@@ -588,7 +588,7 @@ end
 obj.cx, obj.cy = obj.cx + (L - R) / 2, obj.cy + (T - B) / 2;
 
 @背景楕円
---information:背景楕円@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:背景楕円@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --require:2004001
 --track@pad_X:余白X,-1000,1000,10,1
@@ -703,7 +703,7 @@ obj.effect("背景角丸矩形@Basic_S", "クリッピング", clip,
 		pad_L, pad_R, pad_T, pad_B, line_x, line_y, back_x, back_y));
 
 @背景菱形
---information:背景菱形@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:背景菱形@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --require:2004001
 --track@pad_X:余白X,-1000,1000,10,1
@@ -821,7 +821,7 @@ obj.effect("背景角丸矩形@Basic_S", "クリッピング", clip,
 		pad_L, pad_R, pad_T, pad_B, line_x, line_y, back_x, back_y));
 
 @透明度適用
---information:透明度適用@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:透明度適用@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
 --require:2004001
@@ -842,7 +842,7 @@ if apply_former then obj.alpha, alpha = 1, alpha * obj.alpha end
 if alpha ~= 1 then obj.pixelshader("const_alpha", "object", nil, { alpha }, "mask") end
 
 @透明度二値化
---information:透明度二値化@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:透明度二値化@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
 --require:2004001
@@ -885,7 +885,7 @@ if alpha > 0 or buffer < 1 then
 end
 
 @色調補正
---information:色調補正@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:色調補正@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\色調整
 --filter
 --require:2004001
@@ -1177,7 +1177,7 @@ else
 end
 
 @色チャンネル入れ替え
---information:色チャンネル入れ替え@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:色チャンネル入れ替え@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\色調整
 --filter
 --require:2004001
@@ -1285,7 +1285,7 @@ end
 obj.pixelshader(premult and "premult" or "nonmult", "object", "object", params);
 
 @回転中心
---information:回転中心@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:回転中心@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\配置
 --require:2004001
 --track@X:X,-4000,4000,0,0.01
@@ -1297,7 +1297,7 @@ obj.cy = obj.cy + Y;
 obj.cz = obj.cz + Z;
 
 @回転中心アンカー指定
---information:回転中心アンカー指定@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:回転中心アンカー指定@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\配置
 --require:2004001
 --track@X:X,-4000,4000,0,0.01
@@ -1347,7 +1347,7 @@ obj.ox,	obj.oy,	obj.oz = obj.ox + dx, obj.oy + dy, obj.oz + dz;
 obj.cx,obj.cy,obj.cz = cx, cy, cz;
 
 @上下左右揃え
---information:上下左右揃え@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:上下左右揃え@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\配置
 --require:2004001
 --track@X:左右%,-100,100,0,0.001
@@ -1372,7 +1372,7 @@ if cx ~= obj.cx or cy ~= obj.cy then
 end
 
 @直角回転
---information:直角回転@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:直角回転@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\配置
 --require:2004001
 --select@rot:方向=0,なし=0,90°時計回り=1,180°反転=2,90°反時計回り=3,左右反転=4,上下反転=5,右上軸反転=6,左上軸反転=7
@@ -1420,7 +1420,7 @@ obj.copybuffer("object", "tempbuffer");
 if not move_center then obj.cx, obj.cy = obj.cx + (cx - cx0), obj.cy + (cy - cy0) end
 
 @XYZ追加回転
---information:XYZ追加回転@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:XYZ追加回転@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\配置
 --require:2004001
 --track@X:X,-720,720,0,0.01
@@ -1491,7 +1491,7 @@ if angle ~= 0 or draw then
 end
 
 @任意軸追加回転
---information:任意軸追加回転@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:任意軸追加回転@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\配置
 --require:2004001
 --track@angle:角度,-720,720,0,0.01
@@ -1740,7 +1740,7 @@ else
 end
 
 @傾斜
---information:傾斜@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:傾斜@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\変形
 --require:2004001
 --track@angle:角度,-80,80,0,0.001
@@ -1835,7 +1835,7 @@ obj.copybuffer("object", "tempbuffer");
 obj.cx, obj.cy = obj.cx - cx, obj.cy - cy;
 
 @XY軸変形
---information:XY軸変形@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:XY軸変形@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\変形
 --require:2004001
 --track@xX:X軸移動先X,-4000,4000,100,0.01
@@ -1906,7 +1906,7 @@ obj.drawpoly(
 obj.copybuffer("object", "tempbuffer");
 
 @領域サイズ変更
---information:領域サイズ変更@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:領域サイズ変更@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004001
 --track@T:上,-4000,4000,0,1
@@ -1995,7 +1995,7 @@ end
 obj.cx, obj.cy = cx, cy;
 
 @領域割合サイズ変更
---information:領域割合サイズ変更@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:領域割合サイズ変更@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004001
 --track@T:上%,-100,100,0,0.001
@@ -2051,7 +2051,7 @@ if L ~= 0 or R ~= 0 or T ~= 0 or B ~= 0 then
 end
 
 @領域サイズ指定
---information:領域サイズ指定@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:領域サイズ指定@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004001
 --track@X:X,-4000,4000,0,0.1
@@ -2150,7 +2150,7 @@ elseif L ~= 0 or R ~= 0 or T ~= 0 or B ~= 0 then
 end
 
 @カットずらし
---information:カットずらし@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:カットずらし@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004001
 --track@X:ずれX,-4000,4000,40,1
@@ -2374,7 +2374,7 @@ if not move_center then
 end
 
 @中抜きクリッピング
---information:中抜きクリッピング@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:中抜きクリッピング@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004001
 --track@X:X,-4000,4000,0,0.1
@@ -2478,7 +2478,7 @@ else
 end
 
 @部分ループ
---information:部分ループ@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:部分ループ@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\配置
 --require:2004001
 --track@width:幅,0,4000,1,1
@@ -2658,7 +2658,7 @@ obj.cx, obj.cy =
 	obj.cy - (len1_y - len0_y) * align_y / 2;
 
 @小数ぼかし
---information:小数ぼかし@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:小数ぼかし@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\ぼかし
 --filter
 --require:2004001
@@ -2805,7 +2805,7 @@ if luma_weight > 0 then
 end
 
 @縁取りα
---information:縁取りα@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:縁取りα@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --require:2004001
 --track@size:サイズ,-500,500,5,1
@@ -2988,7 +2988,7 @@ elseif alpha < 1 then
 end
 
 @四角縁取り
---information:四角縁取り@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:四角縁取り@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --require:2004001
 --track@size:サイズ,-500,500,5,0.01
@@ -3179,7 +3179,7 @@ else
 end
 
 @内側シャドウ
---information:内側シャドウ@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:内側シャドウ@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --filter
 --require:2004001
@@ -3328,7 +3328,7 @@ obj.copybuffer("object", "tempbuffer");
 obj.pixelshader("identity", "object", cache_name, nil, "mask");
 
 @画像ファイル合成
---information:画像ファイル合成@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:画像ファイル合成@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
 --require:2004001
@@ -3515,18 +3515,18 @@ blend = ({
 fixed_size = fixed_size or mode_tile ~= 0 or (mode_draw == 1 or mode_draw >= 4)
 	or obj.getinfo("filter");
 if #file < 4 or -- no valid file name.
-	zoom <= 0 or (alpha <= 0 and fixed_size) then
+	(zoom <= 0 and mode_tile ~= 0) or (alpha <= 0 and fixed_size) then
 	return;
 end
 
 -- try loading the image.
 local w, h = obj.w, obj.h;
-local obj_props = { obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, obj.sy, obj.sz, obj.alpha };
 local cache_name = "cache:basic_s/combine/obj";
 obj.copybuffer(cache_name, "object");
+local obj_props = { obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, obj.sy, obj.sz, obj.alpha };
 obj.load("image", file);
 local W, H, dcx, dcy = obj.w, obj.h, 0, 0;
-if W > 0 and H > 0 then
+if W > 0 and H > 0 then -- renders properly only when the image is loaded propertly.
 	-- determine the canvas size.
 	local L, R, T, B, c, s = -w / 2, w / 2, -h / 2, h / 2, math.cos(rotate), math.sin(rotate);
 	if not fixed_size then
@@ -3541,15 +3541,17 @@ if W > 0 and H > 0 then
 	-- process rotate / zoom / tile.
 	if alpha > 0 then
 		obj.clearbuffer("tempbuffer", R - L, B - T);
-		obj.pixelshader("tile", "tempbuffer", "object", {
-			W, H;
-			(c * (L - X) + s * (T - Y)) / zoom + W / 2,
-			(-s * (L - X) + c * (T - Y)) / zoom + H / 2;
-			c / zoom, -s / zoom, 0, 0,
-			s / zoom, c / zoom;
-			mode_tile % 2, math.floor(mode_tile / 2);
-			no_smooth and 1 or 0;
-		});
+		if zoom > 0 then
+			obj.pixelshader("tile", "tempbuffer", "object", {
+				W, H;
+				(c * (L - X) + s * (T - Y)) / zoom + W / 2,
+				(-s * (L - X) + c * (T - Y)) / zoom + H / 2;
+				c / zoom, -s / zoom, 0, 0,
+				s / zoom, c / zoom;
+				mode_tile % 2, math.floor(mode_tile / 2);
+				no_smooth and 1 or 0;
+			});
+		end
 	end
 
 	if mode_draw == 4 then
@@ -3559,11 +3561,11 @@ if W > 0 and H > 0 then
 	elseif mode_draw == 5 then
 		-- replace color.
 		obj.copybuffer("object", cache_name);
-		obj.pixelshader("replace_col", "object", { "object", "tempbuffer" }, { alpha });
+		obj.pixelshader("replace_col", "object", { cache_name, "tempbuffer" }, { alpha });
 	elseif mode_draw == 6 then
 		-- replace luma with alpha.
 		obj.copybuffer("object", cache_name);
-		obj.pixelshader("luma_as_alpha", "object", { "object", "tempbuffer" }, { alpha });
+		obj.pixelshader("luma_as_alpha", "object", { cache_name, "tempbuffer" }, { alpha });
 	elseif mode_draw >= 7 then
 		-- multiply luma to alpha.
 		obj.copybuffer("object", cache_name);
@@ -3634,7 +3636,7 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
 @動画ファイル合成
---information:動画ファイル合成@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:動画ファイル合成@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
 --require:2004001
@@ -3743,19 +3745,19 @@ blend = ({
 fixed_size = fixed_size or mode_tile ~= 0 or (mode_draw == 1 or mode_draw >= 4)
 	or obj.getinfo("filter");
 if #file < 4 or -- no valid file name.
-	zoom <= 0 or (alpha <= 0 and fixed_size) then
+	(zoom <= 0 and mode_tile ~= 0) or (alpha <= 0 and fixed_size) then
 	return;
 end
 
 -- try loading the video.
 local w, h = obj.w, obj.h;
-local obj_props = { obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, obj.sy, obj.sz, obj.alpha };
 local cache_name = "cache:basic_s/combine/obj";
 obj.copybuffer(cache_name, "object");
+local obj_props = { obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, obj.sy, obj.sz, obj.alpha };
 local video_pos = start + rate * obj.time;
 local video_len = obj.load("movie", file, math.max(video_pos, 0));
 local W, H, dcx, dcy = obj.w, obj.h, 0, 0;
-if video_len > 0 and W > 0 and H > 0 then
+if video_len > 0 and W > 0 and H > 0 then -- renders properly only when the video is loaded propertly.
 	-- load the correct position of the video.
 	if loop and (0 > video_pos or video_pos >= video_len) then
 		obj.load("movie", file, video_pos % video_len);
@@ -3775,15 +3777,17 @@ if video_len > 0 and W > 0 and H > 0 then
 	-- process rotate / zoom / tile.
 	if alpha > 0 then
 		obj.clearbuffer("tempbuffer", R - L, B - T);
-		obj.pixelshader("tile@画像ファイル合成@Basic_S", "tempbuffer", "object", {
-			W, H;
-			(c * (L - X) + s * (T - Y)) / zoom + W / 2,
-			(-s * (L - X) + c * (T - Y)) / zoom + H / 2;
-			c / zoom, -s / zoom, 0, 0,
-			s / zoom, c / zoom;
-			mode_tile % 2, math.floor(mode_tile / 2);
-			no_smooth and 1 or 0;
-		});
+		if zoom > 0 then
+			obj.pixelshader("tile@画像ファイル合成@Basic_S", "tempbuffer", "object", {
+				W, H;
+				(c * (L - X) + s * (T - Y)) / zoom + W / 2,
+				(-s * (L - X) + c * (T - Y)) / zoom + H / 2;
+				c / zoom, -s / zoom, 0, 0,
+				s / zoom, c / zoom;
+				mode_tile % 2, math.floor(mode_tile / 2);
+				no_smooth and 1 or 0;
+			});
+		end
 	end
 
 	if mode_draw == 4 then
@@ -3793,11 +3797,11 @@ if video_len > 0 and W > 0 and H > 0 then
 	elseif mode_draw == 5 then
 		-- replace color.
 		obj.copybuffer("object", cache_name);
-		obj.pixelshader("replace_col@画像ファイル合成@Basic_S", "object", { "object", "tempbuffer" }, { alpha });
+		obj.pixelshader("replace_col@画像ファイル合成@Basic_S", "object", { cache_name, "tempbuffer" }, { alpha });
 	elseif mode_draw == 6 then
 		-- replace luma with alpha.
 		obj.copybuffer("object", cache_name);
-		obj.pixelshader("luma_as_alpha@画像ファイル合成@Basic_S", "object", { "object", "tempbuffer" }, { alpha });
+		obj.pixelshader("luma_as_alpha@画像ファイル合成@Basic_S", "object", { cache_name, "tempbuffer" }, { alpha });
 	elseif mode_draw >= 7 then
 		-- multiply luma to alpha.
 		obj.copybuffer("object", cache_name);
@@ -3868,7 +3872,7 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
 @テキスト合成
---information:テキスト合成@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:テキスト合成@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
 --text@text:テキスト,
@@ -4023,7 +4027,7 @@ blend = ({
 
 fixed_size = fixed_size or mode_tile ~= 0 or (mode_draw == 1 or mode_draw >= 4)
 	or obj.getinfo("filter");
-if #text <= 0 or zoom <= 0 or (alpha <= 0 and fixed_size) then return end
+if (zoom <= 0 and mode_tile ~= 0) or (alpha <= 0 and fixed_size) then return end
 
 -- try loading the text.
 local w, h = obj.w, obj.h;
@@ -4049,12 +4053,13 @@ if text:find("<%?.-%?>") then
 	setmetatable(inner_obj, { __index = obj, __newindex = obj });
 
 	local function print_error(err_mes, source)
-		local n, err_desc = err_mes:match("%]:(%d+):%s(.*)$");
+		local n, err_desc = err_mes:match("%]:(%d+):%s(.-)$");
+		n = tonumber(n);
 		if n and err_desc then
 			-- collect three lines containing the one that caused the error.
-			n = math.max((tonumber(n) or 1) - 1, 1);
+			n = math.max(n - 1, 1);
 			local k = 0;
-			for l in (source.."\n"):gmatch("([^\n]*)\n") do
+			for l in (source.."\n"):gmatch("(.-)\n") do
 				k = k + 1;
 				if k >= n then
 					err_desc = err_desc.."\n> "..l;
@@ -4067,32 +4072,36 @@ if text:find("<%?.-%?>") then
 	end
 
 	-- parse scripts.
-	text = text:gsub("<%?(.-)%?>", function(scr)
-		if scr ~= "" then
+	text = text:gsub("<%?(.-)%?>", function(script)
+		if script ~= "" then
 			-- "<?=...?>" is converted to "<?mes(...)?>".
-			if scr:sub(1, 1) == "=" then
-				scr = "mes("..scr:sub(2)..")";
+			if script:sub(1, 1) == "=" then
+				script = "mes("..script:sub(2)..")";
 			end
 
 			local f, c, e;
-			f, e = loadstring(scr);
+			f, e = loadstring(script);
 			if f then
 				mes_data = "";
 				c, e = pcall(setfenv(f, inner_G));
 				if c then return mes_data end -- successful.
 			end
-
-			-- error.
-			print_error(tostring(e), scr);
+			print_error(tostring(e), script); -- error.
 		end
 		return "";
 	end);
 end
 -- backup properties here so the embedded scripts can affect to them.
 local obj_props = { obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, obj.sy, obj.sz, obj.alpha };
-obj.load("text", text, text_speed, obj.time, text_align);
-local W, H, dcx, dcy = obj.w, obj.h, 0, 0;
-if W > 0 and H > 0 then
+local W, H, dcx, dcy = 0, 0, 0, 0;
+if zoom > 0 then
+	W, H = obj.load("textlayout", text, text_speed, obj.time, text_align);
+	if W > 0 and H > 0 then
+		obj.load("text", text, text_speed, obj.time, text_align);
+		W, H = obj.w, obj.h;
+	else W, H, obj.cx, obj.cy = 0, 0, 0, 0 end
+end
+do -- renders properly even if the text is empty.
 	-- determine the canvas size.
 	local L, R, T, B, c, s = -w / 2, w / 2, -h / 2, h / 2, math.cos(rotate), math.sin(rotate);
 	X, Y = X - zoom * (c * obj.cx - s * obj.cy), Y - zoom * (s * obj.cx + c * obj.cy);
@@ -4108,15 +4117,17 @@ if W > 0 and H > 0 then
 	-- process rotate / zoom / tile.
 	if alpha > 0 then
 		obj.clearbuffer("tempbuffer", R - L, B - T);
-		obj.pixelshader("tile@画像ファイル合成@Basic_S", "tempbuffer", "object", {
-			W, H;
-			(c * (L - X) + s * (T - Y)) / zoom + W / 2,
-			(-s * (L - X) + c * (T - Y)) / zoom + H / 2;
-			c / zoom, -s / zoom, 0, 0,
-			s / zoom, c / zoom;
-			mode_tile % 2, math.floor(mode_tile / 2);
-			no_smooth and 1 or 0;
-		});
+		if zoom > 0 and W > 0 and H > 0 then
+			obj.pixelshader("tile@画像ファイル合成@Basic_S", "tempbuffer", "object", {
+				W, H;
+				(c * (L - X) + s * (T - Y)) / zoom + W / 2,
+				(-s * (L - X) + c * (T - Y)) / zoom + H / 2;
+				c / zoom, -s / zoom, 0, 0,
+				s / zoom, c / zoom;
+				mode_tile % 2, math.floor(mode_tile / 2);
+				no_smooth and 1 or 0;
+			});
+		end
 	end
 
 	if mode_draw == 4 then
@@ -4126,11 +4137,11 @@ if W > 0 and H > 0 then
 	elseif mode_draw == 5 then
 		-- replace color.
 		obj.copybuffer("object", cache_name);
-		obj.pixelshader("replace_col@画像ファイル合成@Basic_S", "object", { "object", "tempbuffer" }, { alpha });
+		obj.pixelshader("replace_col@画像ファイル合成@Basic_S", "object", { cache_name, "tempbuffer" }, { alpha });
 	elseif mode_draw == 6 then
 		-- replace luma with alpha.
 		obj.copybuffer("object", cache_name);
-		obj.pixelshader("luma_as_alpha@画像ファイル合成@Basic_S", "object", { "object", "tempbuffer" }, { alpha });
+		obj.pixelshader("luma_as_alpha@画像ファイル合成@Basic_S", "object", { cache_name, "tempbuffer" }, { alpha });
 	elseif mode_draw >= 7 then
 		-- multiply luma to alpha.
 		obj.copybuffer("object", cache_name);
@@ -4194,14 +4205,14 @@ if W > 0 and H > 0 then
 	else -- mode_draw == 3
 		obj.clearbuffer("object", R - L, B - T);
 	end
-else obj.copybuffer("object", cache_name) end
+end
 obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, obj.sy, obj.sz, obj.alpha = unpack(obj_props);
 
 -- adjust the center.
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
 @別レイヤー同期
---information:別レイヤー同期@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:別レイヤー同期@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\配置
 --require:2004001
 --select@index_base:レイヤー位置=1,絶対指定=0,相対指定=1
@@ -4322,7 +4333,7 @@ if sync_rot ~= 0 then
 end
 
 @バッファをコピー
---information:バッファをコピー@Basic_S v1.90-beta12 (for beta40a) by σ軸
+--information:バッファをコピー@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S
 --filter
 --require:2004001
