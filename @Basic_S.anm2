@@ -2477,8 +2477,8 @@ else
 		obj.cy + math.floor(0.5 + (gap_y - height) * (1 - align_y) / 2);
 end
 
-@部分ループ
---information:部分ループ@Basic_S v1.90-beta13 (for beta40a) by σ軸
+@画像中間ループ
+--information:画像中間ループ@Basic_S v1.90-beta13 (for beta40a) by σ軸
 --label:Basic_S\配置
 --require:2004001
 --track@width:幅,0,4000,1,1
@@ -2492,8 +2492,8 @@ end
 --track@align_x:水平揃え,-100,100,0,0.001
 --track@align_y:垂直揃え,-100,100,0,0.001
 --group:ループ設定,false
---select@unit_x:幅指定=0,繰り返し回数=0,近似サイズ=1,上限サイズ=2,下限サイズ=3,全体近似サイズ=4,全体上限サイズ=5,全体下限サイズ=6
---select@unit_y:高さ指定=0,繰り返し回数=0,近似サイズ=1,上限サイズ=2,下限サイズ=3,全体近似サイズ=4,全体上限サイズ=5,全体下限サイズ=6
+--select@unit_x:幅指定=0,回数=0,近似サイズ=1,上限サイズ=2,下限サイズ=3,全体近似サイズ=4,全体上限サイズ=5,全体下限サイズ=6
+--select@unit_y:高さ指定=0,回数=0,近似サイズ=1,上限サイズ=2,下限サイズ=3,全体近似サイズ=4,全体上限サイズ=5,全体下限サイズ=6
 --select@loop_x:ループX=0,ループ=0,ミラー=1,ミラー(半ピクセル端)=2,引き伸ばし=3
 --select@loop_y:ループY=0,ループ=0,ミラー=1,ミラー(半ピクセル端)=2,引き伸ばし=3
 --group:その他,false
@@ -2566,7 +2566,7 @@ margin_l = tonumber(PI.margin_l) or margin_l;
 margin_r = tonumber(PI.margin_r) or margin_r;
 align_x = tonumber(PI.align_x) or align_x;
 align_y = tonumber(PI.align_y) or align_y;
-do local name2num = { ["繰り返し回数"] = 0, ["近似サイズ"] = 1, ["上限サイズ"] = 2, ["下限サイズ"] = 3, ["全体近似サイズ"] = 4, ["全体上限サイズ"] = 5, ["全体下限サイズ"] = 6 };
+do local name2num = { ["回数"] = 0, ["近似サイズ"] = 1, ["上限サイズ"] = 2, ["下限サイズ"] = 3, ["全体近似サイズ"] = 4, ["全体上限サイズ"] = 5, ["全体下限サイズ"] = 6 };
 	if type(PI.unit_x) == "string" then unit_x = name2num[PI.unit_x] or unit_x end
 	if type(PI.unit_y) == "string" then unit_y = name2num[PI.unit_y] or unit_y end
 end

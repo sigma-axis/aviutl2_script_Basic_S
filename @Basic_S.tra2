@@ -253,7 +253,7 @@ if 1 / N < 0 then t, N = t - gp("time", 1) - 1 / gp("framerate"), -N end
 return gp(((t * N / 60 + d / 100) % 1) < 0.5 and 0 or 1);
 
 @コマ落ちランダム(秒)
---information:コマ落ち反復(秒)@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:コマ落ちランダム(秒)@Basic_S v1.90-beta14 (for beta40a) by σ軸
 --label:Basic_S\コマ落ち
 --require:2004001
 --twopoint
@@ -267,7 +267,7 @@ local v0, v1 = gp(0), gp(1);
 return v0 + (v1 - v0) * rand1(2525, math.floor(t / T + d / 100) + 1);
 
 @コマ落ちランダム(フレーム)
---information:コマ落ち反復(フレーム)@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:コマ落ちランダム(フレーム)@Basic_S v1.90-beta14 (for beta40a) by σ軸
 --label:Basic_S\コマ落ち
 --require:2004001
 --twopoint
@@ -282,7 +282,7 @@ local v0, v1 = gp(0), gp(1);
 return v0 + (v1 - v0) * rand1(2525, math.floor(f / F + d / 100) + 1);
 
 @コマ落ちランダム(Hz)
---information:コマ落ち反復(Hz)@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:コマ落ちランダム(Hz)@Basic_S v1.90-beta14 (for beta40a) by σ軸
 --label:Basic_S\コマ落ち
 --require:2004001
 --twopoint
@@ -295,7 +295,7 @@ local v0, v1 = gp(0), gp(1);
 return v0 + (v1 - v0) * rand1(2525, math.floor(t * N + d / 100) + 1);
 
 @コマ落ちランダム(BPM)
---information:コマ落ち反復(BPM)@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:コマ落ちランダム(BPM)@Basic_S v1.90-beta14 (for beta40a) by σ軸
 --label:Basic_S\コマ落ち
 --require:2004001
 --twopoint
