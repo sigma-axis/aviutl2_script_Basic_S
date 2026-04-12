@@ -221,7 +221,7 @@ https://github.com/user-attachments/assets/8a0d6595-605f-49c5-9e05-739963d9c63a
 
 ### 傾斜
 
-![Demo of slant effect](https://github.com/user-attachments/assets/a9b55ccf-0dc7-4404-9624-cb3085424d21)
+![傾斜の適用例](https://github.com/user-attachments/assets/a9b55ccf-0dc7-4404-9624-cb3085424d21)
 
 アンカーで指定した軸に沿った傾斜変形をします．傾斜量は角度と傾き (角度の $\tan$ 値) で指定できます．
 
@@ -269,7 +269,7 @@ https://github.com/user-attachments/assets/6fc13047-fde8-4ec9-8984-2083661129f2
 
 ### 中抜きクリッピング
 
-<img width="520" height="360" alt="Sample of midrange crop" src="https://github.com/user-attachments/assets/bce76075-2c82-40cc-919b-3a3442f09c8b" />
+<img width="520" height="360" alt="中抜きクリッピングの適用例" src="https://github.com/user-attachments/assets/bce76075-2c82-40cc-919b-3a3442f09c8b" />
 
 「クリッピング」や「領域拡張」に相当する操作を，オブジェクトの端ではなく中間部分で行います．大きな図表の中間部分を切り取って詰めたい場合に利用できます．
 
@@ -278,7 +278,7 @@ https://github.com/user-attachments/assets/6fc13047-fde8-4ec9-8984-2083661129f2
 
 ### 画像中間ループ
 
-TODO: image.
+<img width="640" height="640" alt="画像中間ループの適用例" src="https://github.com/user-attachments/assets/674d2c23-0e61-4218-a201-bdd066ebee1b" />
 
 上下左右から指定した距離だけ内側の部分のみに画像ループを適用します．通常のループだけではなく，ミラーしながらのループや，引き伸ばしによる補間などにも切り替えられます．縦横で別のループ形式を指定したりもできます．
 
