@@ -16,7 +16,7 @@
 
   http://spring-fragrance.mints.ne.jp/aviutl
 
-  - `beta40a` で動作確認済み．
+  - `beta41a` で動作確認済み．
 
 ##  導入方法
 
@@ -502,7 +502,7 @@ https://github.com/user-attachments/assets/65a2eb86-3b2a-406d-829b-ccdbaa29f123
 
 ##  次の改版予定
 
-- **v1.90 (for beta40a)** (2026-??-??)
+- **v1.90 (for beta41a)** (2026-??-??)
 
   - トラックバー移動スクリプト「時間制御繰り返し往復」を 4 系統追加．
   - 各種周期変化のトラックバー移動スクリプトに「周期ずれ%」のパラメタを追加．
@@ -530,7 +530,7 @@ https://github.com/user-attachments/assets/65a2eb86-3b2a-406d-829b-ccdbaa29f123
 
       スクリプトフォルダ，またはその 1 階層下のサブフォルダ内に配置されています．
 
-  - `beta40a` での動作確認．
+  - `beta41a` での動作確認．
 
 ##  改版履歴
 
