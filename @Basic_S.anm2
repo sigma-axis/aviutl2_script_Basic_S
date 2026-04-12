@@ -23,10 +23,10 @@ SOFTWARE.
 https://mit-license.org/
 ]]
 @四隅丸め
---information:四隅丸め@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:四隅丸め@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
 --filter
---require:2004100
+--require:2004101
 --track@radius:半径,0,2000,40,0.01
 --select@shape:形状=0,円=0,円(凹)=1,菱形=2,四角形(凹)=3,正8角形=4,正8角形(凹)=5,正8角形(凹斜)=6,正12角形=7,正12角形(凹)=8,正12角形(凹斜)=9,スパイク=10,スパイク(凹)=11
 --group:丸角設定,false
@@ -283,9 +283,9 @@ obj.pixelshader("carve", "object", nil, {
 }, "mask");
 
 @背景角丸矩形
---information:背景角丸矩形@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:背景角丸矩形@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\装飾
---require:2004100
+--require:2004101
 --track@pad_X:余白X,-1000,1000,10,1
 --track@pad_Y:余白Y,-1000,1000,10,1
 --select@clip:クリッピング=0,なし=0,あり=1,ライン内=2
@@ -588,9 +588,9 @@ end
 obj.cx, obj.cy = obj.cx + (L - R) / 2, obj.cy + (T - B) / 2;
 
 @背景楕円
---information:背景楕円@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:背景楕円@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\装飾
---require:2004100
+--require:2004101
 --track@pad_X:余白X,-1000,1000,10,1
 --track@pad_Y:余白Y,-1000,1000,10,1
 --select@clip:クリッピング=0,なし=0,あり=1,ライン内=2
@@ -703,9 +703,9 @@ obj.effect("背景角丸矩形@Basic_S", "クリッピング", clip,
 		pad_L, pad_R, pad_T, pad_B, line_x, line_y, back_x, back_y));
 
 @背景菱形
---information:背景菱形@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:背景菱形@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\装飾
---require:2004100
+--require:2004101
 --track@pad_X:余白X,-1000,1000,10,1
 --track@pad_Y:余白Y,-1000,1000,10,1
 --select@clip:クリッピング=0,なし=0,あり=1,ライン内=2
@@ -821,10 +821,10 @@ obj.effect("背景角丸矩形@Basic_S", "クリッピング", clip,
 		pad_L, pad_R, pad_T, pad_B, line_x, line_y, back_x, back_y));
 
 @透明度適用
---information:透明度適用@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:透明度適用@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
---require:2004100
+--require:2004101
 --track@alpha:透明度,-100,100,0,0.01
 --check@apply_former:累積分も適用,false
 --[[pixelshader@const_alpha:
@@ -842,10 +842,10 @@ if apply_former then obj.alpha, alpha = 1, alpha * obj.alpha end
 if alpha ~= 1 then obj.pixelshader("const_alpha", "object", nil, { alpha }, "mask") end
 
 @透明度二値化
---information:透明度二値化@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:透明度二値化@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
---require:2004100
+--require:2004101
 --track@alpha:基準透明度,0,100,50,0.01
 --track@buffer:ぼかし幅,0,100,8,0.01
 --group:その他,false
@@ -885,10 +885,10 @@ if alpha > 0 or buffer < 1 then
 end
 
 @色調補正
---information:色調補正@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:色調補正@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\色調整
 --filter
---require:2004100
+--require:2004101
 --track@add_light:明るさ,0,200,100,0.01
 --track@contrast:コントラスト,0,200,100,0.01
 --track@angle:色相,-720,720,0,0.01
@@ -1177,10 +1177,10 @@ else
 end
 
 @色チャンネル入れ替え
---information:色チャンネル入れ替え@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:色チャンネル入れ替え@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\色調整
 --filter
---require:2004100
+--require:2004101
 --select@comp_R:赤適用元=1,0固定=0,赤=1,緑=2,青=3,アルファ=4,赤反転=5,緑反転=6,青反転=7,アルファ反転=8,1固定=9
 --select@comp_G:緑適用元=2,0固定=0,赤=1,緑=2,青=3,アルファ=4,赤反転=5,緑反転=6,青反転=7,アルファ反転=8,1固定=9
 --select@comp_B:青適用元=3,0固定=0,赤=1,緑=2,青=3,アルファ=4,赤反転=5,緑反転=6,青反転=7,アルファ反転=8,1固定=9
@@ -1285,9 +1285,9 @@ end
 obj.pixelshader(premult and "premult" or "nonmult", "object", "object", params);
 
 @回転中心
---information:回転中心@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:回転中心@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\配置
---require:2004100
+--require:2004101
 --track@X:X,-4000,4000,0,0.01
 --track@Y:Y,-4000,4000,0,0.01
 --track@Z:Z,-4000,4000,0,0.01
@@ -1297,9 +1297,9 @@ obj.cy = obj.cy + Y;
 obj.cz = obj.cz + Z;
 
 @回転中心アンカー指定
---information:回転中心アンカー指定@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:回転中心アンカー指定@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\配置
---require:2004100
+--require:2004101
 --track@X:X,-4000,4000,0,0.01
 --track@Y:Y,-4000,4000,0,0.01
 --track@Z:Z,-4000,4000,0,0.01
@@ -1347,9 +1347,9 @@ obj.ox,	obj.oy,	obj.oz = obj.ox + dx, obj.oy + dy, obj.oz + dz;
 obj.cx,obj.cy,obj.cz = cx, cy, cz;
 
 @上下左右揃え
---information:上下左右揃え@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:上下左右揃え@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\配置
---require:2004100
+--require:2004101
 --track@X:左右%,-100,100,0,0.001
 --track@Y:上下%,-100,100,0,0.001
 --trackgroup@X,Y:pos
@@ -1372,9 +1372,9 @@ if cx ~= obj.cx or cy ~= obj.cy then
 end
 
 @直角回転
---information:直角回転@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:直角回転@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\配置
---require:2004100
+--require:2004101
 --select@rot:方向=0,なし=0,90°時計回り=1,180°反転=2,90°反時計回り=3,左右反転=4,上下反転=5,右上軸反転=6,左上軸反転=7
 --check@move_center:中心の位置を変更,false
 local obj, math = obj, math;
@@ -1420,9 +1420,9 @@ obj.copybuffer("object", "tempbuffer");
 if not move_center then obj.cx, obj.cy = obj.cx + (cx - cx0), obj.cy + (cy - cy0) end
 
 @XYZ追加回転
---information:XYZ追加回転@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:XYZ追加回転@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\配置
---require:2004100
+--require:2004101
 --track@X:X,-720,720,0,0.01
 --track@Y:Y,-720,720,0,0.01
 --track@Z:Z,-720,720,0,0.01
@@ -1491,9 +1491,9 @@ if angle ~= 0 or draw then
 end
 
 @任意軸追加回転
---information:任意軸追加回転@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:任意軸追加回転@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\配置
---require:2004100
+--require:2004101
 --track@angle:角度,-720,720,0,0.01
 --track@X:回転軸X,-512,512,0,0.001
 --track@Y:回転軸Y,-512,512,0,0.001
@@ -1740,9 +1740,9 @@ else
 end
 
 @傾斜
---information:傾斜@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:傾斜@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\変形
---require:2004100
+--require:2004101
 --track@angle:角度,-80,80,0,0.001
 --track@slope:傾き%,-500,500,0,0.001
 --group:基準軸,true
@@ -1835,9 +1835,9 @@ obj.copybuffer("object", "tempbuffer");
 obj.cx, obj.cy = obj.cx - cx, obj.cy - cy;
 
 @XY軸変形
---information:XY軸変形@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:XY軸変形@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\変形
---require:2004100
+--require:2004101
 --track@xX:X軸移動先X,-4000,4000,100,0.01
 --track@xY:X軸移動先Y,-4000,4000,0,0.01
 --trackgroup@xX,xY:axis_x
@@ -1906,9 +1906,9 @@ obj.drawpoly(
 obj.copybuffer("object", "tempbuffer");
 
 @領域サイズ変更
---information:領域サイズ変更@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:領域サイズ変更@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
---require:2004100
+--require:2004101
 --track@T:上,-4000,4000,0,1
 --track@B:下,-4000,4000,0,1
 --track@L:左,-4000,4000,0,1
@@ -1995,9 +1995,9 @@ end
 obj.cx, obj.cy = cx, cy;
 
 @領域割合サイズ変更
---information:領域割合サイズ変更@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:領域割合サイズ変更@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
---require:2004100
+--require:2004101
 --track@T:上%,-100,100,0,0.001
 --track@B:下%,-100,100,0,0.001
 --track@L:左%,-100,100,0,0.001
@@ -2051,9 +2051,9 @@ if L ~= 0 or R ~= 0 or T ~= 0 or B ~= 0 then
 end
 
 @領域サイズ指定
---information:領域サイズ指定@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:領域サイズ指定@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
---require:2004100
+--require:2004101
 --track@X:X,-4000,4000,0,0.1
 --track@Y:Y,-4000,4000,0,0.1
 --trackgroup@X,Y:pos
@@ -2150,9 +2150,9 @@ elseif L ~= 0 or R ~= 0 or T ~= 0 or B ~= 0 then
 end
 
 @カットずらし
---information:カットずらし@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:カットずらし@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
---require:2004100
+--require:2004101
 --track@X:ずれX,-4000,4000,40,1
 --track@Y:ずれY,-4000,4000,0,1
 --trackgroup@X,Y:pos
@@ -2374,9 +2374,9 @@ if not move_center then
 end
 
 @中抜きクリッピング
---information:中抜きクリッピング@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:中抜きクリッピング@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\クリッピング
---require:2004100
+--require:2004101
 --track@X:X,-4000,4000,0,0.1
 --track@Y:Y,-4000,4000,0,0.1
 --trackgroup@X,Y:pos
@@ -2478,9 +2478,9 @@ else
 end
 
 @画像中間ループ
---information:画像中間ループ@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:画像中間ループ@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\配置
---require:2004100
+--require:2004101
 --track@width:幅,0,4000,1,1
 --track@height:高さ,0,4000,1,1
 --group:余白設定,true
@@ -2488,12 +2488,18 @@ end
 --track@margin_d:下余白,0,2000,0,1
 --track@margin_l:左余白,0,2000,0,1
 --track@margin_r:右余白,0,2000,0,1
+--group:オフセット,false
+--track@offset_x:オフセットX,-4000,4000,0,0.01
+--track@offset_y:オフセットY,-4000,4000,0,0.01
+--trackgroup@offset_x,offset_y:offset
 --group:整列,false
 --track@align_x:水平揃え,-100,100,0,0.001
 --track@align_y:垂直揃え,-100,100,0,0.001
+--track@pivot_x:ループ水平揃え,-100,100,0,0.001
+--track@pivot_y:ループ垂直揃え,-100,100,0,0.001
 --group:ループ設定,false
---select@unit_x:幅指定=0,回数=0,近似サイズ=1,上限サイズ=2,下限サイズ=3,全体近似サイズ=4,全体上限サイズ=5,全体下限サイズ=6
---select@unit_y:高さ指定=0,回数=0,近似サイズ=1,上限サイズ=2,下限サイズ=3,全体近似サイズ=4,全体上限サイズ=5,全体下限サイズ=6
+--select@unit_x:幅指定=0,回数=0,サイズ(近似)=1,サイズ(上限)=2,サイズ(下限)=3,サイズ(境界不連続)=4,サイズ(拡縮あり)=5,全体サイズ(近似)=6,全体サイズ(上限)=7,全体サイズ(下限)=8,全体サイズ(境界不連続)=9,全体サイズ(拡縮あり)=10
+--select@unit_y:高さ指定=0,回数=0,サイズ(近似)=1,サイズ(上限)=2,サイズ(下限)=3,サイズ(境界不連続)=4,サイズ(拡縮あり)=5,全体サイズ(近似)=6,全体サイズ(上限)=7,全体サイズ(下限)=8,全体サイズ(境界不連続)=9,全体サイズ(拡縮あり)=10
 --select@loop_x:ループX=0,ループ=0,ミラー=1,ミラー(半ピクセル端)=2,引き伸ばし=3
 --select@loop_y:ループY=0,ループ=0,ミラー=1,ミラー(半ピクセル端)=2,引き伸ばし=3
 --group:その他,false
@@ -2503,12 +2509,13 @@ Texture2D src : register(t0);
 SamplerState smp : register(s0);
 cbuffer constant0 : register(b0) {
 	float4 margin;
+	float4 pivot;
 	float2 inv_size;
 	float2 mid, dlen, mode_f;
 };
-float calc_coord(uint mode, float x, float2 mgn, float m, float l)
+float calc_coord(uint mode, float x, float2 mgn, float m, float2 p, float l)
 {
-	float x2 = x - mgn[0];
+	float x2 = p[1] * (x - p[0]);
 	switch (mode) {
 	case 0:
 	{
@@ -2535,11 +2542,14 @@ float4 mid_loop(float4 pos : SV_Position) : SV_Target
 {
 	static const uint2 mode = uint2(mode_f);
 	return src.Sample(smp, inv_size * float2(
-		calc_coord(mode.x, pos.x, margin.xz, mid.x, dlen.x),
-		calc_coord(mode.y, pos.y, margin.yw, mid.y, dlen.y)));
+		calc_coord(mode.x, pos.x, margin.xz, mid.x, pivot.xy, dlen.x),
+		calc_coord(mode.y, pos.y, margin.yw, mid.y, pivot.zw, dlen.y)));
 }
 ]]
 local obj, math, tonumber, type = obj, math, tonumber, type;
+
+-- set anchors.
+obj.setanchor("offset_x,offset_y", 0, "line");
 
 -- take parameters.
 --[==[
@@ -2550,8 +2560,12 @@ local obj, math, tonumber, type = obj, math, tonumber, type;
 		margin_d:	number?,
 		margin_l:	number?,
 		margin_r:	number?,
+		offset_x:	number?,
+		offset_y:	number?,
 		align_x:	number?,
 		align_y:	number?,
+		pivot_x:	number?,
+		pivot_y:	number?,
 		unit_x:		string?,
 		unit_y:		string?,
 		loop_x:		string?,
@@ -2564,9 +2578,13 @@ margin_u = tonumber(PI.margin_u) or margin_u;
 margin_d = tonumber(PI.margin_d) or margin_d;
 margin_l = tonumber(PI.margin_l) or margin_l;
 margin_r = tonumber(PI.margin_r) or margin_r;
+offset_x = tonumber(PI.offset_x) or offset_x;
+offset_y = tonumber(PI.offset_y) or offset_y;
 align_x = tonumber(PI.align_x) or align_x;
 align_y = tonumber(PI.align_y) or align_y;
-do local name2num = { ["回数"] = 0, ["近似サイズ"] = 1, ["上限サイズ"] = 2, ["下限サイズ"] = 3, ["全体近似サイズ"] = 4, ["全体上限サイズ"] = 5, ["全体下限サイズ"] = 6 };
+pivot_x = tonumber(PI.pivot_x) or pivot_x;
+pivot_y = tonumber(PI.pivot_y) or pivot_y;
+do local name2num = { ["回数"] = 0, ["サイズ(近似)"] = 1, ["サイズ(上限)"] = 2, ["サイズ(下限)"] = 3, ["サイズ(境界不連続)"] = 4, ["サイズ(拡縮あり)"] = 5, ["全体サイズ(近似)"] = 6, ["全体サイズ(上限)"] = 7, ["全体サイズ(下限)"] = 8, ["全体サイズ(境界不連続)"] = 9, ["全体サイズ(拡縮あり)"] = 10 };
 	if type(PI.unit_x) == "string" then unit_x = name2num[PI.unit_x] or unit_x end
 	if type(PI.unit_y) == "string" then unit_y = name2num[PI.unit_y] or unit_y end
 end
@@ -2584,15 +2602,17 @@ margin_l = math.max(math.floor(0.5 + margin_l), 0);
 margin_r = math.max(math.floor(0.5 + margin_r), 0);
 align_x = math.min(math.max(align_x / 100, -1), 1);
 align_y = math.min(math.max(align_y / 100, -1), 1);
-unit_x = math.min(math.max(math.floor(0.5 + unit_x), 0), 6);
-unit_y = math.min(math.max(math.floor(0.5 + unit_y), 0), 6);
+pivot_x = math.min(math.max(pivot_x / 100, -1), 1);
+pivot_y = math.min(math.max(pivot_y / 100, -1), 1);
+unit_x = math.min(math.max(math.floor(0.5 + unit_x), 0), 10);
+unit_y = math.min(math.max(math.floor(0.5 + unit_y), 0), 10);
 loop_x = math.min(math.max(math.floor(0.5 + loop_x), 0), 3);
 loop_y = math.min(math.max(math.floor(0.5 + loop_y), 0), 3);
 
 -- further calculations.
 local w, h = obj.w, obj.h;
-local mid_x, mid_y, len0_x, len0_y, len1_x, len1_y;
-local function adjust_margin(m1, m2, sz, len, unit, loop)
+local mid_x, mid_y, piv0_x, piv0_y, piv1_x, piv1_y, len0_x, len0_y, len1_x, len1_y;
+local function adjust_margin(m1, m2, sz, len, unit, loop, piv)
 	if loop >= 2 then
 		-- for the cases mirror (half edge) and streth,
 		-- align to half pixel.
@@ -2607,20 +2627,33 @@ local function adjust_margin(m1, m2, sz, len, unit, loop)
 	end
 
 	-- adjust the mirror case, merging the final pattern to the second margin.
-	local mid, pad = sz - m1 - m2, 0;
+	local mid, pad, p0, p1 = sz - m1 - m2, 0, m1, 1;
 	if loop == 1 or loop == 2 then
-		pad, m2, mid = mid, m2 + mid, 2 * mid;
+		pad, mid = mid, 2 * mid;
 	end
 
 	-- adjust the length.
 	if unit > 0 then
 		-- len is given as a bare length.
-		len = math.max(len - (unit < 4 and pad or (m1 + m2)), 0);
-		if mid > 0 and loop ~= 3 then -- if not stretching.
-			local rnd = unit % 3;
-			len = rnd == 1 and math.floor(0.5 + len / mid) * mid
-				or rnd == 2 and math.floor(len / mid) * mid
-				or math.ceil(len / mid) * mid;
+		local loc, rnd = unit < 6, (unit - 1) % 5;
+		local L = math.max(len - (loc and 0 or (m1 + m2)) - (rnd < 3 and pad or 0), 0);
+		if mid > 0 and rnd < 3 and loop ~= 3 then -- if not stretching.
+			L = rnd == 0 and math.floor(0.5 + L / mid) * mid
+				or rnd == 1 and math.floor(L / mid) * mid
+				or math.ceil(L / mid) * mid;
+		end
+		len = L + (rnd < 3 and pad or 0);
+		if rnd >= 3 and mid > 0 and len > 0 then
+			if rnd == 3 then
+				p0 = p0 + ((1 - piv) / 2) * (len - pad);
+				p0 = m1 - ((m1 - p0) % mid); -- make sure p0 <= m1.
+			else
+				p1 = len / mid;
+				p1 = pad > 0 and
+					0.5 + math.floor(p1) or
+					math.max(math.floor(0.5 + p1), 1);
+				p1 = p1 * mid / len;
+			end
 		end
 	else
 		-- len is given as a loop count.
@@ -2628,13 +2661,13 @@ local function adjust_margin(m1, m2, sz, len, unit, loop)
 			-- when mirroring, only odd count is accepted.
 			len = math.floor((len - 1) / 2);
 		end
-		len = len * mid;
+		len = len * mid + pad;
 	end
 
-	return m1, m2, mid, sz - m1 - m2, len;
+	return m1, m2, mid, p0, p1, sz - m1 - m2, len;
 end
-margin_l, margin_r, mid_x, len0_x, len1_x = adjust_margin(margin_l, margin_r, w, width, unit_x, loop_x);
-margin_u, margin_d, mid_y, len0_y, len1_y = adjust_margin(margin_u, margin_d, h, height, unit_y, loop_y);
+margin_l, margin_r, mid_x, piv0_x, piv1_x, len0_x, len1_x = adjust_margin(margin_l, margin_r, w, width, unit_x, loop_x, pivot_x);
+margin_u, margin_d, mid_y, piv0_y, piv1_y, len0_y, len1_y = adjust_margin(margin_u, margin_d, h, height, unit_y, loop_y, pivot_y);
 
 -- handle the zero-sized case.
 local W, H = margin_l + len1_x + margin_r, margin_u + len1_y + margin_d;
@@ -2648,6 +2681,7 @@ obj.copybuffer("tempbuffer", "object");
 obj.clearbuffer("object", W, H);
 obj.pixelshader("mid_loop", "object", "tempbuffer", {
 	margin_l, margin_u, len1_x + margin_l, len1_y + margin_u;
+	piv0_x - ((-offset_x) % mid_x), piv1_x, piv0_y - ((-offset_y) % mid_y), piv1_y;
 	1 / w, 1 / h;
 	mid_x, mid_y; len1_x - len0_x, len1_y - len0_y; loop_x, loop_y;
 }, "copy", "clip");
@@ -2658,10 +2692,10 @@ obj.cx, obj.cy =
 	obj.cy - (len1_y - len0_y) * align_y / 2;
 
 @小数ぼかし
---information:小数ぼかし@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:小数ぼかし@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\ぼかし
 --filter
---require:2004100
+--require:2004101
 --track@range:範囲,0,1000,5,0.01
 --track@aspect:縦横比,-100,100,0,0.001
 --track@luma_weight:光の強さ,0,60,0,0.1
@@ -2805,9 +2839,9 @@ if luma_weight > 0 then
 end
 
 @縁取りα
---information:縁取りα@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:縁取りα@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\装飾
---require:2004100
+--require:2004101
 --track@size:サイズ,-500,500,5,1
 --track@blur:ぼかし,0,100,5,1
 --color@color:縁色,0xffffff
@@ -2988,9 +3022,9 @@ elseif alpha < 1 then
 end
 
 @四角縁取り
---information:四角縁取り@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:四角縁取り@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\装飾
---require:2004100
+--require:2004101
 --track@size:サイズ,-500,500,5,0.01
 --track@aspect:縦横比,-100,100,0,0.001
 --track@blur:ぼかし,0,100,0,0.01
@@ -3179,10 +3213,10 @@ else
 end
 
 @内側シャドウ
---information:内側シャドウ@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:内側シャドウ@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\装飾
 --filter
---require:2004100
+--require:2004101
 --track@X:X,-1000,1000,-40,0.01
 --track@Y:Y,-1000,1000,24,0.01
 --trackgroup@X,Y:pos
@@ -3328,10 +3362,10 @@ obj.copybuffer("object", "tempbuffer");
 obj.pixelshader("identity", "object", cache_name, nil, "mask");
 
 @画像ファイル合成
---information:画像ファイル合成@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:画像ファイル合成@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
---require:2004100
+--require:2004101
 --file@file:画像ファイル
 --group:描画,true
 --track@X:X,-4000,4000,0,0.01
@@ -3636,10 +3670,10 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
 @動画ファイル合成
---information:動画ファイル合成@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:動画ファイル合成@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
---require:2004100
+--require:2004101
 --file@file:動画ファイル
 --group:再生設定,true
 --track@start:再生開始秒,0,3600,0,0.001
@@ -3877,10 +3911,10 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
 @テキスト合成
---information:テキスト合成@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:テキスト合成@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\加工
 --filter
---require:2004100
+--require:2004101
 --text@text:テキスト,
 --group:フォント設定,true
 --track@font_size:サイズ,1,1000,40,0.01
@@ -4214,9 +4248,9 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
 @別レイヤー同期
---information:別レイヤー同期@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:別レイヤー同期@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S\配置
---require:2004100
+--require:2004101
 --select@index_base:レイヤー位置=1,絶対指定=0,相対指定=1
 --value@index:番号,-1
 --group:座標,true
@@ -4335,10 +4369,10 @@ if sync_rot ~= 0 then
 end
 
 @バッファをコピー
---information:バッファをコピー@Basic_S v1.90-beta14 (for beta40a) by σ軸
+--information:バッファをコピー@Basic_S v1.90-beta15 (for beta40a) by σ軸
 --label:Basic_S
 --filter
---require:2004100
+--require:2004101
 --select@buff_src:コピー元=3,仮想バッファ=0,一時キャッシュ=1,フレームバッファ=2,このオブジェクト=3
 --string@cache_src:src::キャッシュ名,my_cache
 --select@buff_dst:コピー先=0,仮想バッファ=0,一時キャッシュ=1,フレームバッファ=2,このオブジェクト=3
