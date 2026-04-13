@@ -278,7 +278,7 @@ https://github.com/user-attachments/assets/6fc13047-fde8-4ec9-8984-2083661129f2
 
 ### 画像中間ループ
 
-<img width="640" height="640" alt="画像中間ループの適用例" src="https://github.com/user-attachments/assets/674d2c23-0e61-4218-a201-bdd066ebee1b" />
+<img width="640" height="640" alt="画像中間ループの適用例" src="https://github.com/user-attachments/assets/288be9d7-374e-4cb5-a30f-be940b39d71e" />
 
 上下左右から指定した距離だけ内側の部分のみに画像ループを適用します．通常のループだけではなく，ミラーしながらのループや，引き伸ばしによる補間などにも切り替えられます．縦横で別のループ形式を指定したりもできます．
 
