@@ -23,7 +23,7 @@ SOFTWARE.
 https://mit-license.org/
 ]]
 @四隅丸め
---information:四隅丸め@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:四隅丸め@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\クリッピング
 --filter
 --require:2004101
@@ -283,7 +283,7 @@ obj.pixelshader("carve", "object", nil, {
 }, "mask");
 
 @背景角丸矩形
---information:背景角丸矩形@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:背景角丸矩形@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\装飾
 --require:2004101
 --track@pad_X:余白X,-1000,1000,10,1
@@ -588,7 +588,7 @@ end
 obj.cx, obj.cy = obj.cx + (L - R) / 2, obj.cy + (T - B) / 2;
 
 @背景楕円
---information:背景楕円@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:背景楕円@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\装飾
 --require:2004101
 --track@pad_X:余白X,-1000,1000,10,1
@@ -703,7 +703,7 @@ obj.effect("背景角丸矩形@Basic_S", "クリッピング", clip,
 		pad_L, pad_R, pad_T, pad_B, line_x, line_y, back_x, back_y));
 
 @背景菱形
---information:背景菱形@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:背景菱形@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\装飾
 --require:2004101
 --track@pad_X:余白X,-1000,1000,10,1
@@ -821,7 +821,7 @@ obj.effect("背景角丸矩形@Basic_S", "クリッピング", clip,
 		pad_L, pad_R, pad_T, pad_B, line_x, line_y, back_x, back_y));
 
 @透明度適用
---information:透明度適用@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:透明度適用@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\加工
 --filter
 --require:2004101
@@ -842,7 +842,7 @@ if apply_former then obj.alpha, alpha = 1, alpha * obj.alpha end
 if alpha ~= 1 then obj.pixelshader("const_alpha", "object", nil, { alpha }, "mask") end
 
 @透明度二値化
---information:透明度二値化@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:透明度二値化@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\加工
 --filter
 --require:2004101
@@ -885,7 +885,7 @@ if alpha > 0 or buffer < 1 then
 end
 
 @色調補正
---information:色調補正@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:色調補正@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\色調整
 --filter
 --require:2004101
@@ -1177,7 +1177,7 @@ else
 end
 
 @色チャンネル入れ替え
---information:色チャンネル入れ替え@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:色チャンネル入れ替え@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\色調整
 --filter
 --require:2004101
@@ -1285,7 +1285,7 @@ end
 obj.pixelshader(premult and "premult" or "nonmult", "object", "object", params);
 
 @回転中心
---information:回転中心@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:回転中心@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\配置
 --require:2004101
 --track@X:X,-4000,4000,0,0.01
@@ -1297,7 +1297,7 @@ obj.cy = obj.cy + Y;
 obj.cz = obj.cz + Z;
 
 @回転中心アンカー指定
---information:回転中心アンカー指定@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:回転中心アンカー指定@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\配置
 --require:2004101
 --track@X:X,-4000,4000,0,0.01
@@ -1347,7 +1347,7 @@ obj.ox,	obj.oy,	obj.oz = obj.ox + dx, obj.oy + dy, obj.oz + dz;
 obj.cx,obj.cy,obj.cz = cx, cy, cz;
 
 @上下左右揃え
---information:上下左右揃え@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:上下左右揃え@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\配置
 --require:2004101
 --track@X:左右%,-100,100,0,0.001
@@ -1372,7 +1372,7 @@ if cx ~= obj.cx or cy ~= obj.cy then
 end
 
 @直角回転
---information:直角回転@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:直角回転@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\配置
 --require:2004101
 --select@rot:方向=0,なし=0,90°時計回り=1,180°反転=2,90°反時計回り=3,左右反転=4,上下反転=5,右上軸反転=6,左上軸反転=7
@@ -1420,7 +1420,7 @@ obj.copybuffer("object", "tempbuffer");
 if not move_center then obj.cx, obj.cy = obj.cx + (cx - cx0), obj.cy + (cy - cy0) end
 
 @XYZ追加回転
---information:XYZ追加回転@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:XYZ追加回転@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\配置
 --require:2004101
 --track@X:X,-720,720,0,0.01
@@ -1491,7 +1491,7 @@ if angle ~= 0 or draw then
 end
 
 @任意軸追加回転
---information:任意軸追加回転@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:任意軸追加回転@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\配置
 --require:2004101
 --track@angle:角度,-720,720,0,0.01
@@ -1740,7 +1740,7 @@ else
 end
 
 @傾斜
---information:傾斜@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:傾斜@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\変形
 --require:2004101
 --track@angle:角度,-80,80,0,0.001
@@ -1835,7 +1835,7 @@ obj.copybuffer("object", "tempbuffer");
 obj.cx, obj.cy = obj.cx - cx, obj.cy - cy;
 
 @XY軸変形
---information:XY軸変形@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:XY軸変形@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\変形
 --require:2004101
 --track@xX:X軸移動先X,-4000,4000,100,0.01
@@ -1906,7 +1906,7 @@ obj.drawpoly(
 obj.copybuffer("object", "tempbuffer");
 
 @領域サイズ変更
---information:領域サイズ変更@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:領域サイズ変更@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004101
 --track@T:上,-4000,4000,0,1
@@ -1995,7 +1995,7 @@ end
 obj.cx, obj.cy = cx, cy;
 
 @領域割合サイズ変更
---information:領域割合サイズ変更@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:領域割合サイズ変更@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004101
 --track@T:上%,-100,100,0,0.001
@@ -2051,7 +2051,7 @@ if L ~= 0 or R ~= 0 or T ~= 0 or B ~= 0 then
 end
 
 @領域サイズ指定
---information:領域サイズ指定@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:領域サイズ指定@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004101
 --track@X:X,-4000,4000,0,0.1
@@ -2150,7 +2150,7 @@ elseif L ~= 0 or R ~= 0 or T ~= 0 or B ~= 0 then
 end
 
 @カットずらし
---information:カットずらし@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:カットずらし@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004101
 --track@X:ずれX,-4000,4000,40,1
@@ -2374,7 +2374,7 @@ if not move_center then
 end
 
 @中抜きクリッピング
---information:中抜きクリッピング@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:中抜きクリッピング@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004101
 --track@X:X,-4000,4000,0,0.1
@@ -2478,7 +2478,7 @@ else
 end
 
 @画像中間ループ
---information:画像中間ループ@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:画像中間ループ@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\配置
 --require:2004101
 --track@width:幅,0,4000,1,1
@@ -2692,7 +2692,7 @@ obj.cx, obj.cy =
 	obj.cy - (len1_y - len0_y) * align_y / 2;
 
 @小数ぼかし
---information:小数ぼかし@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:小数ぼかし@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\ぼかし
 --filter
 --require:2004101
@@ -2839,7 +2839,7 @@ if luma_weight > 0 then
 end
 
 @縁取りα
---information:縁取りα@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:縁取りα@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\装飾
 --require:2004101
 --track@size:サイズ,-500,500,5,1
@@ -3022,7 +3022,7 @@ elseif alpha < 1 then
 end
 
 @四角縁取り
---information:四角縁取り@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:四角縁取り@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\装飾
 --require:2004101
 --track@size:サイズ,-500,500,5,0.01
@@ -3213,7 +3213,7 @@ else
 end
 
 @内側シャドウ
---information:内側シャドウ@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:内側シャドウ@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\装飾
 --filter
 --require:2004101
@@ -3362,7 +3362,7 @@ obj.copybuffer("object", "tempbuffer");
 obj.pixelshader("identity", "object", cache_name, nil, "mask");
 
 @画像ファイル合成
---information:画像ファイル合成@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:画像ファイル合成@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\加工
 --filter
 --require:2004101
@@ -3670,7 +3670,7 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
 @動画ファイル合成
---information:動画ファイル合成@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:動画ファイル合成@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\加工
 --filter
 --require:2004101
@@ -3911,7 +3911,7 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
 @テキスト合成
---information:テキスト合成@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:テキスト合成@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\加工
 --filter
 --require:2004101
@@ -4248,7 +4248,7 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
 @別レイヤー同期
---information:別レイヤー同期@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:別レイヤー同期@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\配置
 --require:2004101
 --select@index_base:レイヤー位置=1,絶対指定=0,相対指定=1
@@ -4369,7 +4369,7 @@ if sync_rot ~= 0 then
 end
 
 @バッファをコピー
---information:バッファをコピー@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:バッファをコピー@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S
 --filter
 --require:2004101

@@ -23,7 +23,7 @@ SOFTWARE.
 https://mit-license.org/
 ]]
 @角丸矩形
---information:角丸矩形@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:角丸矩形@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\図形
 --require:2004101
 --track@width:幅,0,4000,100,1
@@ -159,7 +159,7 @@ obj.pixelshader("combine", "object", { "object", "tempbuffer" }, {
 });
 
 @楕円
---information:楕円@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:楕円@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\図形
 --require:2004101
 --track@width:幅,0,4000,100,1
@@ -253,7 +253,7 @@ obj.pixelshader("combine@角丸矩形@Basic_S", "object", { "object", "tempbuffe
 });
 
 @菱形
---information:菱形@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:菱形@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\図形
 --require:2004101
 --track@width:幅,0,4000,100,1
@@ -347,7 +347,7 @@ obj.pixelshader("combine@角丸矩形@Basic_S", "object", { "object", "tempbuffe
 });
 
 @スーパー楕円
---information:スーパー楕円@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:スーパー楕円@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\図形
 --require:2004101
 --track@exponent:膨らみ,-300,300,-60,0.001
@@ -459,7 +459,7 @@ if not do_fill then
 end
 
 @別レイヤー
---information:別レイヤー@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:別レイヤー@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S
 --require:2004101
 --select@index_base:レイヤー位置=1,絶対指定=0,相対指定=1
@@ -560,7 +560,7 @@ if alpha then
 end
 
 @バッファ読み込み
---information:バッファ読み込み@Basic_S v1.90-beta17 (for beta41a) by σ軸
+--information:バッファ読み込み@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S
 --require:2004101
 --select@buffer_type:バッファ=0,仮想バッファ=0,一時キャッシュ=1,フレームバッファ=2,直前オブジェクト=3
