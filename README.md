@@ -41,7 +41,7 @@ Although, usage documentations for this script / plugin in languages other than 
 
 ### 角丸矩形
 
-<img width="720" height="480" alt="複数種類ある角の形状の表示例" src="https://github.com/user-attachments/assets/1f8760e0-90ce-4eb6-817d-6d0b51ee449a" />
+![複数種類ある角の形状の表示例](https://github.com/user-attachments/assets/1f8760e0-90ce-4eb6-817d-6d0b51ee449a)
 
 長方形や丸角四角形を生成します．縦横をピクセル単位で指定でき，上下左右揃えの指定もできます．
 
@@ -51,7 +51,7 @@ Although, usage documentations for this script / plugin in languages other than 
 
 ### 楕円
 
-<img width="320" height="240" alt="楕円オブジェクトの表示例" src="https://github.com/user-attachments/assets/3a2ace4b-c95f-45e6-ae4d-2564f4d60006" />
+![楕円オブジェクトの表示例](https://github.com/user-attachments/assets/3a2ace4b-c95f-45e6-ae4d-2564f4d60006)
 
 標準図形の「円」を，縦横をピクセル単位で指定できるようにしたものです．上下左右揃えの指定もできます．
 
@@ -59,7 +59,7 @@ Although, usage documentations for this script / plugin in languages other than 
 
 ### 菱形
 
-<img width="320" height="240" alt="菱形オブジェクトの表示例" src="https://github.com/user-attachments/assets/057750a3-5043-43c1-b9c6-6773f73c432f" />
+![菱形オブジェクトの表示例](https://github.com/user-attachments/assets/057750a3-5043-43c1-b9c6-6773f73c432f)
 
 菱形を生成します．縦横をピクセル単位で指定でき，上下左右揃えの指定もできます．
 
@@ -67,7 +67,7 @@ Although, usage documentations for this script / plugin in languages other than 
 
 ### スーパー楕円
 
-<img width="720" height="480" alt="スーパー楕円オブジェクトの表示例" src="https://github.com/user-attachments/assets/b22c54bc-9a4e-41fa-9b16-039a0e2e055d" />
+![スーパー楕円オブジェクトの表示例](https://github.com/user-attachments/assets/b22c54bc-9a4e-41fa-9b16-039a0e2e055d)
 
 [スーパー楕円](https://ja.wikipedia.org/wiki/スーパー楕円)を生成します．[アステロイド](https://ja.wikipedia.org/wiki/アステロイド_(曲線))や菱形などもこの特殊形です．
 
@@ -91,7 +91,7 @@ Although, usage documentations for this script / plugin in languages other than 
 
 ### 四隅丸め
 
-<img width="640" height="240" alt="四隅丸めを2種類の角の形状で適用した例" src="https://github.com/user-attachments/assets/04ba5c33-7286-48ef-9431-c042d25abd50" />
+![四隅丸めを2種類の角の形状で適用した例](https://github.com/user-attachments/assets/04ba5c33-7286-48ef-9431-c042d25abd50)
 
 オブジェクトの四隅を円などの図形で丸めます．
 
@@ -101,7 +101,7 @@ Although, usage documentations for this script / plugin in languages other than 
 
 ### 背景角丸矩形
 
-<img width="360" height="120" alt="背景角丸矩形をテキストに適用した例" src="https://github.com/user-attachments/assets/d80d9d36-268e-4a56-a00a-39596c80e577" />
+![背景角丸矩形をテキストに適用した例](https://github.com/user-attachments/assets/d80d9d36-268e-4a56-a00a-39596c80e577)
 
 オブジェクトの背景に角丸矩形を配置します．テロップバックや立ち絵の背景などに利用できます．
 
@@ -111,7 +111,7 @@ Although, usage documentations for this script / plugin in languages other than 
 
 ### 背景楕円
 
-<img width="360" height="120" alt="背景楕円をテキストに適用した例" src="https://github.com/user-attachments/assets/1400898a-c474-41ac-862d-75fbf92fc9b1" />
+![背景楕円をテキストに適用した例](https://github.com/user-attachments/assets/1400898a-c474-41ac-862d-75fbf92fc9b1)
 
 オブジェクトの背景に楕円を配置します．吹き出しやアイコンの背景などに利用できます．
 
@@ -121,7 +121,7 @@ Although, usage documentations for this script / plugin in languages other than 
 
 ### 背景菱形
 
-<img width="560" height="120" alt="背景菱形をテキストに適用した例" src="https://github.com/user-attachments/assets/5e1999b9-dcd5-4751-8cec-c1d1712eae63" />
+![背景菱形をテキストに適用した例](https://github.com/user-attachments/assets/5e1999b9-dcd5-4751-8cec-c1d1712eae63)
 
 オブジェクトの背景に菱形を配置します．吹き出しやアイコンの背景などに利用できます．
 
@@ -269,7 +269,7 @@ https://github.com/user-attachments/assets/6fc13047-fde8-4ec9-8984-2083661129f2
 
 ### 中抜きクリッピング
 
-<img width="520" height="360" alt="中抜きクリッピングの適用例" src="https://github.com/user-attachments/assets/bce76075-2c82-40cc-919b-3a3442f09c8b" />
+![中抜きクリッピングの適用例](https://github.com/user-attachments/assets/bce76075-2c82-40cc-919b-3a3442f09c8b)
 
 「クリッピング」や「領域拡張」に相当する操作を，オブジェクトの端ではなく中間部分で行います．大きな図表の中間部分を切り取って詰めたい場合に利用できます．
 
@@ -278,7 +278,7 @@ https://github.com/user-attachments/assets/6fc13047-fde8-4ec9-8984-2083661129f2
 
 ### 画像中間ループ
 
-<img width="640" height="640" alt="画像中間ループの適用例" src="https://github.com/user-attachments/assets/288be9d7-374e-4cb5-a30f-be940b39d71e" />
+![画像中間ループの適用例](https://github.com/user-attachments/assets/288be9d7-374e-4cb5-a30f-be940b39d71e)
 
 上下左右から指定した距離だけ内側の部分のみに画像ループを適用します．通常のループだけではなく，ミラーしながらのループや，引き伸ばしによる補間などにも切り替えられます．縦横で別のループ形式を指定したりもできます．
 
@@ -305,7 +305,7 @@ AviUtl 標準の「ぼかし」にあった，小さい奇数ピクセルでの�
 
 ### 四角縁取り
 
-<img width="480" height="240" alt="四角縁取りと通常の縁取りの比較" src="https://github.com/user-attachments/assets/b11ad429-a8b2-4d9f-89bb-e71ae4044974" />
+![四角縁取りと通常の縁取りの比較](https://github.com/user-attachments/assets/b11ad429-a8b2-4d9f-89bb-e71ae4044974)
 
 AviUtl (無印) の「縁取り」と同様，角が四角になる縁取りです．特に長方形に対して縁取りをする場合などは，こちらのほうがいい場面もあると思います．
 
@@ -315,7 +315,7 @@ AviUtl (無印) の「縁取り」と同様，角が四角になる縁取りで�
 
 ### 内側シャドウ
 
-<img width="280" height="280" alt="内側シャドウの適用例" src="https://github.com/user-attachments/assets/e93b5e4f-a43e-416c-9341-db0b2df02950" />
+![内側シャドウの適用例](https://github.com/user-attachments/assets/e93b5e4f-a43e-416c-9341-db0b2df02950)
 
 オブジェクト自身に外側から影が落ちているような効果を描画します．パターン画像や合成モードの指定もできます．
 
@@ -367,7 +367,7 @@ https://github.com/user-attachments/assets/65a2eb86-3b2a-406d-829b-ccdbaa29f123
 
 時間制御のグラフによる抑揚を，各中間点区間ごとに適用するトラックバー移動スクリプトです．
 
-<img width="1000" height="480" alt="区間ごとに時間制御を適用した軌跡" src="https://github.com/user-attachments/assets/eb4d50d8-f20d-4554-8f6a-f11b7383e059" />
+![区間ごとに時間制御を適用した軌跡](https://github.com/user-attachments/assets/eb4d50d8-f20d-4554-8f6a-f11b7383e059)
 
 :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/区間ごとに時間制御)
 
