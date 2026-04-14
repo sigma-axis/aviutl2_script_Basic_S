@@ -83,7 +83,7 @@ Although, usage documentations for this script / plugin in languages other than 
 
 ### バッファ読み込み
 
-「仮想バッファ出力」や各種スクリプトの一時描画先などとして保存されている「仮想バッファ」や，一時保存先の「キャッシュバッファ」などを，読み込みます．
+「仮想バッファ出力」や各種スクリプトの一時描画先などとして保存されている「仮想バッファ」や，一時保存先の「キャッシュバッファ」などを読み込みます．
 
 <!-- :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/バッファ読み込み) -->
 

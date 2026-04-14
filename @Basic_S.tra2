@@ -23,7 +23,7 @@ SOFTWARE.
 https://mit-license.org/
 ]]
 @全体で時間制御
---information:全体で時間制御@Basic_S v1.90 (for beta41a) by σ軸
+--information:全体で時間制御@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S
 --require:2004101
 --timecontrol
@@ -35,7 +35,7 @@ local v0, v1 = gp(i), gp(i + 1);
 return v0 + (v1 - v0) * t;
 
 @区間ごとに時間制御
---information:区間ごとに時間制御@Basic_S v1.90 (for beta41a) by σ軸
+--information:区間ごとに時間制御@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S
 --require:2004101
 --timecontrol
@@ -46,8 +46,178 @@ t = gp("timecontrol", "value", t * gp("time", n - 1));
 local v0, v1 = gp(i), gp(i + 1);
 return v0 + (v1 - v0) * t;
 
+@全体で時間制御(回転)
+--information:全体で時間制御(回転)@Basic_S v2.00-beta1 (for beta41a) by σ軸
+--label:Basic_S
+--require:2004101
+--param:1周角度,360
+--timecontrol
+local gp, math = obj.getpoint, math;
+local n, i, t = gp("num"), math.modf(gp("timecontrol", "index"));
+if i >= n - 1 then i, t = n - 2, 1;
+elseif i < 0 then i, t = 0, 0 end
+local k, l = gp("link");
+if l == 3 then
+	local cycle = gp("param");
+
+	-- calculate two quaternions.
+	local cos, sin, atan2, r = math.cos, math.sin, math.atan2, 2 * math.pi / cycle;
+	local cx1, cy1, cz1, cx2, cy2, cz2, sx1, sy1, sz1, sx2, sy2, sz2 do local
+		A = r * (gp(i    ,    -k) % cycle) / 2; cx1, sx1 = cos(A), sin(A);
+		A = r * (gp(i    , 1 - k) % cycle) / 2; cy1, sy1 = cos(A), sin(A);
+		A = r * (gp(i    , 2 - k) % cycle) / 2; cz1, sz1 = cos(A), sin(A);
+		A = r * (gp(i + 1,    -k) % cycle) / 2; cx2, sx2 = cos(A), sin(A);
+		A = r * (gp(i + 1, 1 - k) % cycle) / 2; cy2, sy2 = cos(A), sin(A);
+		A = r * (gp(i + 1, 2 - k) % cycle) / 2; cz2, sz2 = cos(A), sin(A);
+	end
+	local q1r, q1i, q1j, q1k, q2r, q2i, q2j, q2k =
+		-- (c_x + i s_x) x (c_y + j s_y).
+		cx1 * cy1, sx1 * cy1, cx1 * sy1, sx1 * sy1,
+		cx2 * cy2, sx2 * cy2, cx2 * sy2, sx2 * sy2;
+	q1r, q1i, q1j, q1k, q2r, q2i, q2j, q2k =
+		-- x (c_z + k s_z).
+		q1r * cz1 - q1k * sz1,
+		q1i * cz1 + q1j * sz1,
+		q1j * cz1 - q1i * sz1,
+		q1k * cz1 + q1r * sz1,
+
+		q2r * cz2 - q2k * sz2,
+		q2i * cz2 + q2j * sz2,
+		q2j * cz2 - q2i * sz2,
+		q2k * cz2 + q2r * sz2;
+
+	-- calculate q2' = q2 q1^-1.
+	q2r, q2i, q2j, q2k =
+		 q2r * q1r + q2i * q1i + q2j * q1j + q2k * q1k,
+		-q2r * q1i + q2i * q1r - q2j * q1k + q2k * q1j,
+		-q2r * q1j + q2i * q1k + q2j * q1r - q2k * q1i,
+		-q2r * q1k - q2i * q1j + q2j * q1i + q2k * q1r;
+	if q2r < 0 then q2r, q2i, q2j, q2k = -q2r, -q2i, -q2j, -q2k end
+
+	-- calculate q2'' = q2'^t = exp(t log(q2')).
+	local a = (q2i ^ 2 + q2j ^ 2 + q2k ^ 2) ^ 0.5;
+	if a > 0 then
+		local A = t * atan2(a, q2r);
+		q2r, A = cos(A), sin(A);
+		q2i, q2j, q2k = A * q2i / a, A * q2j / a, A * q2k / a;
+	else return gp(i, 0) end
+
+	-- calculate q = q2'' q1.
+	q1r, q1i, q1j, q1k =
+		q2r * q1r - q2i * q1i - q2j * q1j - q2k * q1k,
+		q2r * q1i + q2i * q1r + q2j * q1k - q2k * q1j,
+		q2r * q1j - q2i * q1k + q2j * q1r + q2k * q1i,
+		q2r * q1k + q2i * q1j - q2j * q1i + q2k * q1r;
+
+	-- determine the euler angles.
+	-- cf.) https://github.com/sigma-axis/sigma_aviutl_scripts/blob/79bce1098a69b1e8da7cb77811aa3356a411ee2d/sigma_rot_helper.lua#L80-L94
+	a = atan2(
+		2 * (q1r * q1i - q1j * q1k),
+		q1r ^ 2 - q1i ^ 2 - q1j ^ 2 + q1k ^ 2);
+	if k > 0 then
+		cx1, sx1 = cos(a / 2), sin(a / 2);
+		q1r, q1i, q1j, q1k = -- (c - i s) x q
+			cx1 * q1r + sx1 * q1i,
+			cx1 * q1i - sx1 * q1r,
+			cx1 * q1j + sx1 * q1k,
+			cx1 * q1k - sx1 * q1j;
+		if k > 1 then q1j, q1k = q1k, q1j end
+		if q1r ^ 2 + q1j ^ 2 < q1k ^ 2 + q1i ^ 2 then q1r, q1j = q1k, q1i end
+		if q1r < 0 then q1r, q1j = -q1r, -q1j end
+		a = 2 * atan2(q1j, q1r);
+	end
+	return a / r;
+end
+local v0, v1 = gp(i), gp(i + 1);
+return v0 + (v1 - v0) * t;
+
+@区間ごとに時間制御(回転)
+--information:区間ごとに時間制御(回転)@Basic_S v2.00-beta1 (for beta41a) by σ軸
+--label:Basic_S
+--require:2004101
+--param:1周角度,360
+--timecontrol
+local gp, math = obj.getpoint, math;
+local n, i, t = gp("num"), math.modf(gp("index"));
+if i >= n - 1 then i, t = n - 2, 1 end
+t = gp("timecontrol", "value", t * gp("time", n - 1));
+local k, l = gp("link");
+if l == 3 then
+	local cycle = gp("param");
+
+	-- calculate two quaternions.
+	local cos, sin, atan2, r = math.cos, math.sin, math.atan2, 2 * math.pi / cycle;
+	local cx1, cy1, cz1, cx2, cy2, cz2, sx1, sy1, sz1, sx2, sy2, sz2 do local
+		A = r * (gp(i    ,    -k) % cycle) / 2; cx1, sx1 = cos(A), sin(A);
+		A = r * (gp(i    , 1 - k) % cycle) / 2; cy1, sy1 = cos(A), sin(A);
+		A = r * (gp(i    , 2 - k) % cycle) / 2; cz1, sz1 = cos(A), sin(A);
+		A = r * (gp(i + 1,    -k) % cycle) / 2; cx2, sx2 = cos(A), sin(A);
+		A = r * (gp(i + 1, 1 - k) % cycle) / 2; cy2, sy2 = cos(A), sin(A);
+		A = r * (gp(i + 1, 2 - k) % cycle) / 2; cz2, sz2 = cos(A), sin(A);
+	end
+	local q1r, q1i, q1j, q1k, q2r, q2i, q2j, q2k =
+		-- (c_x + i s_x) x (c_y + j s_y).
+		cx1 * cy1, sx1 * cy1, cx1 * sy1, sx1 * sy1,
+		cx2 * cy2, sx2 * cy2, cx2 * sy2, sx2 * sy2;
+	q1r, q1i, q1j, q1k, q2r, q2i, q2j, q2k =
+		-- x (c_z + k s_z).
+		q1r * cz1 - q1k * sz1,
+		q1i * cz1 + q1j * sz1,
+		q1j * cz1 - q1i * sz1,
+		q1k * cz1 + q1r * sz1,
+
+		q2r * cz2 - q2k * sz2,
+		q2i * cz2 + q2j * sz2,
+		q2j * cz2 - q2i * sz2,
+		q2k * cz2 + q2r * sz2;
+
+	-- calculate q2' = q2 q1^-1.
+	q2r, q2i, q2j, q2k =
+		 q2r * q1r + q2i * q1i + q2j * q1j + q2k * q1k,
+		-q2r * q1i + q2i * q1r - q2j * q1k + q2k * q1j,
+		-q2r * q1j + q2i * q1k + q2j * q1r - q2k * q1i,
+		-q2r * q1k - q2i * q1j + q2j * q1i + q2k * q1r;
+	if q2r < 0 then q2r, q2i, q2j, q2k = -q2r, -q2i, -q2j, -q2k end
+
+	-- calculate q2'' = q2'^t = exp(t log(q2')).
+	local a = (q2i ^ 2 + q2j ^ 2 + q2k ^ 2) ^ 0.5;
+	if a > 0 then
+		local A = t * atan2(a, q2r);
+		q2r, A = cos(A), sin(A);
+		q2i, q2j, q2k = A * q2i / a, A * q2j / a, A * q2k / a;
+	else return gp(i, 0) end
+
+	-- calculate q = q2'' q1.
+	q1r, q1i, q1j, q1k =
+		q2r * q1r - q2i * q1i - q2j * q1j - q2k * q1k,
+		q2r * q1i + q2i * q1r + q2j * q1k - q2k * q1j,
+		q2r * q1j - q2i * q1k + q2j * q1r + q2k * q1i,
+		q2r * q1k + q2i * q1j - q2j * q1i + q2k * q1r;
+
+	-- determine the euler angles.
+	-- cf.) https://github.com/sigma-axis/sigma_aviutl_scripts/blob/79bce1098a69b1e8da7cb77811aa3356a411ee2d/sigma_rot_helper.lua#L80-L94
+	a = atan2(
+		2 * (q1r * q1i - q1j * q1k),
+		q1r ^ 2 - q1i ^ 2 - q1j ^ 2 + q1k ^ 2);
+	if k > 0 then
+		cx1, sx1 = cos(a / 2), sin(a / 2);
+		q1r, q1i, q1j, q1k = -- (c - i s) x q
+			cx1 * q1r + sx1 * q1i,
+			cx1 * q1i - sx1 * q1r,
+			cx1 * q1j + sx1 * q1k,
+			cx1 * q1k - sx1 * q1j;
+		if k > 1 then q1j, q1k = q1k, q1j end
+		if q1r ^ 2 + q1j ^ 2 < q1k ^ 2 + q1i ^ 2 then q1r, q1j = q1k, q1i end
+		if q1r < 0 then q1r, q1j = -q1r, -q1j end
+		a = 2 * atan2(q1j, q1r);
+	end
+	return a / r;
+end
+local v0, v1 = gp(i), gp(i + 1);
+return v0 + (v1 - v0) * t;
+
 @正弦波
---information:正弦波@Basic_S v1.90 (for beta41a) by σ軸
+--information:正弦波@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\基本緩急
 --require:2004101
 --speed:0,1
@@ -65,7 +235,7 @@ local rho = 1 - math.cos(math.pi / 2 * t);
 return v0 + (v1 - v0) * rho;
 
 @2次式
---information:2次式@Basic_S v1.90 (for beta41a) by σ軸
+--information:2次式@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\基本緩急
 --require:2004101
 --speed:0,1
@@ -83,7 +253,7 @@ local rho = t ^ 2;
 return v0 + (v1 - v0) * rho;
 
 @3次式
---information:3次式@Basic_S v1.90 (for beta41a) by σ軸
+--information:3次式@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\基本緩急
 --require:2004101
 --speed:0,1
@@ -101,7 +271,7 @@ local rho = t ^ 3;
 return v0 + (v1 - v0) * rho;
 
 @4次式
---information:4次式@Basic_S v1.90 (for beta41a) by σ軸
+--information:4次式@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\基本緩急
 --require:2004101
 --speed:0,1
@@ -119,7 +289,7 @@ local rho = t ^ 4;
 return v0 + (v1 - v0) * rho;
 
 @N次式
---information:N次式@Basic_S v1.90 (for beta41a) by σ軸
+--information:N次式@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\基本緩急
 --require:2004101
 --speed:0,1
@@ -139,7 +309,7 @@ local rho = (N > 0 or t > 0) and t ^ N or 0;
 return v0 + (v1 - v0) * rho;
 
 @指数関数
---information:指数関数@Basic_S v1.90 (for beta41a) by σ軸
+--information:指数関数@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\基本緩急
 --require:2004101
 --speed:0,1
@@ -159,7 +329,7 @@ local rho = a > 0 and (math.exp(a * t) - 1) / (math.exp(a) - 1) or t;
 return v0 + (v1 - v0) * rho;
 
 @円形
---information:円形@Basic_S v1.90 (for beta41a) by σ軸
+--information:円形@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\基本緩急
 --require:2004101
 --speed:0,1
@@ -177,7 +347,7 @@ local rho = 1 - (1 - t ^ 2) ^ 0.5;
 return v0 + (v1 - v0) * rho;
 
 @等速移動(秒)
---information:等速移動(秒)@Basic_S v1.90 (for beta41a) by σ軸
+--information:等速移動(秒)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S
 --require:2004101
 --twopoint
@@ -189,7 +359,7 @@ if T == 0 then T = 1 end
 return v0 + (v1 - v0) * t / T;
 
 @等速移動(フレーム)
---information:等速移動(フレーム)@Basic_S v1.90 (for beta41a) by σ軸
+--information:等速移動(フレーム)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S
 --require:2004101
 --twopoint
@@ -202,7 +372,7 @@ if F == 0 then F = 1 end
 return v0 + (v1 - v0) * f / F;
 
 @コマ落ち反復(秒)
---information:コマ落ち反復(秒)@Basic_S v1.90 (for beta41a) by σ軸
+--information:コマ落ち反復(秒)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\コマ落ち
 --require:2004101
 --twopoint
@@ -215,7 +385,7 @@ if T == 0 then T = 1 end
 return gp(((t / T + d / 100) % 1) < 0.5 and 0 or 1);
 
 @コマ落ち反復(フレーム)
---information:コマ落ち反復(フレーム)@Basic_S v1.90 (for beta41a) by σ軸
+--information:コマ落ち反復(フレーム)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\コマ落ち
 --require:2004101
 --twopoint
@@ -229,7 +399,7 @@ if F == 0 then F = 1 end
 return gp(((f / F + d / 100) % 1) < 0.5 and 0 or 1);
 
 @コマ落ち反復(Hz)
---information:コマ落ち反復(Hz)@Basic_S v1.90 (for beta41a) by σ軸
+--information:コマ落ち反復(Hz)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\コマ落ち
 --require:2004101
 --twopoint
@@ -241,7 +411,7 @@ if 1 / N < 0 then t, N = t - gp("time", 1) - 1 / gp("framerate"), -N end
 return gp(((t * N + d / 100) % 1) < 0.5 and 0 or 1);
 
 @コマ落ち反復(BPM)
---information:コマ落ち反復(BPM)@Basic_S v1.90 (for beta41a) by σ軸
+--information:コマ落ち反復(BPM)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\コマ落ち
 --require:2004101
 --twopoint
@@ -253,7 +423,7 @@ if 1 / N < 0 then t, N = t - gp("time", 1) - 1 / gp("framerate"), -N end
 return gp(((t * N / 60 + d / 100) % 1) < 0.5 and 0 or 1);
 
 @コマ落ちランダム(秒)
---information:コマ落ちランダム(秒)@Basic_S v1.90 (for beta41a) by σ軸
+--information:コマ落ちランダム(秒)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\コマ落ち
 --require:2004101
 --twopoint
@@ -267,7 +437,7 @@ local v0, v1 = gp(0), gp(1);
 return v0 + (v1 - v0) * rand1(2525, math.floor(t / T + d / 100) + 1);
 
 @コマ落ちランダム(フレーム)
---information:コマ落ちランダム(フレーム)@Basic_S v1.90 (for beta41a) by σ軸
+--information:コマ落ちランダム(フレーム)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\コマ落ち
 --require:2004101
 --twopoint
@@ -282,7 +452,7 @@ local v0, v1 = gp(0), gp(1);
 return v0 + (v1 - v0) * rand1(2525, math.floor(f / F + d / 100) + 1);
 
 @コマ落ちランダム(Hz)
---information:コマ落ちランダム(Hz)@Basic_S v1.90 (for beta41a) by σ軸
+--information:コマ落ちランダム(Hz)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\コマ落ち
 --require:2004101
 --twopoint
@@ -295,7 +465,7 @@ local v0, v1 = gp(0), gp(1);
 return v0 + (v1 - v0) * rand1(2525, math.floor(t * N + d / 100) + 1);
 
 @コマ落ちランダム(BPM)
---information:コマ落ちランダム(BPM)@Basic_S v1.90 (for beta41a) by σ軸
+--information:コマ落ちランダム(BPM)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\コマ落ち
 --require:2004101
 --twopoint
@@ -308,7 +478,7 @@ local v0, v1 = gp(0), gp(1);
 return v0 + (v1 - v0) * rand1(2525, math.floor(t * N / 60 + d / 100) + 1);
 
 @時間制御繰り返し(秒)
---information:時間制御繰り返し(秒)@Basic_S v1.90 (for beta41a) by σ軸
+--information:時間制御繰り返し(秒)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\繰り返し
 --require:2004101
 --twopoint
@@ -324,7 +494,7 @@ local v0, v1 = gp(0), gp(1);
 return v0 + (v1 - v0) * gp("timecontrol", "value", ((t / T + d / 100) % 1) * T1);
 
 @時間制御繰り返し(フレーム)
---information:時間制御繰り返し(フレーム)@Basic_S v1.90 (for beta41a) by σ軸
+--information:時間制御繰り返し(フレーム)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\繰り返し
 --require:2004101
 --twopoint
@@ -340,7 +510,7 @@ local v0, v1 = gp(0), gp(1);
 return v0 + (v1 - v0) * gp("timecontrol", "value", ((f / F + d / 100) % 1) * T1);
 
 @時間制御繰り返し(Hz)
---information:時間制御繰り返し(Hz)@Basic_S v1.90 (for beta41a) by σ軸
+--information:時間制御繰り返し(Hz)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\繰り返し
 --require:2004101
 --twopoint
@@ -355,7 +525,7 @@ local v0, v1 = gp(0), gp(1);
 return v0 + (v1 - v0) * gp("timecontrol", "value", ((t * N + d / 100) % 1) * T1);
 
 @時間制御繰り返し(BPM)
---information:時間制御繰り返し(BPM)@Basic_S v1.90 (for beta41a) by σ軸
+--information:時間制御繰り返し(BPM)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\繰り返し
 --require:2004101
 --twopoint
@@ -370,7 +540,7 @@ local v0, v1 = gp(0), gp(1);
 return v0 + (v1 - v0) * gp("timecontrol", "value", ((t * N / 60 + d / 100) % 1) * T1);
 
 @時間制御繰り返し往復(秒)
---information:時間制御繰り返し往復(秒)@Basic_S v1.90 (for beta41a) by σ軸
+--information:時間制御繰り返し往復(秒)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\繰り返し
 --require:2004101
 --twopoint
@@ -388,7 +558,7 @@ if p >= 1 then v0, v1, p = v1, v0, p - 1 end
 return v0 + (v1 - v0) * gp("timecontrol", "value", p * T1);
 
 @時間制御繰り返し往復(フレーム)
---information:時間制御繰り返し往復(フレーム)@Basic_S v1.90 (for beta41a) by σ軸
+--information:時間制御繰り返し往復(フレーム)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\繰り返し
 --require:2004101
 --twopoint
@@ -406,7 +576,7 @@ if p >= 1 then v0, v1, p = v1, v0, p - 1 end
 return v0 + (v1 - v0) * gp("timecontrol", "value", p * T1);
 
 @時間制御繰り返し往復(Hz)
---information:時間制御繰り返し往復(Hz)@Basic_S v1.90 (for beta41a) by σ軸
+--information:時間制御繰り返し往復(Hz)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\繰り返し
 --require:2004101
 --twopoint
@@ -423,7 +593,7 @@ if p >= 1 then v0, v1, p = v1, v0, p - 1 end
 return v0 + (v1 - v0) * gp("timecontrol", "value", p * T1);
 
 @時間制御繰り返し往復(BPM)
---information:時間制御繰り返し往復(BPM)@Basic_S v1.90 (for beta41a) by σ軸
+--information:時間制御繰り返し往復(BPM)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\繰り返し
 --require:2004101
 --twopoint
@@ -440,7 +610,7 @@ if p >= 1 then v0, v1, p = v1, v0, p - 1 end
 return v0 + (v1 - v0) * gp("timecontrol", "value", p * T1);
 
 @対数補間
---information:対数補間@Basic_S v1.90 (for beta41a) by σ軸
+--information:対数補間@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\特殊補間
 --require:2004101
 --timecontrol
@@ -456,7 +626,7 @@ end
 return v0 * (v1 / v0) ^ t;
 
 @対数補間(全体時間制御)
---information:対数補間(全体時間制御)@Basic_S v1.90 (for beta41a) by σ軸
+--information:対数補間(全体時間制御)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\特殊補間
 --require:2004101
 --timecontrol
@@ -472,7 +642,7 @@ end
 return v0 * (v1 / v0) ^ t;
 
 @逆数補間
---information:逆数補間@Basic_S v1.90 (for beta41a) by σ軸
+--information:逆数補間@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\特殊補間
 --require:2004101
 --timecontrol
@@ -488,7 +658,7 @@ end
 return 1 / (1 / v0 + (1 / v1 - 1 / v0) * t);
 
 @逆数補間(全体時間制御)
---information:逆数補間(全体時間制御)@Basic_S v1.90 (for beta41a) by σ軸
+--information:逆数補間(全体時間制御)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S\特殊補間
 --require:2004101
 --timecontrol
@@ -504,7 +674,7 @@ end
 return 1 / (1 / v0 + (1 / v1 - 1 / v0) * t);
 
 @バウンス
---information:バウンス@Basic_S v1.90 (for beta41a) by σ軸
+--information:バウンス@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S
 --require:2004101
 --speed:0,1
@@ -538,7 +708,7 @@ local rho = 4 * tau * (scale - tau);
 return v0 + (v1 - v0) * rho;
 
 @バウンス(全体時間制御)
---information:バウンス(全体時間制御)@Basic_S v1.90 (for beta41a) by σ軸
+--information:バウンス(全体時間制御)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S
 --require:2004101
 --speed:0,1
@@ -572,7 +742,7 @@ local rho = 4 * tau * (scale - tau);
 return v0 + (v1 - v0) * rho;
 
 @バック
---information:バック@Basic_S v1.90 (for beta41a) by σ軸
+--information:バック@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S
 --require:2004101
 --speed:0,1
@@ -595,7 +765,7 @@ local rho = t ^ 3 - t * a * math.sin(math.pi * t);
 return v0 + (v1 - v0) * rho;
 
 @バック(全体時間制御)
---information:バック(全体時間制御)@Basic_S v1.90 (for beta41a) by σ軸
+--information:バック(全体時間制御)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S
 --require:2004101
 --speed:0,1
@@ -618,7 +788,7 @@ local rho = t ^ 3 - t * a * math.sin(math.pi * t);
 return v0 + (v1 - v0) * rho;
 
 @バネ振動
---information:バネ振動@Basic_S v1.90 (for beta41a) by σ軸
+--information:バネ振動@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S
 --require:2004101
 --speed:0,1
@@ -645,7 +815,7 @@ local rho = r * math.sin(2 * math.pi * ((n + 0.25) * (1 - t) + 0.25));
 return v0 + (v1 - v0) * rho;
 
 @バネ振動(全体時間制御)
---information:バネ振動(全体時間制御)@Basic_S v1.90 (for beta41a) by σ軸
+--information:バネ振動(全体時間制御)@Basic_S v2.00-beta1 (for beta41a) by σ軸
 --label:Basic_S
 --require:2004101
 --speed:0,1
