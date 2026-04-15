@@ -1,3 +1,4 @@
+-- development version for 2.00 (for beta41a) r6
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -23,7 +24,7 @@ SOFTWARE.
 https://mit-license.org/
 ]]
 @四隅丸め
---information:四隅丸め@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:四隅丸め@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\クリッピング
 --filter
 --require:2004101
@@ -283,7 +284,7 @@ obj.pixelshader("carve", "object", nil, {
 }, "mask");
 
 @背景角丸矩形
---information:背景角丸矩形@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:背景角丸矩形@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\装飾
 --require:2004101
 --track@pad_X:余白X,-1000,1000,10,1,,0.5
@@ -588,7 +589,7 @@ end
 obj.cx, obj.cy = obj.cx + (L - R) / 2, obj.cy + (T - B) / 2;
 
 @背景楕円
---information:背景楕円@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:背景楕円@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\装飾
 --require:2004101
 --track@pad_X:余白X,-1000,1000,10,1,,0.5
@@ -703,7 +704,7 @@ obj.effect("背景角丸矩形@Basic_S", "クリッピング", clip,
 		pad_L, pad_R, pad_T, pad_B, line_x, line_y, back_x, back_y));
 
 @背景菱形
---information:背景菱形@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:背景菱形@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\装飾
 --require:2004101
 --track@pad_X:余白X,-1000,1000,10,1,,0.5
@@ -821,7 +822,7 @@ obj.effect("背景角丸矩形@Basic_S", "クリッピング", clip,
 		pad_L, pad_R, pad_T, pad_B, line_x, line_y, back_x, back_y));
 
 @透明度適用
---information:透明度適用@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:透明度適用@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\加工
 --filter
 --require:2004101
@@ -842,7 +843,7 @@ if apply_former then obj.alpha, alpha = 1, alpha * obj.alpha end
 if alpha ~= 1 then obj.pixelshader("const_alpha", "object", nil, { alpha }, "mask") end
 
 @透明度二値化
---information:透明度二値化@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:透明度二値化@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\加工
 --filter
 --require:2004101
@@ -885,7 +886,7 @@ if alpha > 0 or buffer < 1 then
 end
 
 @色調補正
---information:色調補正@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:色調補正@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\色調整
 --filter
 --require:2004101
@@ -1241,7 +1242,7 @@ else
 end
 
 @色チャンネル入れ替え
---information:色チャンネル入れ替え@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:色チャンネル入れ替え@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\色調整
 --filter
 --require:2004101
@@ -1349,7 +1350,7 @@ end
 obj.pixelshader(premult and "premult" or "nonmult", "object", "object", params);
 
 @回転中心
---information:回転中心@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:回転中心@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\配置
 --require:2004101
 --track@X:X,-4000,4000,0,0.01,,0.25
@@ -1361,7 +1362,7 @@ obj.cy = obj.cy + Y;
 obj.cz = obj.cz + Z;
 
 @回転中心アンカー指定
---information:回転中心アンカー指定@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:回転中心アンカー指定@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\配置
 --require:2004101
 --track@X:X,-4000,4000,0,0.01,,0.25
@@ -1411,7 +1412,7 @@ obj.ox,	obj.oy,	obj.oz = obj.ox + dx, obj.oy + dy, obj.oz + dz;
 obj.cx,obj.cy,obj.cz = cx, cy, cz;
 
 @上下左右揃え
---information:上下左右揃え@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:上下左右揃え@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\配置
 --require:2004101
 --track@X:左右%,-100,100,0,0.001
@@ -1436,7 +1437,7 @@ if cx ~= obj.cx or cy ~= obj.cy then
 end
 
 @直角回転
---information:直角回転@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:直角回転@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\配置
 --require:2004101
 --select@rot:方向=0,なし=0,90°時計回り=1,180°反転=2,90°反時計回り=3,左右反転=4,上下反転=5,右上軸反転=6,左上軸反転=7
@@ -1484,7 +1485,7 @@ obj.copybuffer("object", "tempbuffer");
 if not move_center then obj.cx, obj.cy = obj.cx + (cx - cx0), obj.cy + (cy - cy0) end
 
 @XYZ追加回転
---information:XYZ追加回転@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:XYZ追加回転@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\配置
 --require:2004101
 --track@X:X,-1440,1440,0,0.01,,0.25
@@ -1555,7 +1556,7 @@ if angle ~= 0 or draw then
 end
 
 @任意軸追加回転
---information:任意軸追加回転@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:任意軸追加回転@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\配置
 --require:2004101
 --track@angle:角度,-720,720,0,0.01
@@ -1804,7 +1805,7 @@ else
 end
 
 @傾斜
---information:傾斜@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:傾斜@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\変形
 --require:2004101
 --track@angle:角度,-80,80,0,0.001,,0.9
@@ -1899,7 +1900,7 @@ obj.copybuffer("object", "tempbuffer");
 obj.cx, obj.cy = obj.cx - cx, obj.cy - cy;
 
 @XY軸変形
---information:XY軸変形@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:XY軸変形@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\変形
 --require:2004101
 --track@xX:X軸移動先X,-4000,4000,100,0.01,,0.25
@@ -1970,7 +1971,7 @@ obj.drawpoly(
 obj.copybuffer("object", "tempbuffer");
 
 @領域サイズ変更
---information:領域サイズ変更@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:領域サイズ変更@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004101
 --track@T:上,-4000,4000,0,1,,0.25
@@ -2059,7 +2060,7 @@ end
 obj.cx, obj.cy = cx, cy;
 
 @領域割合サイズ変更
---information:領域割合サイズ変更@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:領域割合サイズ変更@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004101
 --track@T:上%,-100,100,0,0.001
@@ -2115,7 +2116,7 @@ if L ~= 0 or R ~= 0 or T ~= 0 or B ~= 0 then
 end
 
 @領域サイズ指定
---information:領域サイズ指定@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:領域サイズ指定@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004101
 --track@X:X,-4000,4000,0,0.1,,0.25
@@ -2214,7 +2215,7 @@ elseif L ~= 0 or R ~= 0 or T ~= 0 or B ~= 0 then
 end
 
 @カットずらし
---information:カットずらし@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:カットずらし@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004101
 --track@X:ずれX,-4000,4000,40,1,,0.25
@@ -2438,7 +2439,7 @@ if not move_center then
 end
 
 @中抜きクリッピング
---information:中抜きクリッピング@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:中抜きクリッピング@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\クリッピング
 --require:2004101
 --track@X:X,-4000,4000,0,0.1,,0.25
@@ -2542,7 +2543,7 @@ else
 end
 
 @画像中間ループ
---information:画像中間ループ@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:画像中間ループ@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\配置
 --require:2004101
 --track@width:幅,0,4000,1,1,,0.25
@@ -2760,7 +2761,7 @@ obj.cx, obj.cy =
 	obj.cy - (len1_y - len0_y) * align_y / 2;
 
 @小数ぼかし
---information:小数ぼかし@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:小数ぼかし@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\ぼかし
 --filter
 --require:2004101
@@ -2907,7 +2908,7 @@ if luma_weight > 0 then
 end
 
 @縁取りα
---information:縁取りα@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:縁取りα@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\装飾
 --require:2004101
 --track@size:サイズ,-500,500,5,1
@@ -3090,7 +3091,7 @@ elseif alpha < 1 then
 end
 
 @四角縁取り
---information:四角縁取り@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:四角縁取り@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\装飾
 --require:2004101
 --track@size:サイズ,-500,500,5,0.01
@@ -3281,7 +3282,7 @@ else
 end
 
 @内側シャドウ
---information:内側シャドウ@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:内側シャドウ@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\装飾
 --filter
 --require:2004101
@@ -3422,7 +3423,7 @@ obj.setoption("blend");
 obj.pixelshader("carve@画像ファイル合成@Basic_S", "object", { cache_name, "tempbuffer" }, nil);
 
 @画像ファイル合成
---information:画像ファイル合成@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:画像ファイル合成@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\加工
 --filter
 --require:2004101
@@ -3441,6 +3442,9 @@ obj.pixelshader("carve@画像ファイル合成@Basic_S", "object", { cache_name
 --group:合成,false
 --select@mode_draw:モード=0,前方から合成=0,前方から合成(クリッピング)=1,後方から合成=2,後方から合成(クリッピング)=3,アルファ値を乗算=4,色情報を上書き=5,輝度をアルファ値として上書き=6,輝度をアルファ値として乗算=7
 --select@blend:合成モード=0,通常=0,加算=1,減算=2,乗算=3,スクリーン=4,オーバーレイ=5,比較(明)=6,比較(暗)=7,輝度=8,色差=9,陰影=10,明暗=11,差分=12
+--group:追加効果,false
+--select@extra_filter:追加のフィルタ効果=0,なし=0,後続フィルタ=1,スクリプト実行=2
+--text@extra_script:追加スクリプト,
 --group:その他,false
 --value@PI:PI,{}
 --[[pixelshader@tile:
@@ -3552,17 +3556,18 @@ end
 -- take parameters.
 --[==[
 	PI = {
-		file:		string?,
-		X:			number?,
-		Y:			number?,
-		zoom:		number?,
-		rotate:		number?,
-		alpha:		number?,
-		no_smooth:	boolean|number|nil,
-		fixed_size:	boolean|number|nil,
-		mode_tile:	string?,
-		mode_draw:	string?,
-		blend:		string?,
+		file:			string?,
+		X:				number?,
+		Y:				number?,
+		zoom:			number?,
+		rotate:			number?,
+		alpha:			number?,
+		no_smooth:		boolean|number|nil,
+		fixed_size:		boolean|number|nil,
+		mode_tile:		string?,
+		mode_draw:		string?,
+		blend:			string?,
+		extra_filter:	string?,
 	}
 ]==]
 local function as_bool(t, v)
@@ -3602,6 +3607,10 @@ if type(PI.blend) == "string" then
 	};
 	blend = name2num[PI.blend] or blend;
 end
+if type(PI.extra_filter) == "string" then
+	local name2num = { ["追加のフィルタ効果"] = 0, ["なし"] = 0, ["後続フィルタ"] = 1, ["スクリプト実行"] = 2 };
+	extra_filter = name2num[PI.extra_filter] or extra_filter;
+end
 
 -- normalize parameters.
 zoom = math.min(math.max(zoom / 100, 0), 50);
@@ -3614,6 +3623,7 @@ blend = ({
 	"light", "dark", "brightness", "chroma", "shadow", "light_dark", "diff",
 	[100] = "alpha_add", [101] = "alpha_max", [102] = "alpha_sub", [103] = "alpha_add2", [104] = "rgba_add",
 })[blend] or "none";
+extra_script = extra_script:match("^%s*(.-)%s*$");
 
 fixed_size = fixed_size or mode_tile ~= 0 or (mode_draw == 1 or mode_draw >= 4)
 	or obj.getinfo("filter");
@@ -3624,17 +3634,51 @@ end
 
 -- try loading the image.
 local w, h = obj.w, obj.h;
-local cache_name = "cache:basic_s/combine/obj";
+local cache_name = "cache:basic_s/combine/obj#"..obj.effect_id;
 obj.copybuffer(cache_name, "object");
 local obj_props = { obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, obj.sy, obj.sz, obj.alpha };
 obj.load("image", file);
+if obj.w > 0 and obj.h > 0 then
+	if extra_filter == 1 then obj.effect();
+	elseif extra_filter == 2 and extra_script ~= "" then
+		local f, c, e = nil, false, nil;
+		f, e = loadstring(extra_script);
+		if f then c, e = pcall(f) end
+		if not c then
+			local function print_error(err_mes, source)
+				local n, err_desc = err_mes:match("%]:(%d+):%s(.-)$");
+				n = tonumber(n);
+				if n and err_desc then
+					-- collect three lines containing the one that caused the error.
+					n = math.max(n - 1, 1);
+					local k = 0;
+					for l in (source.."\n"):gmatch("(.-)\n") do
+						k = k + 1;
+						if k >= n then
+							err_desc = err_desc.."\n> "..l;
+							if k >= n + 2 then break end
+						end
+					end
+				else err_desc = err_mes end
+				print(err_desc); -- easy-to-read message.
+				print("@warn", err_mes); -- raw message.
+			end
+			print_error(e, extra_script);
+		end
+	end
+else extra_filter = 0 end
 local W, H, dcx, dcy = obj.w, obj.h, 0, 0;
 if W > 0 and H > 0 then -- renders properly only when the image is loaded propertly.
+	-- reflect properties.
+	rotate = rotate + math.pi / 180 * (obj.rz % 360);
+	local zoom_x, zoom_y, c, s = obj.sx * zoom, obj.sy * zoom, math.cos(rotate), math.sin(rotate);
+	X, Y = X + obj.ox - (zoom_x * c * obj.cx - zoom_y * s * obj.cy), Y + obj.oy - (zoom_x * s * obj.cx + zoom_y * c * obj.cy);
+	alpha = alpha * obj.alpha;
+
 	-- determine the canvas size.
-	local L, R, T, B, c, s = -w / 2, w / 2, -h / 2, h / 2, math.cos(rotate), math.sin(rotate);
+	local L, R, T, B = -w / 2, w / 2, -h / 2, h / 2;
 	if not fixed_size then
-		local C, S = zoom * math.abs(c), zoom * math.abs(s);
-		L, T = W * C + H * S, W * S + H * C;
+		L, T = zoom_x * math.abs(c) * W + zoom_y * math.abs(s) * H, zoom_x * math.abs(s) * W + zoom_y * math.abs(c) * H;
 		L, R, T, B = X - L / 2, X + L / 2, Y - T / 2, Y + T / 2;
 		L, R = math.floor(math.min(L + w / 2, 0)) - w / 2, math.ceil(math.max(R + w / 2, w)) - w / 2;
 		T, B = math.floor(math.min(T + h / 2, 0)) - h / 2, math.ceil(math.max(B + h / 2, h)) - h / 2;
@@ -3644,13 +3688,13 @@ if W > 0 and H > 0 then -- renders properly only when the image is loaded proper
 	-- process rotate / zoom / tile.
 	if alpha > 0 then
 		obj.clearbuffer("tempbuffer", R - L, B - T);
-		if zoom > 0 then
+		if zoom_x > 0 and zoom_y > 0 then
 			obj.pixelshader("tile", "tempbuffer", "object", {
 				W, H;
-				(c * (L - X) + s * (T - Y)) / zoom + W / 2,
-				(-s * (L - X) + c * (T - Y)) / zoom + H / 2;
-				c / zoom, -s / zoom, 0, 0,
-				s / zoom, c / zoom;
+				(c * (L - X) + s * (T - Y)) / zoom_x + W / 2,
+				(-s * (L - X) + c * (T - Y)) / zoom_y + H / 2;
+				c / zoom_x, -s / zoom_y, 0, 0,
+				s / zoom_x, c / zoom_y;
 				mode_tile % 2, math.floor(mode_tile / 2);
 				no_smooth and 1 or 0;
 			});
@@ -3734,8 +3778,14 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 -- adjust the center.
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
+-- draw immediately if subsequent filters are already applied.
+if extra_filter == 1 then
+	obj.setoption("drawtarget", "framebuffer");
+	obj.draw();
+end
+
 @動画ファイル合成
---information:動画ファイル合成@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:動画ファイル合成@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\加工
 --filter
 --require:2004101
@@ -3758,6 +3808,9 @@ obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 --group:合成,false
 --select@mode_draw:モード=0,前方から合成=0,前方から合成(クリッピング)=1,後方から合成=2,後方から合成(クリッピング)=3,アルファ値を乗算=4,色情報を上書き=5,輝度をアルファ値として上書き=6,輝度をアルファ値として乗算=7
 --select@blend:合成モード=0,通常=0,加算=1,減算=2,乗算=3,スクリーン=4,オーバーレイ=5,比較(明)=6,比較(暗)=7,輝度=8,色差=9,陰影=10,明暗=11,差分=12
+--group:追加効果,false
+--select@extra_filter:追加のフィルタ効果=0,なし=0,後続フィルタ=1,スクリプト実行=2
+--text@extra_script:追加スクリプト,
 --group:その他,false
 --value@PI:PI,{}
 local obj, math, type, tonumber = obj, math, type, tonumber;
@@ -3770,20 +3823,21 @@ end
 -- take parameters.
 --[==[
 	PI = {
-		file:		string?,
-		start:		number?,
-		rate:		number?,
-		loop:		boolean|number|nil,
-		X:			number?,
-		Y:			number?,
-		zoom:		number?,
-		rotate:		number?,
-		alpha:		number?,
-		no_smooth:	boolean|number|nil,
-		fixed_size:	boolean|number|nil,
-		mode_tile:	string?,
-		mode_draw:	string?,
-		blend:		string?,
+		file:			string?,
+		start:			number?,
+		rate:			number?,
+		loop:			boolean|number|nil,
+		X:				number?,
+		Y:				number?,
+		zoom:			number?,
+		rotate:			number?,
+		alpha:			number?,
+		no_smooth:		boolean|number|nil,
+		fixed_size:		boolean|number|nil,
+		mode_tile:		string?,
+		mode_draw:		string?,
+		blend:			string?,
+		extra_filter:	string?,
 	}
 ]==]
 local function as_bool(t, v)
@@ -3826,6 +3880,10 @@ if type(PI.blend) == "string" then
 	};
 	blend = name2num[PI.blend] or blend;
 end
+if type(PI.extra_filter) == "string" then
+	local name2num = { ["追加のフィルタ効果"] = 0, ["なし"] = 0, ["後続フィルタ"] = 1, ["スクリプト実行"] = 2 };
+	extra_filter = name2num[PI.extra_filter] or extra_filter;
+end
 
 -- normalize parameters.
 start = math.max(start, 0);
@@ -3840,6 +3898,7 @@ blend = ({
 	"light", "dark", "brightness", "chroma", "shadow", "light_dark", "diff",
 	[100] = "alpha_add", [101] = "alpha_max", [102] = "alpha_sub", [103] = "alpha_add2", [104] = "rgba_add",
 })[blend] or "none";
+extra_script = extra_script:match("^%s*(.-)%s*$");
 
 fixed_size = fixed_size or mode_tile ~= 0 or (mode_draw == 1 or mode_draw >= 4)
 	or obj.getinfo("filter");
@@ -3850,7 +3909,7 @@ end
 
 -- try loading the video.
 local w, h = obj.w, obj.h;
-local cache_name = "cache:basic_s/combine/obj";
+local cache_name = "cache:basic_s/combine/obj#"..obj.effect_id;
 obj.copybuffer(cache_name, "object");
 local obj_props = { obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, obj.sy, obj.sz, obj.alpha };
 local video_len = nil do
@@ -3859,19 +3918,53 @@ local video_len = nil do
 		video_len = f * s / r;
 	end
 end
-local W, H, dcx, dcy = 0, 0, 0, 0;
 if video_len then -- renders properly only when the video can be loaded propertly.
 	local video_pos = start + rate * obj.time;
 	if loop then video_pos = video_pos % video_len;
 	else video_pos = math.min(math.max(video_pos, 0), video_len) end
 	obj.load("movie", file, math.max(video_pos, 0));
-	W, H = obj.w, obj.h;
+
+	if obj.w <= 0 or obj.h <= 0 then -- empty.
+	elseif extra_filter == 1 then obj.effect();
+	elseif extra_filter == 2 and extra_script ~= "" then
+		local f, c, e = nil, false, nil;
+		f, e = loadstring(extra_script);
+		if f then c, e = pcall(f) end
+		if not c then
+			local function print_error(err_mes, source)
+				local n, err_desc = err_mes:match("%]:(%d+):%s(.-)$");
+				n = tonumber(n);
+				if n and err_desc then
+					-- collect three lines containing the one that caused the error.
+					n = math.max(n - 1, 1);
+					local k = 0;
+					for l in (source.."\n"):gmatch("(.-)\n") do
+						k = k + 1;
+						if k >= n then
+							err_desc = err_desc.."\n> "..l;
+							if k >= n + 2 then break end
+						end
+					end
+				else err_desc = err_mes end
+				print(err_desc); -- easy-to-read message.
+				print("@warn", err_mes); -- raw message.
+			end
+			print_error(e, extra_script);
+		end
+	end
+else extra_filter = 0 end
+local W, H, dcx, dcy = obj.w, obj.h, 0, 0;
+if video_len and W > 0 and H > 0 then
+	-- reflect properties.
+	rotate = rotate + math.pi / 180 * (obj.rz % 360);
+	local zoom_x, zoom_y, c, s = obj.sx * zoom, obj.sy * zoom, math.cos(rotate), math.sin(rotate);
+	X, Y = X + obj.ox - (zoom_x * c * obj.cx - zoom_y * s * obj.cy), Y + obj.oy - (zoom_x * s * obj.cx + zoom_y * c * obj.cy);
+	alpha = alpha * obj.alpha;
 
 	-- determine the canvas size.
-	local L, R, T, B, c, s = -w / 2, w / 2, -h / 2, h / 2, math.cos(rotate), math.sin(rotate);
+	local L, R, T, B = -w / 2, w / 2, -h / 2, h / 2;
 	if not fixed_size then
-		local C, S = zoom * math.abs(c), zoom * math.abs(s);
-		L, T = W * C + H * S, W * S + H * C;
+		L, T = zoom_x * math.abs(c) * W + zoom_y * math.abs(s) * H, zoom_x * math.abs(s) * W + zoom_y * math.abs(c) * H;
 		L, R, T, B = X - L / 2, X + L / 2, Y - T / 2, Y + T / 2;
 		L, R = math.floor(math.min(L + w / 2, 0)) - w / 2, math.ceil(math.max(R + w / 2, w)) - w / 2;
 		T, B = math.floor(math.min(T + h / 2, 0)) - h / 2, math.ceil(math.max(B + h / 2, h)) - h / 2;
@@ -3881,13 +3974,13 @@ if video_len then -- renders properly only when the video can be loaded propertl
 	-- process rotate / zoom / tile.
 	if alpha > 0 then
 		obj.clearbuffer("tempbuffer", R - L, B - T);
-		if zoom > 0 then
+		if zoom_x > 0 and zoom_y > 0 then
 			obj.pixelshader("tile@画像ファイル合成@Basic_S", "tempbuffer", "object", {
 				W, H;
-				(c * (L - X) + s * (T - Y)) / zoom + W / 2,
-				(-s * (L - X) + c * (T - Y)) / zoom + H / 2;
-				c / zoom, -s / zoom, 0, 0,
-				s / zoom, c / zoom;
+				(c * (L - X) + s * (T - Y)) / zoom_x + W / 2,
+				(-s * (L - X) + c * (T - Y)) / zoom_y + H / 2;
+				c / zoom_x, -s / zoom_y, 0, 0,
+				s / zoom_x, c / zoom_y;
 				mode_tile % 2, math.floor(mode_tile / 2);
 				no_smooth and 1 or 0;
 			});
@@ -3971,8 +4064,14 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 -- adjust the center.
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
+-- draw immediately if subsequent filters are already applied.
+if extra_filter == 1 then
+	obj.setoption("drawtarget", "framebuffer");
+	obj.draw();
+end
+
 @テキスト合成
---information:テキスト合成@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:テキスト合成@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\加工
 --filter
 --require:2004101
@@ -4004,6 +4103,9 @@ obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 --group:合成,false
 --select@mode_draw:モード=0,前方から合成=0,前方から合成(クリッピング)=1,後方から合成=2,後方から合成(クリッピング)=3,アルファ値を乗算=4,色情報を上書き=5,輝度をアルファ値として上書き=6,輝度をアルファ値として乗算=7
 --select@blend:合成モード=0,通常=0,加算=1,減算=2,乗算=3,スクリーン=4,オーバーレイ=5,比較(明)=6,比較(暗)=7,輝度=8,色差=9,陰影=10,明暗=11,差分=12
+--group:追加効果,false
+--select@extra_filter:追加のフィルタ効果=0,なし=0,後続フィルタ=1,スクリプト実行=2
+--text@extra_script:追加スクリプト,
 --group:その他,false
 --value@PI:PI,{}
 local obj, math, type, tonumber = obj, math, type, tonumber;
@@ -4016,28 +4118,29 @@ end
 -- take parameters.
 --[==[
 	PI = {
-		text:		string?,
-		font_size:	number?,
-		font_name:	string?,
-		color_main:	number?,
-		color_sub:	number?,
-		type_char:	string?,
-		is_bold:	boolean|number|nil,
-		is_italic:	boolean|number|nil,
-		space_char:	number?,
-		space_line:	number?,
-		text_speed:	number?,
-		text_align:	string?,
-		X:			number?,
-		Y:			number?,
-		zoom:		number?,
-		rotate:		number?,
-		alpha:		number?,
-		fixed_size:	boolean|number|nil,
-		no_smooth:	boolean|number|nil,
-		mode_tile:	string?,
-		mode_draw:	string?,
-		blend:		string?,
+		text:			string?,
+		font_size:		number?,
+		font_name:		string?,
+		color_main:		number?,
+		color_sub:		number?,
+		type_char:		string?,
+		is_bold:		boolean|number|nil,
+		is_italic:		boolean|number|nil,
+		space_char:		number?,
+		space_line:		number?,
+		text_speed:		number?,
+		text_align:		string?,
+		X:				number?,
+		Y:				number?,
+		zoom:			number?,
+		rotate:			number?,
+		alpha:			number?,
+		fixed_size:		boolean|number|nil,
+		no_smooth:		boolean|number|nil,
+		mode_tile:		string?,
+		mode_draw:		string?,
+		blend:			string?,
+		extra_filter:	string?,
 	}
 ]==]
 local function as_bool(t, v)
@@ -4105,6 +4208,10 @@ if type(PI.blend) == "string" then
 	};
 	blend = name2num[PI.blend] or blend;
 end
+if type(PI.extra_filter) == "string" then
+	local name2num = { ["追加のフィルタ効果"] = 0, ["なし"] = 0, ["後続フィルタ"] = 1, ["スクリプト実行"] = 2 };
+	extra_filter = name2num[PI.extra_filter] or extra_filter;
+end
 
 -- normalize parameters.
 font_size = math.min(math.max(font_size, 1), 1000);
@@ -4125,6 +4232,7 @@ blend = ({
 	"light", "dark", "brightness", "chroma", "shadow", "light_dark", "diff",
 	[100] = "alpha_add", [101] = "alpha_max", [102] = "alpha_sub", [103] = "alpha_add2", [104] = "rgba_add",
 })[blend] or "none";
+extra_script = extra_script:match("^%s*(.-)%s*$");
 
 fixed_size = fixed_size or mode_tile ~= 0 or (mode_draw == 1 or mode_draw >= 4)
 	or obj.getinfo("filter");
@@ -4132,10 +4240,28 @@ if (zoom <= 0 and mode_tile ~= 0) or (alpha <= 0 and fixed_size) then return end
 
 -- try loading the text.
 local w, h = obj.w, obj.h;
-local cache_name = "cache:basic_s/combine/obj";
+local cache_name = "cache:basic_s/combine/obj#"..obj.effect_id;
 obj.copybuffer(cache_name, "object");
 obj.setfont(font_name, font_size, type_char, color_main, color_sub,
 	is_bold, is_italic, space_char, space_line);
+local function print_error(err_mes, source)
+	local n, err_desc = err_mes:match("%]:(%d+):%s(.-)$");
+	n = tonumber(n);
+	if n and err_desc then
+		-- collect three lines containing the one that caused the error.
+		n = math.max(n - 1, 1);
+		local k = 0;
+		for l in (source.."\n"):gmatch("(.-)\n") do
+			k = k + 1;
+			if k >= n then
+				err_desc = err_desc.."\n> "..l;
+				if k >= n + 2 then break end
+			end
+		end
+	else err_desc = err_mes end
+	print(err_desc); -- easy-to-read message.
+	print("@warn", err_mes); -- raw message.
+end
 if text:find("<%?.-%?>") then
 	-- handle inner scripts.
 	local tostring, pcall, loadstring, setfenv, print = tostring, pcall, loadstring, setfenv, print;
@@ -4152,25 +4278,6 @@ if text:find("<%?.-%?>") then
 	inner_G._G, inner_G.obj, inner_G.mes, inner_obj.mes = inner_G, inner_obj, inner_mes, inner_mes;
 	setmetatable(inner_G, { __index = _G, __newindex = _G });
 	setmetatable(inner_obj, { __index = obj, __newindex = obj });
-
-	local function print_error(err_mes, source)
-		local n, err_desc = err_mes:match("%]:(%d+):%s(.-)$");
-		n = tonumber(n);
-		if n and err_desc then
-			-- collect three lines containing the one that caused the error.
-			n = math.max(n - 1, 1);
-			local k = 0;
-			for l in (source.."\n"):gmatch("(.-)\n") do
-				k = k + 1;
-				if k >= n then
-					err_desc = err_desc.."\n> "..l;
-					if k >= n + 2 then break end
-				end
-			end
-		else err_desc = err_mes end
-		print(err_desc); -- easy-to-read message.
-		print("@warn", err_mes); -- raw message.
-	end
 
 	-- parse scripts.
 	text = text:gsub("<%?(.-)%?>", function(script)
@@ -4196,15 +4303,31 @@ end
 local obj_props = { obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, obj.sy, obj.sz, obj.alpha };
 local W, H, dcx, dcy = 0, 0, 0, 0;
 if zoom > 0 and obj.load("text", text, text_speed, obj.time, text_align) then
+	if extra_filter == 1 then obj.effect();
+	elseif extra_filter == 2 and extra_script ~= "" then
+		local f, c, e = nil, false, nil;
+		f, e = loadstring(extra_script);
+		if f then c, e = pcall(f) end
+		if not c then
+			print_error(e, extra_script);
+		end
+	end
 	W, H = obj.w, obj.h;
 end
 do -- renders properly even if the text is empty.
+	-- reflect properties.
+	local zoom_x, zoom_y, c, s = zoom, zoom, 1, 0;
+	if W > 0 and H > 0 then
+		rotate = rotate + math.pi / 180 * (obj.rz % 360);
+		zoom_x, zoom_y, c, s = obj.sx * zoom, obj.sy * zoom, math.cos(rotate), math.sin(rotate);
+		X, Y = X + obj.ox - (zoom_x * c * obj.cx - zoom_y * s * obj.cy), Y + obj.oy - (zoom_x * s * obj.cx + zoom_y * c * obj.cy);
+		alpha = alpha * obj.alpha;
+	end
+
 	-- determine the canvas size.
-	local L, R, T, B, c, s = -w / 2, w / 2, -h / 2, h / 2, math.cos(rotate), math.sin(rotate);
-	X, Y = X - zoom * (c * obj.cx - s * obj.cy), Y - zoom * (s * obj.cx + c * obj.cy);
+	local L, R, T, B = -w / 2, w / 2, -h / 2, h / 2;
 	if not fixed_size then
-		local C, S = zoom * math.abs(c), zoom * math.abs(s);
-		L, T = W * C + H * S, W * S + H * C;
+		L, T = zoom_x * math.abs(c) * W + zoom_y * math.abs(s) * H, zoom_x * math.abs(s) * W + zoom_y * math.abs(c) * H;
 		L, R, T, B = X - L / 2, X + L / 2, Y - T / 2, Y + T / 2;
 		L, R = math.floor(math.min(L + w / 2, 0)) - w / 2, math.ceil(math.max(R + w / 2, w)) - w / 2;
 		T, B = math.floor(math.min(T + h / 2, 0)) - h / 2, math.ceil(math.max(B + h / 2, h)) - h / 2;
@@ -4214,13 +4337,13 @@ do -- renders properly even if the text is empty.
 	-- process rotate / zoom / tile.
 	if alpha > 0 then
 		obj.clearbuffer("tempbuffer", R - L, B - T);
-		if zoom > 0 and W > 0 and H > 0 then
+		if zoom_x > 0 and zoom_y > 0 and W > 0 and H > 0 then
 			obj.pixelshader("tile@画像ファイル合成@Basic_S", "tempbuffer", "object", {
 				W, H;
-				(c * (L - X) + s * (T - Y)) / zoom + W / 2,
-				(-s * (L - X) + c * (T - Y)) / zoom + H / 2;
-				c / zoom, -s / zoom, 0, 0,
-				s / zoom, c / zoom;
+				(c * (L - X) + s * (T - Y)) / zoom_x + W / 2,
+				(-s * (L - X) + c * (T - Y)) / zoom_y + H / 2;
+				c / zoom_x, -s / zoom_y, 0, 0,
+				s / zoom_x, c / zoom_y;
 				mode_tile % 2, math.floor(mode_tile / 2);
 				no_smooth and 1 or 0;
 			});
@@ -4304,8 +4427,14 @@ obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, 
 -- adjust the center.
 obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 
+-- draw immediately if subsequent filters are already applied.
+if extra_filter == 1 then
+	obj.setoption("drawtarget", "framebuffer");
+	obj.draw();
+end
+
 @別レイヤー同期
---information:別レイヤー同期@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:別レイヤー同期@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\配置
 --require:2004101
 --select@index_base:レイヤー位置=1,絶対指定=0,相対指定=1
@@ -4426,7 +4555,7 @@ if sync_rot ~= 0 then
 end
 
 @バッファをコピー
---information:バッファをコピー@Basic_S v2.00-beta5 (for beta41a) by σ軸
+--information:バッファをコピー@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S
 --filter
 --require:2004101
