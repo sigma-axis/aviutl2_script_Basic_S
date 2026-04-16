@@ -213,7 +213,7 @@ Although, usage documentations for this script / plugin in languages other than 
 
 ### 任意軸追加回転
 
-https://github.com/user-attachments/assets/8a0d6595-605f-49c5-9e05-739963d9c63a
+![任意軸追加回転の適用例](https://github.com/user-attachments/assets/5af33f4e-71e9-4287-90ba-fa9cc5b5c2f3)
 
 アンカーで指定したラインに沿った軸でオブジェクトを立体回転させます．軸指定がアンカーな点以外は[XYZ追加回転](#xyz追加回転)と同様です．
 
@@ -221,7 +221,7 @@ https://github.com/user-attachments/assets/8a0d6595-605f-49c5-9e05-739963d9c63a
 
 ### 傾斜
 
-![傾斜の適用例](https://github.com/user-attachments/assets/a9b55ccf-0dc7-4404-9624-cb3085424d21)
+![傾斜の適用例](https://github.com/user-attachments/assets/c98bda24-1af8-45bf-8ebb-567d508c4e9a)
 
 アンカーで指定した軸に沿った傾斜変形をします．傾斜量は角度と傾き (角度の $\tan$ 値) で指定できます．
 
@@ -229,7 +229,7 @@ https://github.com/user-attachments/assets/8a0d6595-605f-49c5-9e05-739963d9c63a
 
 ### XY軸変形
 
-https://github.com/user-attachments/assets/146133cf-f82f-4bc9-82ff-5dfc1b7d86d8
+![XY軸変形の適用例](https://github.com/user-attachments/assets/15fa19d1-6c0a-4a0d-8b40-9c4877924d11)
 
 X, Y 軸方向に伸びたアンカーをマウス操作することで変形します．
 
@@ -261,7 +261,7 @@ X, Y 軸方向に伸びたアンカーをマウス操作することで変形し
 
 ### カットずらし
 
-https://github.com/user-attachments/assets/6fc13047-fde8-4ec9-8984-2083661129f2
+![カットずらしの適用例](https://github.com/user-attachments/assets/33774fd4-6c35-40fe-8b2b-ddfb4f5825ff)
 
 アンカーで指定したラインでオブジェクトを切り取って，ずらして配置します．ずらす移動量や方向もアンカーで操作できます．
 
@@ -345,7 +345,7 @@ AviUtl (無印) にあった「動画ファイル合成」と同等のことが�
 
 別レイヤーの座標や回転角度，拡大率や透明度を読み取って反映します．個別の項目ごとに影響度を % 単位で指定できます．
 
-https://github.com/user-attachments/assets/65a2eb86-3b2a-406d-829b-ccdbaa29f123
+![別レイヤー同期の適用例](https://github.com/user-attachments/assets/0c015211-d54b-44df-b4d2-88066fab8b41)
 
 :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/別レイヤー同期)
 
