@@ -1,4 +1,4 @@
--- development version for 2.00 (for beta41a) r6
+-- development version for 2.00 (for beta41a) r7
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -1492,7 +1492,7 @@ if not move_center then obj.cx, obj.cy = obj.cx + (cx - cx0), obj.cy + (cy - cy0
 --track@Y:Y,-1440,1440,0,0.01,,0.25
 --track@Z:Z,-1440,1440,0,0.01,,0.25
 --trackgroup@X,Y,Z:rot
---track@intensity:回転量,-200,200,100,0.01,,0.5
+--track@intensity:回転量,-400,400,100,0.01,,0.25
 --group:描画処理,false
 --check@draw:描画する,false
 --check@grouped:グループ制御,false
@@ -1559,7 +1559,7 @@ end
 --information:任意軸追加回転@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\配置
 --require:2004101
---track@angle:角度,-720,720,0,0.01
+--track@angle:角度,-1440,1440,0,0.01,,0.25
 --track@X:回転軸X,-1024,1024,0,0.001,,0.25
 --track@Y:回転軸Y,-1024,1024,0,0.001,,0.25
 --track@Z:回転軸Z,-1024,1024,128,0.001,,0.25
