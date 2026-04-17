@@ -1,4 +1,4 @@
--- development version for 2.00 (for beta41a) r8
+-- development version for 2.00 (for beta41a) r9
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -379,11 +379,12 @@ return v0 + (v1 - v0) * f / F;
 --twopoint
 --param:周期(秒),0.5
 --param:周期ずれ%,0
+--param:デューティ比%,50
 local gp = obj.getpoint;
-local t, T, d = gp("time"), gp("param");
+local t, T, d, R = gp("time"), gp("param");
 if 1 / T < 0 then t, T = t - gp("time", 1) - 1 / gp("framerate"), -T end
 if T == 0 then T = 1 end
-return gp(((t / T + d / 100) % 1) < 0.5 and 0 or 1);
+return gp(((t / T + d / 100) % 1) < math.min(math.max(R / 100, 0), 1) and 0 or 1);
 
 @コマ落ち反復(フレーム)
 --information:コマ落ち反復(フレーム)@Basic_S v1.90 (for beta41a) by σ軸
@@ -392,12 +393,13 @@ return gp(((t / T + d / 100) % 1) < 0.5 and 0 or 1);
 --twopoint
 --param:周期(フレーム),30
 --param:周期ずれ%,0
+--param:デューティ比%,50
 local gp = obj.getpoint;
 local fr = gp("framerate");
-local f, F, d = fr * gp("time"), gp("param");
+local f, F, d, R = fr * gp("time"), gp("param");
 if 1 / F < 0 then f, F = f - fr * gp("time", 1) - 1, -F end
 if F == 0 then F = 1 end
-return gp(((f / F + d / 100) % 1) < 0.5 and 0 or 1);
+return gp(((f / F + d / 100) % 1) < math.min(math.max(R / 100, 0), 1) and 0 or 1);
 
 @コマ落ち反復(Hz)
 --information:コマ落ち反復(Hz)@Basic_S v1.90 (for beta41a) by σ軸
@@ -406,10 +408,11 @@ return gp(((f / F + d / 100) % 1) < 0.5 and 0 or 1);
 --twopoint
 --param:周期(Hz),2
 --param:周期ずれ%,0
+--param:デューティ比%,50
 local gp = obj.getpoint;
-local t, N, d = gp("time"), gp("param");
+local t, N, d, R = gp("time"), gp("param");
 if 1 / N < 0 then t, N = t - gp("time", 1) - 1 / gp("framerate"), -N end
-return gp(((t * N + d / 100) % 1) < 0.5 and 0 or 1);
+return gp(((t * N + d / 100) % 1) < math.min(math.max(R / 100, 0), 1) and 0 or 1);
 
 @コマ落ち反復(BPM)
 --information:コマ落ち反復(BPM)@Basic_S v1.90 (for beta41a) by σ軸
@@ -418,10 +421,11 @@ return gp(((t * N + d / 100) % 1) < 0.5 and 0 or 1);
 --twopoint
 --param:周期(BPM),120
 --param:周期ずれ%,0
+--param:デューティ比%,50
 local gp = obj.getpoint;
-local t, N, d = gp("time"), gp("param");
+local t, N, d, R = gp("time"), gp("param");
 if 1 / N < 0 then t, N = t - gp("time", 1) - 1 / gp("framerate"), -N end
-return gp(((t * N / 60 + d / 100) % 1) < 0.5 and 0 or 1);
+return gp(((t * N / 60 + d / 100) % 1) < math.min(math.max(R / 100, 0), 1) and 0 or 1);
 
 @コマ落ち反復(BPMグリッド)
 --information:コマ落ち反復(BPMグリッド)@Basic_S v1.90 (for beta41a) by σ軸
@@ -432,12 +436,13 @@ return gp(((t * N / 60 + d / 100) % 1) < 0.5 and 0 or 1);
 --param:基準のN分音符(0=小節),4
 --param:グリッド1拍のN分音符,4
 --param:周期ずれ%,0
+--param:デューティ比%,50
 local math, gp, tempo, beats = math, obj.getpoint, obj.getinfo("bpm");
-local t, p, n, N, d = gp("time"), gp("param");
+local t, p, n, N, d, R = gp("time"), gp("param");
 n, N = math.max(n, 0), math.max(N, 1);
 if 1 / p < 0 then t, p = t - gp("time", 1) - 1 / gp("framerate"), -p end
 if n == 0 then n, N = 1, beats end
-return gp(((t * tempo * n / (60 * p * N) + d / 100) % 1) < 0.5 and 0 or 1);
+return gp(((t * tempo * n / (60 * p * N) + d / 100) % 1) < math.min(math.max(R / 100, 0), 1) and 0 or 1);
 
 @コマ落ちランダム(秒)
 --information:コマ落ちランダム(秒)@Basic_S v1.90 (for beta41a) by σ軸
