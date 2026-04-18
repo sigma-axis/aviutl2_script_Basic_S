@@ -1,4 +1,4 @@
--- development version for 2.00 (for beta41a) r7
+-- development version for 2.00 (for beta42) r11
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -3637,8 +3637,8 @@ local w, h = obj.w, obj.h;
 local cache_name = "cache:basic_s/combine/obj#"..obj.effect_id;
 obj.copybuffer(cache_name, "object");
 local obj_props = { obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, obj.sy, obj.sz, obj.alpha };
-obj.load("image", file);
-if obj.w > 0 and obj.h > 0 then
+local W, H, dcx, dcy = 0, 0, 0, 0;
+if obj.load("image", file) then
 	if extra_filter == 1 then obj.effect();
 	elseif extra_filter == 2 and extra_script ~= "" then
 		local f, c, e = nil, false, nil;
@@ -3666,8 +3666,8 @@ if obj.w > 0 and obj.h > 0 then
 			print_error(e, extra_script);
 		end
 	end
+	W, H = obj.w, obj.h;
 else extra_filter = 0 end
-local W, H, dcx, dcy = obj.w, obj.h, 0, 0;
 if W > 0 and H > 0 then -- renders properly only when the image is loaded propertly.
 	-- reflect properties.
 	rotate = rotate + math.pi / 180 * (obj.rz % 360);
@@ -3912,9 +3912,10 @@ local w, h = obj.w, obj.h;
 local cache_name = "cache:basic_s/combine/obj#"..obj.effect_id;
 obj.copybuffer(cache_name, "object");
 local obj_props = { obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, obj.sy, obj.sz, obj.alpha };
+local W, H, dcx, dcy = 0, 0, 0, 0;
 local video_len = nil do
 	local f, r, s = obj.load("movie.info", file);
-	if f and r and s and f > 0 and r > 0 and s > 0 then
+	if f > 0 and r > 0 and s > 0 then
 		video_len = f * s / r;
 	end
 end
@@ -3922,10 +3923,13 @@ if video_len then -- renders properly only when the video can be loaded propertl
 	local video_pos = start + rate * obj.time;
 	if loop then video_pos = video_pos % video_len;
 	else video_pos = math.min(math.max(video_pos, 0), video_len) end
-	obj.load("movie", file, math.max(video_pos, 0));
 
-	if obj.w <= 0 or obj.h <= 0 then -- empty.
-	elseif extra_filter == 1 then obj.effect();
+	if obj.load("movie", file, math.max(video_pos, 0)) <= 0 or
+		obj.w <= 0 or obj.h <= 0 then video_len = nil;
+	end
+end
+if video_len then
+	if extra_filter == 1 then obj.effect();
 	elseif extra_filter == 2 and extra_script ~= "" then
 		local f, c, e = nil, false, nil;
 		f, e = loadstring(extra_script);
@@ -3952,9 +3956,9 @@ if video_len then -- renders properly only when the video can be loaded propertl
 			print_error(e, extra_script);
 		end
 	end
+	W, H = obj.w, obj.h;
 else extra_filter = 0 end
-local W, H, dcx, dcy = obj.w, obj.h, 0, 0;
-if video_len and W > 0 and H > 0 then
+if W > 0 and H > 0 then
 	-- reflect properties.
 	rotate = rotate + math.pi / 180 * (obj.rz % 360);
 	local zoom_x, zoom_y, c, s = obj.sx * zoom, obj.sy * zoom, math.cos(rotate), math.sin(rotate);
