@@ -1,4 +1,4 @@
--- development version for 2.00 (for beta41a) r9
+-- development version for 2.00 (for beta42) r10
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -692,65 +692,73 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", x * T1);
 --information:対数補間@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\特殊補間
 --require:2004101
+--param:原点,0
 --timecontrol
 local gp, math = obj.getpoint, math;
 local n, i, t = gp("num"), math.modf(gp("index"));
 if i >= n - 1 then i, t = n - 2, 1 end
 t = gp("timecontrol", "value", t * gp("time", n - 1));
-local v0, v1 = gp(i), gp(i + 1);
+local v0, v1, O = gp(i), gp(i + 1), gp("param");
+v0, v1 = v0 - O, v1 - O;
 if v0 == 0 or v1 == 0 or (v0 > 0) ~= (v1 > 0) then
 	-- fall back to the linear interpolation instead.
-	return v0 + (v1 - v0) * t;
+	return v0 + (v1 - v0) * t + O;
 end
-return v0 * (v1 / v0) ^ t;
+return v0 * (v1 / v0) ^ t + O;
 
 @対数補間(全体時間制御)
 --information:対数補間(全体時間制御)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\特殊補間
 --require:2004101
+--param:原点,0
 --timecontrol
 local gp, math = obj.getpoint, math;
 local n, i, t = gp("num"), math.modf(gp("timecontrol", "index"));
 if i >= n - 1 then i, t = n - 2, 1;
 elseif i < 0 then i, t = 0, 0 end
-local v0, v1 = gp(i), gp(i + 1);
+local v0, v1, O = gp(i), gp(i + 1), gp("param");
+v0, v1 = v0 - O, v1 - O;
 if v0 == 0 or v1 == 0 or (v0 > 0) ~= (v1 > 0) then
 	-- fall back to the linear interpolation instead.
-	return v0 + (v1 - v0) * t;
+	return v0 + (v1 - v0) * t + O;
 end
-return v0 * (v1 / v0) ^ t;
+return v0 * (v1 / v0) ^ t + O;
 
 @逆数補間
 --information:逆数補間@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\特殊補間
 --require:2004101
+--param:原点,0
 --timecontrol
 local gp, math = obj.getpoint, math;
 local n, i, t = gp("num"), math.modf(gp("index"));
 if i >= n - 1 then i, t = n - 2, 1 end
 t = gp("timecontrol", "value", t * gp("time", n - 1));
-local v0, v1 = gp(i), gp(i + 1);
+local v0, v1, O = gp(i), gp(i + 1), gp("param");
+v0, v1 = v0 - O, v1 - O;
 if v0 == 0 or v1 == 0 or (v0 > 0) ~= (v1 > 0) then
 	-- fall back to the linear interpolation instead.
-	return v0 + (v1 - v0) * t;
+	return v0 + (v1 - v0) * t + O;
 end
-return 1 / (1 / v0 + (1 / v1 - 1 / v0) * t);
+return 1 / (1 / v0 + (1 / v1 - 1 / v0) * t) + O;
 
 @逆数補間(全体時間制御)
 --information:逆数補間(全体時間制御)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\特殊補間
 --require:2004101
+--param:原点,0
 --timecontrol
 local gp, math = obj.getpoint, math;
 local n, i, t = gp("num"), math.modf(gp("timecontrol", "index"));
 if i >= n - 1 then i, t = n - 2, 1;
 elseif i < 0 then i, t = 0, 0 end
-local v0, v1 = gp(i), gp(i + 1);
+local v0, v1, O = gp(i), gp(i + 1), gp("param");
+v0, v1 = v0 - O, v1 - O;
 if v0 == 0 or v1 == 0 or (v0 > 0) ~= (v1 > 0) then
 	-- fall back to the linear interpolation instead.
-	return v0 + (v1 - v0) * t;
+	return v0 + (v1 - v0) * t + O;
 end
-return 1 / (1 / v0 + (1 / v1 - 1 / v0) * t);
+return 1 / (1 / v0 + (1 / v1 - 1 / v0) * t) + O;
 
 @バウンス
 --information:バウンス@Basic_S v1.90 (for beta41a) by σ軸
