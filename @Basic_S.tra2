@@ -1,4 +1,4 @@
--- development version for 2.00 (for beta42) r10
+-- development version for 2.00 (for beta42) r12
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -26,7 +26,7 @@ https://mit-license.org/
 @全体で時間制御
 --information:全体で時間制御@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S
---require:2004101
+--require:2004200
 --timecontrol
 local gp = obj.getpoint;
 local n, i, t = gp("num"), math.modf(gp("timecontrol", "index"));
@@ -38,7 +38,7 @@ return v0 + (v1 - v0) * t;
 @区間ごとに時間制御
 --information:区間ごとに時間制御@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S
---require:2004101
+--require:2004200
 --timecontrol
 local gp = obj.getpoint;
 local n, i, t = gp("num"), math.modf(gp("index"));
@@ -50,7 +50,7 @@ return v0 + (v1 - v0) * t;
 @全体で時間制御(回転)
 --information:全体で時間制御(回転)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S
---require:2004101
+--require:2004200
 --param:1周角度,360
 --timecontrol
 local gp, math = obj.getpoint, math;
@@ -135,7 +135,7 @@ return v0 + (v1 - v0) * t;
 @区間ごとに時間制御(回転)
 --information:区間ごとに時間制御(回転)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S
---require:2004101
+--require:2004200
 --param:1周角度,360
 --timecontrol
 local gp, math = obj.getpoint, math;
@@ -220,7 +220,7 @@ return v0 + (v1 - v0) * t;
 @正弦波
 --information:正弦波@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\基本緩急
---require:2004101
+--require:2004200
 --speed:0,1
 local gp, math = obj.getpoint, math;
 local i, t = math.modf(gp("index"));
@@ -238,7 +238,7 @@ return v0 + (v1 - v0) * rho;
 @2次式
 --information:2次式@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\基本緩急
---require:2004101
+--require:2004200
 --speed:0,1
 local gp, math = obj.getpoint, math;
 local i, t = math.modf(gp("index"));
@@ -256,7 +256,7 @@ return v0 + (v1 - v0) * rho;
 @3次式
 --information:3次式@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\基本緩急
---require:2004101
+--require:2004200
 --speed:0,1
 local gp, math = obj.getpoint, math;
 local i, t = math.modf(gp("index"));
@@ -274,7 +274,7 @@ return v0 + (v1 - v0) * rho;
 @4次式
 --information:4次式@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\基本緩急
---require:2004101
+--require:2004200
 --speed:0,1
 local gp, math = obj.getpoint, math;
 local i, t = math.modf(gp("index"));
@@ -292,7 +292,7 @@ return v0 + (v1 - v0) * rho;
 @N次式
 --information:N次式@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\基本緩急
---require:2004101
+--require:2004200
 --speed:0,1
 --param:次数N,5
 local gp, math = obj.getpoint, math;
@@ -312,7 +312,7 @@ return v0 + (v1 - v0) * rho;
 @指数関数
 --information:指数関数@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\基本緩急
---require:2004101
+--require:2004200
 --speed:0,1
 --param:減衰率,2
 local gp, math = obj.getpoint, math;
@@ -332,7 +332,7 @@ return v0 + (v1 - v0) * rho;
 @円形
 --information:円形@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\基本緩急
---require:2004101
+--require:2004200
 --speed:0,1
 local gp, math = obj.getpoint, math;
 local i, t = math.modf(gp("index"));
@@ -350,7 +350,7 @@ return v0 + (v1 - v0) * rho;
 @等速移動(秒)
 --information:等速移動(秒)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S
---require:2004101
+--require:2004200
 --twopoint
 --param:単位時間(秒),1
 local gp = obj.getpoint;
@@ -362,7 +362,7 @@ return v0 + (v1 - v0) * t / T;
 @等速移動(フレーム)
 --information:等速移動(フレーム)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S
---require:2004101
+--require:2004200
 --twopoint
 --param:単位時間(フレーム),60
 local gp = obj.getpoint;
@@ -375,7 +375,7 @@ return v0 + (v1 - v0) * f / F;
 @コマ落ち反復(秒)
 --information:コマ落ち反復(秒)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\コマ落ち
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(秒),0.5
 --param:周期ずれ%,0
@@ -389,7 +389,7 @@ return gp(((t / T + d / 100) % 1) < math.min(math.max(R / 100, 0), 1) and 0 or 1
 @コマ落ち反復(フレーム)
 --information:コマ落ち反復(フレーム)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\コマ落ち
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(フレーム),30
 --param:周期ずれ%,0
@@ -404,7 +404,7 @@ return gp(((f / F + d / 100) % 1) < math.min(math.max(R / 100, 0), 1) and 0 or 1
 @コマ落ち反復(Hz)
 --information:コマ落ち反復(Hz)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\コマ落ち
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(Hz),2
 --param:周期ずれ%,0
@@ -417,7 +417,7 @@ return gp(((t * N + d / 100) % 1) < math.min(math.max(R / 100, 0), 1) and 0 or 1
 @コマ落ち反復(BPM)
 --information:コマ落ち反復(BPM)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\コマ落ち
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(BPM),120
 --param:周期ずれ%,0
@@ -430,7 +430,7 @@ return gp(((t * N / 60 + d / 100) % 1) < math.min(math.max(R / 100, 0), 1) and 0
 @コマ落ち反復(BPMグリッド)
 --information:コマ落ち反復(BPMグリッド)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\コマ落ち
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(音符数),1
 --param:基準のN分音符(0=小節),4
@@ -447,7 +447,7 @@ return gp(((t * tempo * n / (60 * p * N) + d / 100) % 1) < math.min(math.max(R /
 @コマ落ちランダム(秒)
 --information:コマ落ちランダム(秒)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\コマ落ち
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(秒),0.5
 --param:周期ずれ%,0
@@ -461,7 +461,7 @@ return v0 + (v1 - v0) * rand1(2525, math.floor(t / T + d / 100) + 1);
 @コマ落ちランダム(フレーム)
 --information:コマ落ちランダム(フレーム)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\コマ落ち
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(フレーム),30
 --param:周期ずれ%,0
@@ -476,7 +476,7 @@ return v0 + (v1 - v0) * rand1(2525, math.floor(f / F + d / 100) + 1);
 @コマ落ちランダム(Hz)
 --information:コマ落ちランダム(Hz)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\コマ落ち
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(Hz),2
 --param:周期ずれ%,0
@@ -489,7 +489,7 @@ return v0 + (v1 - v0) * rand1(2525, math.floor(t * N + d / 100) + 1);
 @コマ落ちランダム(BPM)
 --information:コマ落ちランダム(BPM)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\コマ落ち
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(BPM),120
 --param:周期ずれ%,0
@@ -502,7 +502,7 @@ return v0 + (v1 - v0) * rand1(2525, math.floor(t * N / 60 + d / 100) + 1);
 @コマ落ちランダム(BPMグリッド)
 --information:コマ落ちランダム(BPMグリッド)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\コマ落ち
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(音符数),1
 --param:基準のN分音符(0=小節),4
@@ -519,7 +519,7 @@ return v0 + (v1 - v0) * rand1(2525, math.floor(t * tempo * n / (60 * p * N) + d 
 @時間制御繰り返し(秒)
 --information:時間制御繰り返し(秒)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\繰り返し
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(秒),0.5
 --param:周期ずれ%,0
@@ -535,7 +535,7 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", ((t / T + d / 100) % 1) * T1)
 @時間制御繰り返し(フレーム)
 --information:時間制御繰り返し(フレーム)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\繰り返し
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(フレーム),30
 --param:周期ずれ%,0
@@ -551,7 +551,7 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", ((f / F + d / 100) % 1) * T1)
 @時間制御繰り返し(Hz)
 --information:時間制御繰り返し(Hz)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\繰り返し
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(Hz),2
 --param:周期ずれ%,0
@@ -566,7 +566,7 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", ((t * N + d / 100) % 1) * T1)
 @時間制御繰り返し(BPM)
 --information:時間制御繰り返し(BPM)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\繰り返し
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(BPM),120
 --param:周期ずれ%,0
@@ -581,7 +581,7 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", ((t * N / 60 + d / 100) % 1) 
 @時間制御繰り返し(BPMグリッド)
 --information:時間制御繰り返し(BPMグリッド)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\繰り返し
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(音符数),1
 --param:基準のN分音符(0=小節),4
@@ -600,7 +600,7 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", ((t * tempo * n / (60 * p * N
 @時間制御繰り返し往復(秒)
 --information:時間制御繰り返し往復(秒)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\繰り返し
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(秒),0.5
 --param:周期ずれ%,0
@@ -618,7 +618,7 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", x * T1);
 @時間制御繰り返し往復(フレーム)
 --information:時間制御繰り返し往復(フレーム)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\繰り返し
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(フレーム),30
 --param:周期ずれ%,0
@@ -636,7 +636,7 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", x * T1);
 @時間制御繰り返し往復(Hz)
 --information:時間制御繰り返し往復(Hz)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\繰り返し
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(Hz),2
 --param:周期ずれ%,0
@@ -653,7 +653,7 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", x * T1);
 @時間制御繰り返し往復(BPM)
 --information:時間制御繰り返し往復(BPM)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\繰り返し
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(BPM),120
 --param:周期ずれ%,0
@@ -670,7 +670,7 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", x * T1);
 @時間制御繰り返し往復(BPMグリッド)
 --information:時間制御繰り返し往復(BPMグリッド)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\繰り返し
---require:2004101
+--require:2004200
 --twopoint
 --param:周期(音符数),1
 --param:基準のN分音符(0=小節),4
@@ -691,7 +691,7 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", x * T1);
 @対数補間
 --information:対数補間@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\特殊補間
---require:2004101
+--require:2004200
 --param:原点,0
 --timecontrol
 local gp, math = obj.getpoint, math;
@@ -709,7 +709,7 @@ return v0 * (v1 / v0) ^ t + O;
 @対数補間(全体時間制御)
 --information:対数補間(全体時間制御)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\特殊補間
---require:2004101
+--require:2004200
 --param:原点,0
 --timecontrol
 local gp, math = obj.getpoint, math;
@@ -727,7 +727,7 @@ return v0 * (v1 / v0) ^ t + O;
 @逆数補間
 --information:逆数補間@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\特殊補間
---require:2004101
+--require:2004200
 --param:原点,0
 --timecontrol
 local gp, math = obj.getpoint, math;
@@ -745,7 +745,7 @@ return 1 / (1 / v0 + (1 / v1 - 1 / v0) * t) + O;
 @逆数補間(全体時間制御)
 --information:逆数補間(全体時間制御)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S\特殊補間
---require:2004101
+--require:2004200
 --param:原点,0
 --timecontrol
 local gp, math = obj.getpoint, math;
@@ -763,7 +763,7 @@ return 1 / (1 / v0 + (1 / v1 - 1 / v0) * t) + O;
 @バウンス
 --information:バウンス@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S
---require:2004101
+--require:2004200
 --speed:0,1
 --param:反発係数,0.70710678
 --param:回数,0
@@ -797,7 +797,7 @@ return v0 + (v1 - v0) * rho;
 @バウンス(全体時間制御)
 --information:バウンス(全体時間制御)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S
---require:2004101
+--require:2004200
 --speed:0,1
 --param:反発係数,0.70710678
 --param:回数,0
@@ -831,7 +831,7 @@ return v0 + (v1 - v0) * rho;
 @バック
 --information:バック@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S
---require:2004101
+--require:2004200
 --speed:0,1
 --param:勢い,0.8
 --timecontrol
@@ -854,7 +854,7 @@ return v0 + (v1 - v0) * rho;
 @バック(全体時間制御)
 --information:バック(全体時間制御)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S
---require:2004101
+--require:2004200
 --speed:0,1
 --param:勢い,0.8
 --timecontrol
@@ -877,7 +877,7 @@ return v0 + (v1 - v0) * rho;
 @バネ振動
 --information:バネ振動@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S
---require:2004101
+--require:2004200
 --speed:0,1
 --param:振動回数,3
 --param:減衰率,0.3
@@ -896,7 +896,7 @@ if sp1 then v0, v1, t = v1, v0, 1 - t end
 local n, r = gp("param");
 n = math.max(n, 0);
 r = math.max(r, 0);
-r = (r > 0 or t < 1) and r >= 1 and t or (r ^ (1 - t) - r) / (1 - r) or 1;
+r = (r > 0 or t < 1) and (r >= 1 and t or (r ^ (1 - t) - r) / (1 - r)) or 1;
 local rho = r * math.sin(2 * math.pi * ((n + 0.25) * (1 - t) + 0.25));
 
 return v0 + (v1 - v0) * rho;
@@ -904,7 +904,7 @@ return v0 + (v1 - v0) * rho;
 @バネ振動(全体時間制御)
 --information:バネ振動(全体時間制御)@Basic_S v1.90 (for beta41a) by σ軸
 --label:Basic_S
---require:2004101
+--require:2004200
 --speed:0,1
 --param:振動回数,3
 --param:減衰率,0.3
@@ -923,7 +923,7 @@ if sp1 then v0, v1, t = v1, v0, 1 - t end
 local n, r = gp("param");
 n = math.max(n, 0);
 r = math.max(r, 0);
-r = (r > 0 or t < 1) and r >= 1 and t or (r ^ (1 - t) - r) / (1 - r) or 1;
+r = (r > 0 or t < 1) and (r >= 1 and t or (r ^ (1 - t) - r) / (1 - r)) or 1;
 local rho = r * math.sin(2 * math.pi * ((n + 0.25) * (1 - t) + 0.25));
 
 return v0 + (v1 - v0) * rho;
