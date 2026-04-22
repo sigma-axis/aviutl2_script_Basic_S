@@ -6,7 +6,7 @@
 
 ##  お願い
 
-このプラグインを使った動画では，ニコニコの親作品にこのプラグインの紹介動画を登録してくれると嬉しいです．任意ではありますが，登録してくれたほうが励みになります．
+このスクリプトを使った動画では，ニコニコの親作品にこのスクリプトの紹介動画を登録してくれると嬉しいです．任意ではありますが，登録してくれたほうが励みになります．
 
 - 登録 ID: `sm45523651`
 
@@ -85,7 +85,7 @@ Although, usage documentations for this script / plugin in languages other than 
 
 「仮想バッファ出力」や各種スクリプトの一時描画先などとして保存されている「仮想バッファ」や，一時保存先の「キャッシュバッファ」などを読み込みます．
 
-<!-- :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/バッファ読み込み) -->
+:arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/バッファ読み込み)
 
 ##  追加されるフィルタ効果
 
@@ -282,7 +282,7 @@ X, Y 軸方向に伸びたアンカーをマウス操作することで変形し
 
 上下左右から指定した距離だけ内側の部分のみに画像ループを適用します．通常のループだけではなく，ミラーしながらのループや，引き伸ばしによる補間などにも切り替えられます．縦横で別のループ形式を指定したりもできます．
 
-<!-- :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/画像中間ループ) -->
+:arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/画像中間ループ)
 
 ### 小数ぼかし
 
@@ -339,7 +339,7 @@ AviUtl (無印) にあった「動画ファイル合成」と同等のことが�
 
 オブジェクトにテキストを重ね打ちします．通常通りにテキストを描画する他にも，背面からの描画や，テキストの形にくり抜いたりなど，文字を利用した表現に利用できます．[画像ファイル合成](#画像ファイル合成)のテキスト版です．
 
-<!-- :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/テキスト合成) -->
+:arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/テキスト合成)
 
 ### 別レイヤー同期
 
@@ -351,9 +351,9 @@ AviUtl (無印) にあった「動画ファイル合成」と同等のことが�
 
 ### バッファをコピー
 
-現在オブジェクトや仮想バッファ，一時キャッシュなどのバッファ間でコピーを実行します．[バッファ読み込み](#バッファ読み込み)で利用したり，一部スクリプトやフィルタ効果 (ディスプレイスメントマップなど) で使われる仮想バッファを操作したりできます．
+現在オブジェクトや「仮想バッファ」，一時キャッシュの「キャッシュバッファ」などのバッファ間でコピーを実行します．[バッファ読み込み](#バッファ読み込み)で利用したり，一部スクリプトやフィルタ効果 (ディスプレイスメントマップなど) で使われる「仮想バッファ」を操作したりできます．
 
-<!-- :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/バッファをコピー) -->
+:arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/バッファをコピー)
 
 ##  追加されるトラックバー移動スクリプト
 
@@ -377,7 +377,7 @@ AviUtl (無印) にあった「動画ファイル合成」と同等のことが�
 
 ![通常の線形補間と回転補間の比較](https://github.com/user-attachments/assets/697e6fdb-57f6-4f5b-9b76-4882779e8712)
 
-<!-- :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/全体で時間制御) -->
+:arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/全体で時間制御)
 
 ### 正弦波 / 2次式 / 3次式 / 4次式 / N次式 / 指数関数 / 円形
 
@@ -436,7 +436,7 @@ AviUtl (無印) にあった「動画ファイル合成」と同等のことが�
 
 [時間制御繰り返し](#時間制御繰り返し秒--時間制御繰り返しフレーム--時間制御繰り返しhz--時間制御繰り返しbpm)と似ていますが，2つの数値の間を往復する変化になります．
 
-<!-- :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/時間制御繰り返し往復) -->
+:arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/時間制御繰り返し往復)
 
 ### 対数補間 / 対数補間(全体時間制御)
 
