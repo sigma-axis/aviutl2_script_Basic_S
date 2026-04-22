@@ -377,7 +377,7 @@ AviUtl (無印) にあった「動画ファイル合成」と同等のことが�
 
 ![通常の線形補間と回転補間の比較](https://github.com/user-attachments/assets/697e6fdb-57f6-4f5b-9b76-4882779e8712)
 
-:arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/全体で時間制御)
+:arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/時間制御(回転))
 
 ### 正弦波 / 2次式 / 3次式 / 4次式 / N次式 / 指数関数 / 円形
 
