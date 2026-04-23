@@ -1,3 +1,4 @@
+-- under development for v2.02 (for beta42) r1
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -515,21 +516,16 @@ if obj.w <= 0 or obj.h <= 0 then return end -- failed to load the layer.
 -- note that fields like `obj.ox` are initialized to default,
 -- even if the object on the target layer had modified them.
 if position then
-	obj.ox = gv(hdr..".x");
-	obj.oy = gv(hdr..".y");
-	obj.oz = gv(hdr..".z");
+	obj.ox, obj.oy, obj.oz = gv(hdr..".pos");
 
-	obj.cx = gv(hdr..".cx");
-	obj.cy = gv(hdr..".cy");
-	obj.cz = gv(hdr..".cz");
+	obj.cx, obj.cy, obj.cz = gv(hdr..".center");
 end
 if rotation then
-	local rx, ry, rz, sx, sy, sz =
-		gv(hdr..".rx"), gv(hdr..".ry"), gv(hdr..".rz"),
-		gv(hdr..".sx"), gv(hdr..".sy"), gv(hdr..".sz");
+	local rx, ry, rz = gv(hdr..".angle");
+	local sx, sy, sz = gv(hdr..".scale");
 
-	local my_cx, my_cy, my_cz, my_rx, my_ry, my_rz =
-		gv("cx"), gv("cy"), gv("cz"), gv("rx"), gv("ry"), gv("rz");
+	local my_cx, my_cy, my_cz = gv("center");
+	local my_rx, my_ry, my_rz = gv("angle");
 
 	-- revert the object states first.
 	obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz =

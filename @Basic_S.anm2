@@ -1,3 +1,4 @@
+-- under development for v2.02 (for beta42) r1
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -1386,18 +1387,15 @@ Y = tonumber(PI.Y) or Y;
 Z = tonumber(PI.Z) or Z;
 
 -- further calculations.
-local cx, cy, cz =
-	X - obj.getvalue("cx"),
-	Y - obj.getvalue("cy"),
-	Z - obj.getvalue("cz");
-
-local sx, sy, sz, rx, ry, rz =
-	obj.sx * obj.getvalue("sx"),
-	obj.sy * obj.getvalue("sy"),
-	obj.sz * obj.getvalue("sz"),
-	math.pi / 180 * (obj.rx + obj.getvalue("rx")),
-	math.pi / 180 * (obj.ry + obj.getvalue("ry")),
-	math.pi / 180 * (obj.rz + obj.getvalue("rz"));
+local cx, cy, cz = obj.getvalue("center");
+local sx, sy, sz = obj.getvalue("scale");
+local rx, ry, rz = obj.getvalue("angle");
+cx, cy, cz, sx, sy, sz, rx, ry, rz =
+	X - cx, Y - cy, Z - cz,
+	obj.sx * sx, obj.sy * sy, obj.sz * sz,
+	math.pi / 180 * (obj.rx + rx),
+	math.pi / 180 * (obj.ry + ry),
+	math.pi / 180 * (obj.rz + rz);
 local c_x, s_x, c_y, s_y, c_z, s_z =
 	math.cos(rx), math.sin(rx), math.cos(ry), math.sin(ry), math.cos(rz), math.sin(rz);
 local dx, dy, dz = cx - obj.cx, cy - obj.cy, cz - obj.cz;
@@ -1422,13 +1420,11 @@ obj.cx,obj.cy,obj.cz = cx, cy, cz;
 --check@x_enabled:左右有効,true
 --check@y_enabled:上下有効,true
 local obj=obj;
-local cx, cy = obj.cx, obj.cy;
-if x_enabled then
-	cx = (X / 100) * obj.w / 2 - obj.getvalue("cx");
-end
-if y_enabled then
-	cy = (Y / 100) * obj.h / 2 - obj.getvalue("cy");
-end
+local cx, cy = obj.getvalue("center");
+if x_enabled then cx = (X / 100) * obj.w / 2 - cx;
+else cx = obj.cx end
+if y_enabled then cy = (Y / 100) * obj.h / 2 - cy;
+else cy = obj.cy end
 if cx ~= obj.cx or cy ~= obj.cy then
 	if fix_pos then
 		obj.effect("回転中心アンカー指定@Basic_S", "PI", "X="..cx..",Y=".. cy);
@@ -1446,7 +1442,8 @@ local obj, math = obj, math;
 rot = math.min(math.max(math.floor(0.5 + rot), 0), 7);
 if rot == 0 then return end
 
-local w, h, cx0, cy0 = obj.w, obj.h, obj.cx + obj.getvalue("cx"), obj.cy + obj.getvalue("cy");
+local w, h, cx0, cy0 = obj.w, obj.h, obj.getvalue("center");
+cx0, cy0 = obj.cx + cx0, obj.cy + cy0;
 local cx, cy = cx0, cy0;
 local flip_hv = rot ~= 2 and rot ~= 4 and rot ~= 5;
 obj.setoption("drawtarget", "tempbuffer",
@@ -1572,10 +1569,8 @@ local obj, math, tonumber, type = obj, math, tonumber, type;
 
 -- set anchors.
 obj.setanchor("X,Y,Z", 0, "xyz");
-local cx, cy, cz =
-	obj.cx + obj.getvalue("cx"),
-	obj.cy + obj.getvalue("cy"),
-	obj.cz + obj.getvalue("cz");
+local cx, cy, cz = obj.getvalue("center");
+cx, cy, cz = obj.cx + cx, obj.cy + cy, obj.cz + cz;
 obj.setanchor({
 	cx, cy, cz;
 	cx + X, cy + Y, cz + Z;
@@ -1614,17 +1609,16 @@ local fix_axis = as_bool(PI.fix_axis, false);
 angle = math.pi / 180 * (angle % 360);
 
 -- further calculations.
-local rx, ry, rz =
-	math.pi / 180 * ((obj.rx + obj.getvalue("rx")) % 360),
-	math.pi / 180 * ((obj.ry + obj.getvalue("ry")) % 360),
-	math.pi / 180 * ((obj.rz + obj.getvalue("rz")) % 360);
+local rx, ry, rz = obj.getvalue("angle");
+rx, ry, rz =
+	math.pi / 180 * ((obj.rx + rx) % 360),
+	math.pi / 180 * ((obj.ry + ry) % 360),
+	math.pi / 180 * ((obj.rz + rz) % 360);
 
 -- rotate the axis.
 if not fix_axis then
-	X, Y, Z =
-		obj.sx * obj.getvalue("sx") * X,
-		obj.sy * obj.getvalue("sy") * Y,
-		obj.sz * obj.getvalue("sz") * Z;
+	local sx, sy, sz = obj.getvalue("scale");
+	X, Y, Z = obj.sx * sx * X, obj.sy * sy * Y, obj.sz * sz * Z;
 	local c_x, s_x, c_y, s_y, c_z, s_z =
 		math.cos(rx), math.sin(rx),
 		math.cos(ry), math.sin(ry),
@@ -1669,16 +1663,12 @@ end
 if draw then
 	-- transform vertices.
 	local max_w, max_h = obj.getinfo("image_max");
-	local sx, sy, sz do
-		sx, sy, sz = obj.getvalue("sx"), obj.getvalue("sy"), obj.getvalue("sz");
-		sx, sy, sz, obj.sx, obj.sy, obj.sz =
-			obj.sx * sx, obj.sy * sy, obj.sz * sz,
-			1 / sx, 1 / sy, 1 / sz;
-	end
-	local ox, oy, oz =
-		obj.ox + obj.getvalue("x"),
-		obj.oy + obj.getvalue("y"),
-		obj.oz + obj.getvalue("z");
+	local sx, sy, sz = obj.getvalue("scale");
+	sx, sy, sz, obj.sx, obj.sy, obj.sz =
+		obj.sx * sx, obj.sy * sy, obj.sz * sz,
+		1 / sx, 1 / sy, 1 / sz;
+	local ox, oy, oz = obj.getvalue("pos");
+	ox, oy, oz = obj.ox + ox, obj.oy + oy, obj.oz + oz;
 	local gx, gy, gz = 0, 0, oz; if grouped then gx, gy, gz = ox, oy, oz + obj.z end
 	local pts = {
 		-obj.w / 2, -obj.h / 2, 0,
