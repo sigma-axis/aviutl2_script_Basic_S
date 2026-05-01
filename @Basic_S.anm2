@@ -1,4 +1,4 @@
--- under development for v2.02 (for beta42) r1
+-- under development for v2.02 (for beta43b) r2
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -2701,7 +2701,7 @@ local function adjust_margin(m1, m2, sz, len, unit, loop, piv)
 				or math.ceil(L / mid) * mid;
 		end
 		len = L + (rnd < 3 and pad or 0);
-		if rnd >= 3 and mid > 0 and len > 0 then
+		if rnd >= 3 and mid > 0 and len > 0 and loop ~= 3 then
 			if rnd == 3 then
 				p0 = p0 + ((1 - piv) / 2) * (len - pad);
 				p0 = m1 - ((m1 - p0) % mid); -- make sure p0 <= m1.
