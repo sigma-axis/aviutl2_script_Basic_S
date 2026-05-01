@@ -1,4 +1,4 @@
--- under development for v2.03 (for beta43b) r1
+-- under development for v2.03 (for beta43b) r2
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -2708,9 +2708,12 @@ local function adjust_margin(m1, m2, sz, len, unit, loop, piv)
 				p0 = m1 - ((m1 - p0) % mid); -- make sure p0 <= m1.
 			else
 				p1 = len / mid;
-				p1 = pad > 0 and
-					0.5 + math.floor(p1) or
-					math.max(math.floor(0.5 + p1), 1);
+				local f, c;
+				if pad > 0 then
+					f, c = 0.5 + math.max(math.floor(p1 - 0.5), 0),
+						0.5 + math.ceil(p1 - 0.5);
+				else f, c = math.max(math.floor(p1), 1), math.ceil(p1) end
+				p1 = p1 * p1 < f * c and f or c; -- i.e. p1 / f < c / p1.
 				p1 = p1 * mid / len;
 			end
 		end
