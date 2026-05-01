@@ -1,3 +1,4 @@
+-- under development for v2.10 (for beta43b) r1
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -921,7 +922,10 @@ float4 by_xyz(float4 pos : SV_Position) : SV_Target
 	c.rgb = to_lin(c.a > 0 ? c.rgb / c.a : 0);
 	c.rgb = mul(mat, c.rgb) + add_light;
 	c.rgb = c.a * from_lin(c.rgb);
-	if (sat > 0) c.rgb = clamp(c.rgb, 0, c.a);
+	if (sat > 0) {
+		c.a = saturate(c.a);
+		c.rgb = clamp(c.rgb, 0, c.a);
+	}
 	return c;
 }
 ]]
@@ -976,7 +980,10 @@ float4 by_cielab(float4 pos : SV_Position) : SV_Target
 	c.rgb = to_lab(c.a > 0 ? c.rgb / c.a : 0);
 	c.rgb = mul(mat, c.rgb) + delta[1] * add_light;
 	c.rgb = c.a * from_lab(c.rgb);
-	if (sat > 0) c.rgb = clamp(c.rgb, 0, c.a);
+	if (sat > 0) {
+		c.a = saturate(c.a);
+		c.rgb = clamp(c.rgb, 0, c.a);
+	}
 	return c;
 }
 ]]
@@ -1013,7 +1020,10 @@ float4 by_oklab(float4 pos : SV_Position) : SV_Target
 	c.rgb = to_lms_gamma(c.a > 0 ? c.rgb / c.a : 0);
 	c.rgb = mul(mat, c.rgb) + add_light;
 	c.rgb = c.a * from_lms_gamma(c.rgb);
-	if (sat > 0) c.rgb = clamp(c.rgb, 0, c.a);
+	if (sat > 0) {
+		c.a = saturate(c.a);
+		c.rgb = clamp(c.rgb, 0, c.a);
+	}
 	return c;
 }
 ]]
@@ -1027,7 +1037,10 @@ float4 by_yuv(float4 pos : SV_Position) : SV_Target
 {
 	float4 c = src.Load(int3(pos.xy, 0));
 	c.rgb = mul(mat, c.rgb) + add_light * c.a;
-	if (sat > 0) c.rgb = clamp(c.rgb, 0, c.a);
+	if (sat > 0) {
+		c.a = saturate(c.a);
+		c.rgb = clamp(c.rgb, 0, c.a);
+	}
 	return c;
 }
 ]]
@@ -1081,7 +1094,10 @@ float4 by_hsvl(float4 pos : SV_Position) : SV_Target
 	c.xyz += add_col;
 
 	c.rgb = hsvl2rgb(c.xyz, col_space_f) * c.a;
-	if (sat > 0) c.rgb = clamp(c.rgb, 0, c.a);
+	if (sat > 0) {
+		c.a = saturate(c.a);
+		c.rgb = clamp(c.rgb, 0, c.a);
+	}
 	return c;
 }
 ]]
@@ -2303,7 +2319,7 @@ crack_Y1 = tonumber(crack[2]) or tonumber(PI.crack_Y1) or crack_Y1;
 crack_X2 = tonumber(crack[3]) or tonumber(PI.crack_X2) or crack_X2;
 crack_Y2 = tonumber(crack[4]) or tonumber(PI.crack_Y2) or crack_Y2;
 crop = tonumber(PI.crop) or crop;
-do local name2num = { ["空白"] = 0, ["半透明"] = 1, ["補間"] = 2, ["引き伸ばし"] = 3 };
+do local name2num = { ["空白"] = 0, ["半透明"] = 1, ["補間"] = 2, ["引き伸ばし"] = 3, };
 	if type(PI.mode_padding) == "string" then mode_padding = name2num[PI.mode_padding] or mode_padding end
 	if type(PI.mode_overlap) == "string" then mode_overlap = name2num[PI.mode_overlap] or mode_overlap end
 end
@@ -2482,7 +2498,7 @@ gap_x = tonumber(PI.gap_x) or gap_x;
 height = tonumber(PI.height) or height;
 align_y = tonumber(PI.align_y) or align_y;
 gap_y = tonumber(PI.gap_y) or gap_y;
-do local name2num = { ["空白"] = 0, ["半透明"] = 1, ["補間"] = 2, ["引き伸ばし"] = 3 };
+do local name2num = { ["空白"] = 0, ["半透明"] = 1, ["補間"] = 2, ["引き伸ばし"] = 3, };
 	if type(PI.mode_padding) == "string" then mode_padding = name2num[PI.mode_padding] or mode_padding end
 	if type(PI.mode_overlap) == "string" then mode_overlap = name2num[PI.mode_overlap] or mode_overlap end
 end
@@ -2639,11 +2655,11 @@ align_x = tonumber(PI.align_x) or align_x;
 align_y = tonumber(PI.align_y) or align_y;
 pivot_x = tonumber(PI.pivot_x) or pivot_x;
 pivot_y = tonumber(PI.pivot_y) or pivot_y;
-do local name2num = { ["回数"] = 0, ["サイズ(近似)"] = 1, ["サイズ(上限)"] = 2, ["サイズ(下限)"] = 3, ["サイズ(境界不連続)"] = 4, ["サイズ(拡縮あり)"] = 5, ["全体サイズ(近似)"] = 6, ["全体サイズ(上限)"] = 7, ["全体サイズ(下限)"] = 8, ["全体サイズ(境界不連続)"] = 9, ["全体サイズ(拡縮あり)"] = 10 };
+do local name2num = { ["回数"] = 0, ["サイズ(近似)"] = 1, ["サイズ(上限)"] = 2, ["サイズ(下限)"] = 3, ["サイズ(境界不連続)"] = 4, ["サイズ(拡縮あり)"] = 5, ["全体サイズ(近似)"] = 6, ["全体サイズ(上限)"] = 7, ["全体サイズ(下限)"] = 8, ["全体サイズ(境界不連続)"] = 9, ["全体サイズ(拡縮あり)"] = 10, };
 	if type(PI.unit_x) == "string" then unit_x = name2num[PI.unit_x] or unit_x end
 	if type(PI.unit_y) == "string" then unit_y = name2num[PI.unit_y] or unit_y end
 end
-do local name2num = { ["ループ"] = 0, ["ミラー"] = 1, ["ミラー(半ピクセル端)"] = 2, ["引き伸ばし"] = 3 };
+do local name2num = { ["ループ"] = 0, ["ミラー"] = 1, ["ミラー(半ピクセル端)"] = 2, ["引き伸ばし"] = 3, };
 	if type(PI.loop_x) == "string" then loop_x = name2num[PI.loop_x] or loop_x end
 	if type(PI.loop_y) == "string" then loop_y = name2num[PI.loop_y] or loop_y end
 end
@@ -3600,7 +3616,7 @@ if type(PI.blend) == "string" then
 	blend = name2num[PI.blend] or blend;
 end
 if type(PI.extra_filter) == "string" then
-	local name2num = { ["追加のフィルタ効果"] = 0, ["なし"] = 0, ["後続フィルタ"] = 1, ["スクリプト実行"] = 2 };
+	local name2num = { ["追加のフィルタ効果"] = 0, ["なし"] = 0, ["後続フィルタ"] = 1, ["スクリプト実行"] = 2, };
 	extra_filter = name2num[PI.extra_filter] or extra_filter;
 end
 
@@ -3873,7 +3889,7 @@ if type(PI.blend) == "string" then
 	blend = name2num[PI.blend] or blend;
 end
 if type(PI.extra_filter) == "string" then
-	local name2num = { ["追加のフィルタ効果"] = 0, ["なし"] = 0, ["後続フィルタ"] = 1, ["スクリプト実行"] = 2 };
+	local name2num = { ["追加のフィルタ効果"] = 0, ["なし"] = 0, ["後続フィルタ"] = 1, ["スクリプト実行"] = 2, };
 	extra_filter = name2num[PI.extra_filter] or extra_filter;
 end
 
@@ -4205,7 +4221,7 @@ if type(PI.blend) == "string" then
 	blend = name2num[PI.blend] or blend;
 end
 if type(PI.extra_filter) == "string" then
-	local name2num = { ["追加のフィルタ効果"] = 0, ["なし"] = 0, ["後続フィルタ"] = 1, ["スクリプト実行"] = 2 };
+	local name2num = { ["追加のフィルタ効果"] = 0, ["なし"] = 0, ["後続フィルタ"] = 1, ["スクリプト実行"] = 2, };
 	extra_filter = name2num[PI.extra_filter] or extra_filter;
 end
 
