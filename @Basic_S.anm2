@@ -1,3 +1,4 @@
+-- under development for v2.03 (for beta43b) r1
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -2695,14 +2696,15 @@ local function adjust_margin(m1, m2, sz, len, unit, loop, piv)
 		local loc, rnd = unit < 6, (unit - 1) % 5;
 		local L = math.max(len - (loc and 0 or (m1 + m2)) - (rnd < 3 and pad or 0), 0);
 		if mid > 0 and rnd < 3 and loop ~= 3 then -- if not stretching.
-			L = rnd == 0 and math.floor(0.5 + L / mid) * mid
-				or rnd == 1 and math.floor(L / mid) * mid
-				or math.ceil(L / mid) * mid;
+			L = L / mid;
+			L = rnd == 0 and math.floor(0.5 + L) or
+				rnd == 1 and math.floor(L) or math.ceil(L);
+			L = L * mid;
 		end
 		len = L + (rnd < 3 and pad or 0);
 		if rnd >= 3 and mid > 0 and len > 0 and loop ~= 3 then
 			if rnd == 3 then
-				p0 = p0 + ((1 - piv) / 2) * (len - pad);
+				p0 = p0 + ((1 - piv) / 2) * (len - (mid - pad));
 				p0 = m1 - ((m1 - p0) % mid); -- make sure p0 <= m1.
 			else
 				p1 = len / mid;
