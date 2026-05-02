@@ -1,4 +1,4 @@
--- under development for v2.10 (for beta43b) r1
+-- under development for v2.10 (for beta43b) r2
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -1363,6 +1363,86 @@ end
 
 -- apply shader.
 obj.pixelshader(premult and "premult" or "nonmult", "object", "object", params);
+
+@色オーバーフロー修正
+--information:色オーバーフロー修正@Basic_S v2.03 (for beta43b) by σ軸
+--label:Basic_S\色調整
+--filter
+--require:2004200
+--select@c_mode:色成分=0,足切り頭打ち=0,色差縮小(標準)=1,色差縮小(改)=2
+--select@a_mode:アルファ値=2,頭打ち=0,色も縮小=1,最大保証+頭打ち=2,最大保証+色も縮小=3
+--group:その他,false
+--value@PI:PI,{}
+--[[pixelshader@clip_color:
+Texture2D src : register(t0);
+cbuffer constant0 : register(b0) {
+	float maximize, rescale, clip_f;
+};
+float3 by_clamp(float4 c)
+{
+	return clamp(c.rgb, 0, c.a);
+}
+// modified from: https://github.com/korarei/AviUtl2_ColorLUT_K_Plugin/blob/c758529f5c82526fb882997cf3b5f6712afe1db2/src/filter/intern/shaders/blend.hlsli#L50-L54
+float3 by_clip(float4 c, bool modified)
+{
+	static const float3 luma_coeff = { 0.30, 0.59, 0.11 };
+	const float L = dot(luma_coeff, c.rgb);
+	if (L <= 0.0) return 0.0;
+	if (L >= c.a) return c.a;
+
+	const float
+		n = min(min(c.r, c.g), min(c.b, 0.0)),
+		x = max(max(c.r, c.g), max(c.b, c.a)),
+		sn = (L - 0.0) / (L - n), sx = (c.a - L) / (x - L);
+	return L + (c.rgb - L) *
+		(modified ? min(sn, sx) : sn * sx);
+}
+float4 clip_color(float4 pos : SV_Position) : SV_Target
+{
+	float4 c = src.Load(int3(pos.xy, 0));
+	c.a = max(c.a, 0);
+	if (maximize > 0) c.a = max(max(c.r, c.g), max(c.b, c.a));
+	if (rescale > 0) c /= max(c.a, 1);
+	c.a = min(c.a, 1);
+
+	static const int clip_func = int(clip_f);
+	switch(clip_func) {
+	case 0: default:
+		c.rgb = by_clamp(c); break;
+	case 1: case 2:
+		c.rgb = by_clip(c, clip_func == 2); break;
+	}
+	return c;
+}
+]]
+local obj, math, type = obj, math, type;
+
+-- take parameters.
+--[==[
+	PI = {
+		c_mode:	string?,
+		a_mode:	string?,
+	}
+]==]
+if type(PI.c_mode) == "string" then
+	local name2num = { ["足切り頭打ち"] = 0, ["色差縮小(標準)"] = 1, ["色差縮小(改)"] = 2, };
+	c_mode = name2num[PI.c_mode] or c_mode;
+end
+if type(PI.a_mode) == "string" then
+	local name2num = { ["頭打ち"] = 0, ["色も縮小"] = 1, ["最大保証+頭打ち"] = 2, ["最大保証+色も縮小"] = 3, };
+	a_mode = name2num[PI.a_mode] or a_mode;
+end
+
+-- normalize parameters.
+c_mode = math.min(math.max(math.floor(0.5 + c_mode), 0), 2);
+a_mode = math.min(math.max(math.floor(0.5 + a_mode), 0), 3);
+
+-- apply shader.
+obj.pixelshader("clip_color", "object", "object", {
+	a_mode < 2 and 0 or 1,
+	a_mode % 2 == 0 and 0 or 1,
+	c_mode,
+});
 
 @回転中心
 --information:回転中心@Basic_S v2.03 (for beta43b) by σ軸
