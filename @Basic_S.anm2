@@ -1,4 +1,4 @@
--- under development for v2.10 (for beta43b) r3
+-- under development for v2.10 (for beta43b) r4
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -2668,12 +2668,14 @@ float calc_coord(uint mode, float x, float2 mgn, float m, float2 p, float l)
 	case 0:
 	{
 		x2 = fmod(x2, m);
+		x2 = clamp(x2, 0.5, m - 0.5);
 		break;
 	}
 	case 1: case 2:
 	{
 		x2 = fmod(x2, m);
 		x2 = min(x2, m - x2);
+		if (mode == 1) x2 = clamp(x2, 0.5, m / 2 - 0.5);
 		break;
 	}
 	case 3: default:
@@ -2802,11 +2804,8 @@ local function adjust_margin(m1, m2, sz, len, unit, loop, piv)
 				p0 = m1 - ((m1 - p0) % mid); -- make sure p0 <= m1.
 			else
 				p1 = len / mid;
-				local f, c;
-				if pad > 0 then
-					f, c = 0.5 + math.max(math.floor(p1 - 0.5), 0),
-						0.5 + math.ceil(p1 - 0.5);
-				else f, c = math.max(math.floor(p1), 1), math.ceil(p1) end
+				local f, c = p1, pad > 0 and 0.5 or 0;
+				f, c = math.floor(f - c) + c, math.ceil(f - c) + c;
 				p1 = p1 * p1 < f * c and f or c; -- i.e. p1 / f < c / p1.
 				p1 = p1 * mid / len;
 			end
