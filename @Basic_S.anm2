@@ -1,4 +1,4 @@
--- under development for v2.10 (for beta43b) r2
+-- under development for v2.10 (for beta43b) r3
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -1370,7 +1370,7 @@ obj.pixelshader(premult and "premult" or "nonmult", "object", "object", params);
 --filter
 --require:2004200
 --select@c_mode:色成分=0,足切り頭打ち=0,色差縮小(標準)=1,色差縮小(改)=2
---select@a_mode:アルファ値=2,頭打ち=0,色も縮小=1,最大保証+頭打ち=2,最大保証+色も縮小=3
+--select@a_mode:アルファ値=2,頭打ち=0,超過分縮小=1,最大保証+頭打ち=2,最大保証+超過分縮小=3
 --group:その他,false
 --value@PI:PI,{}
 --[[pixelshader@clip_color:
@@ -1402,8 +1402,7 @@ float4 clip_color(float4 pos : SV_Position) : SV_Target
 	float4 c = src.Load(int3(pos.xy, 0));
 	c.a = max(c.a, 0);
 	if (maximize > 0) c.a = max(max(c.r, c.g), max(c.b, c.a));
-	if (rescale > 0) c /= max(c.a, 1);
-	c.a = min(c.a, 1);
+	if (rescale > 0) c /= max(c.a, 1); else c.a = min(c.a, 1);
 
 	static const int clip_func = int(clip_f);
 	switch(clip_func) {
@@ -1429,7 +1428,7 @@ if type(PI.c_mode) == "string" then
 	c_mode = name2num[PI.c_mode] or c_mode;
 end
 if type(PI.a_mode) == "string" then
-	local name2num = { ["頭打ち"] = 0, ["色も縮小"] = 1, ["最大保証+頭打ち"] = 2, ["最大保証+色も縮小"] = 3, };
+	local name2num = { ["頭打ち"] = 0, ["超過分縮小"] = 1, ["最大保証+頭打ち"] = 2, ["最大保証+超過分縮小"] = 3, };
 	a_mode = name2num[PI.a_mode] or a_mode;
 end
 

@@ -165,6 +165,12 @@ Although, usage documentations for this script / plugin in languages other than 
 
 :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/色チャンネル入れ替え)
 
+### 色オーバーフロー修正
+
+各ピクセルの色成分やアルファ値は，フィルタ効果によっては負になったり 100% を超えたりと，通常の範囲外になってしまうことがあります．フィルタ効果や出力プラグインによってはこの影響で正しく動作しなくなることもあります．そういったオーバーフローの起きたピクセルを正常な範囲に修正します．
+
+<!-- :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/色オーバーフロー修正) -->
+
 ### 回転中心
 
 オブジェクトの回転中心を移動します．標準のフィルタ効果の「座標」の回転中心版です．
