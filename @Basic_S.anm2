@@ -1,4 +1,4 @@
--- under development for v2.20
+-- under development for v2.20, r2
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -2857,19 +2857,75 @@ obj.cx, obj.cy =
 --check@fixed_size:サイズ固定,false
 --group:その他,false
 --value@PI:PI,{}
---[[pixelshader@convol:
+--[[computeshader@convol1:
+RWTexture2D<half4> dst : register(u0);
 Texture2D src : register(t0);
 cbuffer constant0 : register(b0) {
-	float width_f, span_i_f, span_f, wt;
+	float2 dst_size_f;
+	float span_i_f, span_f, inv_span;
 };
-float4 convol(float4 pos : SV_Position) : SV_Target
+static const uint2 dst_size = uint2(dst_size_f);
+static const uint span_i = uint(span_i_f);
+int4 quantize(float4 v)
 {
-	static const int span_i = int(span_i_f);
-	const int y = int(pos.x), x = int(width_f) - int(pos.y);
-	float4 col = span_f * src.Load(int3(x - 1, y, 0));
-	for (int dx = 0; dx < span_i; dx++)
-		col += src.Load(int3(x + dx, y, 0));
-	return wt * col;
+	return int4(round((1 << 12) * v));
+}
+[numthreads(1, 64, 1)]
+void convol1(uint2 id : SV_DispatchThreadID)
+{
+	if (id.y >= dst_size.x) return;
+	uint dst_x = dst_size.x - 1 - id.y;
+
+	int4 sum = 0;
+	for (uint x = 0; x < span_i; x++) {
+		float4 c = src[uint2(x, id.y)];
+		dst[uint2(dst_x, x)] = inv_span * (sum + span_f * c);
+		sum += quantize(c);
+	}
+	for (; x < dst_size.y - span_i; x++) {
+		float4 c = src[uint2(x, id.y)], c0 = src[uint2(x - span_i, id.y)];
+		dst[uint2(dst_x, x)] = inv_span * (sum + span_f * c);
+		sum += quantize(c) - quantize(c0);
+	}
+	for (; x < dst_size.y; x++) {
+		float4 c0 = src[uint2(x - span_i, id.y)];
+		dst[uint2(dst_x, x)] = inv_span * sum;
+		sum -= quantize(c0);
+	}
+}
+]]
+--[[computeshader@convol2:
+RWTexture2D<half4> dst : register(u0);
+Texture2D src : register(t0);
+cbuffer constant0 : register(b0) {
+	float2 dst_size_f;
+	float span_i_f, span_f, inv_span;
+};
+static const uint2 dst_size = uint2(dst_size_f);
+static const uint span_i = uint(span_i_f);
+int4 quantize(float4 v)
+{
+	return int4(round((1 << 12) * v));
+}
+[numthreads(1, 64, 1)]
+void convol2(uint2 id : SV_DispatchThreadID)
+{
+	if (id.y >= dst_size.x) return;
+	uint dst_x = dst_size.x - 1 - id.y;
+
+	int4 sum = 0;
+	for (uint x = 0; x < dst_size.y - span_i; x++) {
+		float4 c = src[uint2(x, id.y)];
+		dst[uint2(dst_x, x)] = inv_span * (sum + span_f * c);
+		sum += quantize(c);
+	}
+	for (; x < span_i; x++)
+		dst[uint2(dst_x, x)] = inv_span * sum;
+	for (; x < dst_size.y; x++) {
+		float4 c0 = src[uint2(x - span_i, id.y)];
+		dst[uint2(dst_x, x)] = inv_span * sum;
+		sum -= quantize(c0);
+	}
 }
 ]]
 --[[pixelshader@unweight_alpha:
@@ -2963,21 +3019,31 @@ local span_x_f, span_y_f = span_x - span_x_i, span_y - span_y_i;
 
 -- weight to luma.
 local log_base = 256 * math.log(1 + luma_weight / 1000, 2);
-local luma_scale = 2 ^ (12 - log_base); -- for float16 not to overflow.
+local luma_scale = 2 ^ (9 - log_base); -- for float16 not to overflow.
 if luma_weight > 0 then
 	obj.pixelshader("weight_luma", "object", "object", { log_base, luma_scale });
 end
 
 -- apply the blur by shaders.
 local w, h = obj.w, obj.h;
-obj.clearbuffer("tempbuffer", h, w + span_x_i);
-obj.pixelshader("convol", "tempbuffer", "object", { w, span_x_i, span_x_f, 1 / span_x });
-obj.clearbuffer("object", w + span_x_i, h + span_y_i);
-obj.pixelshader("convol", "object", "tempbuffer", { h, span_y_i, span_y_f, 1 / span_y });
-obj.clearbuffer("tempbuffer", h + span_y_i, w + 2 * span_x_i);
-obj.pixelshader("convol", "tempbuffer", "object", { w + span_x_i, span_x_i, span_x_f, 1 / span_x });
+obj.clearbuffer("tempbuffer", h + 2 * span_y_i, w + 2 * span_x_i);
+obj.computeshader(w > span_x_i and "convol1" or "convol2", "tempbuffer", "object", {
+	h, w + span_x_i;
+	span_x_i, 2 ^ 12 * span_x_f, 2 ^ -12 / span_x,
+}, 1, math.ceil(h / 64), 1);
 obj.clearbuffer("object", w + 2 * span_x_i, h + 2 * span_y_i);
-obj.pixelshader("convol", "object", "tempbuffer", { h + span_y_i, span_y_i, span_y_f, 1 / span_y });
+obj.computeshader(h > span_y_i and "convol1" or "convol2", "object", "tempbuffer", {
+	w + span_x_i, h + span_y_i;
+	span_y_i, 2 ^ 12 * span_y_f, 2 ^ -12 / span_y,
+}, 1, math.ceil((w + span_x_i) / 64), 1);
+obj.computeshader("convol1", "tempbuffer", "object", {
+	h + span_y_i, w + 2 * span_x_i;
+	span_x_i, 2 ^ 12 * span_x_f, 2 ^ -12 / span_x,
+}, 1, math.ceil((h + span_y_i) / 64), 1);
+obj.computeshader("convol1", "object", "tempbuffer", {
+	w + 2 * span_x_i, h + 2 * span_y_i;
+	span_y_i, 2 ^ 12 * span_y_f, 2 ^ -12 / span_y,
+}, 1, math.ceil((w + 2 * span_x_i) / 64), 1);
 
 -- normalize the sum on the edges.
 if fixed_size then
