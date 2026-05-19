@@ -1,3 +1,4 @@
+-- under development for v2.20
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -4520,6 +4521,282 @@ obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
 if extra_filter == 1 then
 	obj.setoption("drawtarget", "framebuffer");
 	obj.draw();
+end
+
+@画像バッファ合成
+--information:画像バッファ合成@Basic_S v2.10 (for beta43b) by σ軸
+--label:Basic_S\加工
+--filter
+--require:2004200
+--select@buffer:バッファ=0,仮想バッファ=0,一時キャッシュ=1,フレームバッファ=2,このオブジェクト=3
+--string@cache_name:キャッシュ名,my_cache
+--group:描画,true
+--track@X:X,-4000,4000,0,0.01,,0.25
+--track@Y:Y,-4000,4000,0,0.01,,0.25
+--trackgroup@X,Y:pos
+--track@zoom:拡大率,0,5000,100,0.001,,0.16
+--track@rotate:回転,-1440,1440,0,0.01,,0.25
+--track@alpha:透明度,0,100,0,0.01
+--check@fixed_size:サイズ固定,false
+--group:配置,false
+--check@no_smooth:補間なし,false
+--select@mode_tile:画像ループ=0,なし=0,横=1,縦=2,縦横=3
+--group:合成,false
+--select@mode_draw:モード=0,前方から合成=0,前方から合成(クリッピング)=1,後方から合成=2,後方から合成(クリッピング)=3,アルファ値を乗算=4,色情報を上書き=5,輝度をアルファ値として上書き=6,輝度をアルファ値として乗算=7
+--select@blend:合成モード=0,通常=0,加算=1,減算=2,乗算=3,スクリーン=4,オーバーレイ=5,比較(明)=6,比較(暗)=7,輝度=8,色差=9,陰影=10,明暗=11,差分=12
+--group:追加効果,false
+--select@extra_filter:追加のフィルタ効果=0,なし=0,後続フィルタ=1,スクリプト実行=2
+--text@extra_script:追加スクリプト,
+--group:その他,false
+--value@PI:PI,{}
+do local buffer,cache_name,X,Y,zoom,rotate,alpha,fixed_size,no_smooth,mode_tile,mode_draw,blend,extra_filter,extra_script,PI=buffer,cache_name,X,Y,zoom,rotate,alpha,fixed_size,no_smooth,mode_tile,mode_draw,blend,extra_filter,extra_script,PI;
+local obj, math, type, tonumber = obj, math, type, tonumber;
+
+-- set anchors.
+if #file >= 4 then
+	obj.setanchor("X,Y", 0, "line");
+end
+
+-- take parameters.
+--[==[
+	PI = {
+		buffer:			string?,
+		cache_name:		string?,
+		X:				number?,
+		Y:				number?,
+		zoom:			number?,
+		rotate:			number?,
+		alpha:			number?,
+		no_smooth:		boolean|number|nil,
+		fixed_size:		boolean|number|nil,
+		mode_tile:		string?,
+		mode_draw:		string?,
+		blend:			string?,
+		extra_filter:	string?,
+	}
+]==]
+local function as_bool(t, v)
+	if type(t) == "boolean" then return t;
+	elseif type(t) == "number" then return t ~= 0;
+	else return v end
+end
+if type(PI.buffer) == "string" then
+	local name2num = {
+		["仮想バッファ"] = 0, ["一時キャッシュ"] = 1, ["フレームバッファ"] = 2, ["このオブジェクト"] = 3
+	};
+	buffer = name2num[PI.buffer] or buffer;
+end
+if type(PI.cache_name) == "string" then cache_name = PI.cache_name end
+X = tonumber(PI.X) or X;
+Y = tonumber(PI.Y) or Y;
+zoom = tonumber(PI.zoom) or zoom;
+rotate = tonumber(PI.rotate) or rotate;
+alpha = tonumber(PI.alpha) or alpha;
+fixed_size = as_bool(PI.fixed_size, fixed_size);
+no_smooth = as_bool(PI.no_smooth, no_smooth);
+if type(PI.mode_tile) == "string" then
+	local name2num = {
+		["なし"] = 0, ["横"] = 1, ["縦"] = 2, ["縦横"] = 3,
+	};
+	mode_tile = name2num[PI.mode_tile] or mode_tile;
+end
+if type(PI.mode_draw) == "string" then
+	local name2num = {
+		["前方から合成"] = 0, ["前方から合成(クリッピング)"] = 1,
+		["後方から合成"] = 2, ["後方から合成(クリッピング)"] = 3,
+		["アルファ値を乗算"] = 4, ["色情報を上書き"] = 5,
+		["輝度をアルファ値として上書き"] = 6, ["輝度をアルファ値として乗算"] = 7,
+	};
+	mode_draw = name2num[PI.mode_draw] or mode_draw;
+end
+if type(PI.blend) == "string" then
+	local name2num = {
+		["通常"] = 0, ["加算"] = 1, ["減算"] = 2, ["乗算"] = 3, ["スクリーン"] = 4, ["オーバーレイ"] = 5,
+		["比較(明)"] = 6, ["比較(暗)"] = 7, ["輝度"] = 8, ["色差"] = 9,
+		["陰影"] = 10, ["明暗"] = 11, ["差分"] = 12,
+		["alpha_add"] = 100, ["alpha_max"] = 101, ["alpha_sub"] = 102, ["alpha_add2"] = 103, ["rgba_add"] = 104,
+	};
+	blend = name2num[PI.blend] or blend;
+end
+if type(PI.extra_filter) == "string" then
+	local name2num = { ["追加のフィルタ効果"] = 0, ["なし"] = 0, ["後続フィルタ"] = 1, ["スクリプト実行"] = 2, };
+	extra_filter = name2num[PI.extra_filter] or extra_filter;
+end
+
+-- normalize parameters.
+buffer = math.min(math.max(math.floor(0.5 + buffer), 0), 3);
+zoom = math.min(math.max(zoom / 100, 0), 50);
+rotate = math.pi / 180 * (rotate % 360);
+alpha = math.min(math.max(1 - alpha / 100, 0), 1);
+mode_tile = math.min(math.max(math.floor(mode_tile), 0), 3);
+mode_draw = math.min(math.max(math.floor(mode_draw), 0), 7);
+blend = ({
+	[0] = "none", "add", "sub", "mul", "screen", "overlay",
+	"light", "dark", "brightness", "chroma", "shadow", "light_dark", "diff",
+	[100] = "alpha_add", [101] = "alpha_max", [102] = "alpha_sub", [103] = "alpha_add2", [104] = "rgba_add",
+})[blend] or "none";
+extra_script = extra_script:match("^%s*(.-)%s*$");
+fixed_size = fixed_size or mode_tile ~= 0 or (mode_draw == 1 or mode_draw >= 4)
+	or obj.getinfo("filter");
+
+-- try loading the image.
+local w, h = obj.w, obj.h;
+local cache_name = "cache:basic_s/combine/obj#"..obj.effect_id;
+obj.copybuffer(cache_name, "object");
+local obj_props = { obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, obj.sy, obj.sz, obj.alpha };
+local W, H, dcx, dcy = 0, 0, 0, 0;
+local buffer_name =
+	buffer == 0 and "tempbuffer" or
+	buffer == 2 and "framebuffer" or
+	buffer == 3 and "object" or
+	("cache:"..cache_name);
+if buffer_name == "object" or obj.copybuffer("object", buffer_name) then
+	obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, obj.sy, obj.sz, obj.alpha = 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1;
+	if extra_filter == 1 then obj.effect();
+	elseif extra_filter == 2 and extra_script ~= "" then
+		local f, c, e = nil, false, nil;
+		f, e = loadstring(extra_script);
+		if f then c, e = pcall(f) end
+		if not c then
+			local function print_error(err_mes, source)
+				local n, err_desc = err_mes:match("%]:(%d+):%s(.-)$");
+				n = tonumber(n);
+				if n and err_desc then
+					-- collect three lines containing the one that caused the error.
+					n = math.max(n - 1, 1);
+					local k = 0;
+					for l in (source.."\n"):gmatch("(.-)\n") do
+						k = k + 1;
+						if k >= n then
+							err_desc = err_desc.."\n> "..l;
+							if k >= n + 2 then break end
+						end
+					end
+				else err_desc = err_mes end
+				print(err_desc); -- easy-to-read message.
+				print("@warn", err_mes); -- raw message.
+			end
+			print_error(e, extra_script);
+		end
+	end
+	W, H = obj.w, obj.h;
+else extra_filter = 0 end
+if W > 0 and H > 0 then -- renders properly only when the image is loaded propertly.
+	-- reflect properties.
+	rotate = rotate + math.pi / 180 * (obj.rz % 360);
+	local zoom_x, zoom_y, c, s = obj.sx * zoom, obj.sy * zoom, math.cos(rotate), math.sin(rotate);
+	X, Y = X + obj.ox - (zoom_x * c * obj.cx - zoom_y * s * obj.cy), Y + obj.oy - (zoom_x * s * obj.cx + zoom_y * c * obj.cy);
+	alpha = alpha * obj.alpha;
+
+	-- determine the canvas size.
+	local L, R, T, B = -w / 2, w / 2, -h / 2, h / 2;
+	if not fixed_size then
+		L, T = zoom_x * math.abs(c) * W + zoom_y * math.abs(s) * H, zoom_x * math.abs(s) * W + zoom_y * math.abs(c) * H;
+		L, R, T, B = X - L / 2, X + L / 2, Y - T / 2, Y + T / 2;
+		L, R = math.floor(math.min(L + w / 2, 0)) - w / 2, math.ceil(math.max(R + w / 2, w)) - w / 2;
+		T, B = math.floor(math.min(T + h / 2, 0)) - h / 2, math.ceil(math.max(B + h / 2, h)) - h / 2;
+		dcx, dcy = -(L + R) / 2, -(T + B) / 2;
+	end
+
+	-- process rotate / zoom / tile.
+	if alpha > 0 then
+		obj.clearbuffer("tempbuffer", R - L, B - T);
+		if zoom_x > 0 and zoom_y > 0 then
+			obj.pixelshader("tile@画像ファイル合成@Basic_S", "tempbuffer", "object", {
+				W, H;
+				(c * (L - X) + s * (T - Y)) / zoom_x + W / 2,
+				(-s * (L - X) + c * (T - Y)) / zoom_y + H / 2;
+				c / zoom_x, -s / zoom_y, 0, 0,
+				s / zoom_x, c / zoom_y;
+				mode_tile % 2, math.floor(mode_tile / 2);
+				no_smooth and 1 or 0;
+			});
+		end
+	end
+
+	if mode_draw == 4 then
+		-- mask.
+		obj.copybuffer("object", cache_name);
+		obj.pixelshader("mask@画像ファイル合成@Basic_S", "object", "tempbuffer", { alpha }, "mask");
+	elseif mode_draw == 5 then
+		-- replace color.
+		obj.copybuffer("object", cache_name);
+		obj.pixelshader("replace_col@画像ファイル合成@Basic_S", "object", { cache_name, "tempbuffer" }, { alpha });
+	elseif mode_draw == 6 then
+		-- replace luma with alpha.
+		obj.copybuffer("object", cache_name);
+		obj.pixelshader("luma_as_alpha@画像ファイル合成@Basic_S", "object", { cache_name, "tempbuffer" }, { alpha });
+	elseif mode_draw >= 7 then
+		-- multiply luma to alpha.
+		obj.copybuffer("object", cache_name);
+		obj.pixelshader("mask_by_luma@画像ファイル合成@Basic_S", "object", "tempbuffer", { alpha }, "mask");
+	elseif alpha > 0 then
+		obj.setoption("drawtarget", "tempbuffer");
+		if mode_draw < 2 then
+			-- combine from front.
+			if L < -w / 2 or R > w / 2 or T < -h / 2 or B > h / 2 then
+				obj.copybuffer("object", cache_name);
+				obj.effect("領域拡張", "左", -L - w / 2, "右", R - w / 2, "上", -T - h / 2, "下", B - h / 2);
+				obj.copybuffer(cache_name, "object");
+			end
+			obj.copybuffer("object", "tempbuffer");
+			obj.copybuffer("tempbuffer", cache_name);
+			if mode_draw == 1 then
+				-- unalpha
+				obj.pixelshader("unalpha@画像ファイル合成@Basic_S", "tempbuffer", cache_name);
+			end
+			obj.setoption("blend", blend);
+			obj.draw(0, 0, 0, 1, alpha);
+		else -- combine from back.
+			if alpha ~= 1 then
+				obj.copybuffer("object", "tempbuffer");
+				obj.clearbuffer("tempbuffer");
+				obj.draw(0, 0, 0, 1, alpha);
+			end
+			obj.copybuffer("object", cache_name);
+			if mode_draw == 3 then
+				-- unalpha
+				obj.copybuffer(cache_name, "tempbuffer");
+				obj.pixelshader("unalpha@画像ファイル合成@Basic_S", "tempbuffer", cache_name);
+			end
+			obj.setoption("blend", blend);
+			obj.draw(dcx, dcy);
+		end
+		obj.setoption("blend");
+		obj.copybuffer("object", "tempbuffer");
+		if mode_draw == 1 or mode_draw == 3 then
+			-- re-alpha
+			obj.pixelshader("carve@画像ファイル合成@Basic_S", "object", { cache_name, "tempbuffer" }, nil);
+		end
+	elseif mode_draw < 2 then
+		-- combine from front with alpha = 0.
+		obj.copybuffer("object", cache_name);
+		if L < -w / 2 or R > w / 2 or T < -h / 2 or B > h / 2 then
+			obj.effect("領域拡張", "左", -L - w / 2, "右", R - w / 2, "上", -T - h / 2, "下", B - h / 2);
+		end
+	elseif mode_draw == 2 then
+		-- combine from back with alpha = 0.
+		obj.setoption("drawtarget", "tempbuffer", R - L, B - T);
+		obj.copybuffer("object", cache_name);
+		obj.setoption("blend", blend);
+		obj.draw(dcx, dcy);
+		obj.setoption("blend");
+		obj.copybuffer("object", "tempbuffer");
+	else -- mode_draw == 3
+		obj.clearbuffer("object", R - L, B - T);
+	end
+else obj.copybuffer("object", cache_name) end
+obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, obj.sy, obj.sz, obj.alpha = unpack(obj_props);
+
+-- adjust the center.
+obj.cx, obj.cy = obj.cx + dcx, obj.cy + dcy;
+
+-- draw immediately if subsequent filters are already applied.
+if extra_filter == 1 then
+	obj.setoption("drawtarget", "framebuffer");
+	obj.draw();
+end
+
 end
 
 @別レイヤー同期
