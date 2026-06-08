@@ -1,3 +1,4 @@
+-- under development for v2.20, r4
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -47,23 +48,29 @@ https://mit-license.org/
 --group:その他,false
 --value@PI:PI,{}
 --[[pixelshader@combine:
-Texture2D chm : register(t0);
+Texture2D lin : register(t0);
 Texture2D bkg : register(t1);
 cbuffer constant0 : register(b0) {
-	float a_back;
+	float4 color_line, color_back;
 };
 float4 combine(float4 pos : SV_Position) : SV_Target
 {
-	float4
-		col_bkg = bkg.Load(int3(pos.xy, 0)),
-		col_chm = chm.Load(int3(pos.xy, 0));
-	col_bkg *= a_back * max(1 - (col_bkg.a > 0 ? col_chm.a / col_bkg.a : 0), 0);
-	return col_chm + col_bkg;
+	float a_lin = lin[pos.xy].a, a_bkg = bkg[pos.xy].a;
+	return a_lin * color_line + (a_bkg - a_lin) * color_back;
 }
 ]]
 local obj, math, tonumber, type, buffer = obj, math, tonumber, type, require("string.buffer");
+local basic_s = require("Basic_S");
 
 -- take parameters.
+aspect = math.min(math.max(aspect / 100, -1), 1);
+local radii, shapes = {
+	{ basic_s.size_from_aspect(radius, aspect) },
+	{ basic_s.size_from_aspect(uniform and radius or r_RT, aspect) },
+	{ basic_s.size_from_aspect(uniform and radius or r_RB, aspect) },
+	{ basic_s.size_from_aspect(uniform and radius or r_LB, aspect) },
+}, { shape, shape, shape, shape };
+
 --[==[
 	PI = {
 		width:			number?,
@@ -79,11 +86,6 @@ local obj, math, tonumber, type, buffer = obj, math, tonumber, type, require("st
 		shapes:			table|string|nil,
 	}
 ]==]
-local function as_bool(t, v)
-	if type(t) == "boolean" then return t;
-	elseif type(t) == "number" then return t ~= 0;
-	else return v end
-end
 width = tonumber(PI.width) or width;
 height = tonumber(PI.height) or height;
 align_x = tonumber(PI.align_x) or align_x;
@@ -92,7 +94,9 @@ line = tonumber(PI.line) or line;
 color = tonumber(PI.color) or color;
 color_back = tonumber(PI.color_back) or color_back;
 alpha_back = tonumber(PI.alpha_back) or alpha_back;
-fixed_aspect = as_bool(PI.fixed_aspect, fixed_aspect) and 1 or 0;
+radii = basic_s.PI.corner_radii(PI.radii, radii);
+fixed_aspect = basic_s.PI.as_bool(PI.fixed_aspect, fixed_aspect);
+shapes = basic_s.PI.corner_shape(PI.shapes, shapes);
 
 -- normalize parameters.
 width = math.max(math.floor(0.5 + width), 0);
@@ -104,59 +108,13 @@ color = math.floor(0.5 + color) % 2 ^ 24;
 color_back = math.floor(0.5 + color_back) % 2 ^ 24;
 alpha_back = math.min(math.max(1 - alpha_back / 100, 0), 1);
 
+-- pass to core.
+basic_s.object.round_rect(width, height, line,
+	color, color_back, alpha_back,
+	radii, shapes, fixed_aspect);
 
--- further calculations.
-if width <= 0 or height <= 0 then return end
-local big_radius = math.max(width, height, 4000);
-if color == color_back and alpha_back >= 1 then line = big_radius end
-local do_fill = 2 * line - 1 >= math.min(width, height);
-local shape_name = ({
-	"円", "円(凹)", "菱形", "四角形(凹)",
-	"正8角形", "正8角形(凹)", "正8角形(凹斜)", "正12角形", "正12角形(凹)", "正12角形(凹斜)",
-	"スパイク", "スパイク(凹)",
-})[shape + 1] or "円";
-
--- make rectangle.
-obj.clearbuffer("object", width, height);
+-- alignment.
 obj.cx, obj.cy = -width * align_x / 2, -height * align_y / 2;
-if line <= 0 and alpha_back <= 0 then return end
-
--- parepare the common parameters.
-local function full_escape_repl(s) return "\\"..s:byte() end
-local function full_escape(s) return ("%q"):format(s):gsub("[\128-\255]", full_escape_repl) end
-local pi_head = ("radii=require'string.buffer'.decode%s,shapes=require'string.buffer'.decode%s,line="):format(
-	full_escape(buffer.encode(PI.radii)), full_escape(buffer.encode(PI.shapes)));
-
--- render the background first.
-if do_fill or alpha_back > 0 then
-	obj.clearbuffer("object", do_fill and color or color_back);
-	obj.effect("四隅丸め@Basic_S", "半径", radius,
-		"半径均一", uniform and 1 or 0, "右上半径", r_RT, "右下半径", r_RB, "左下半径", r_LB,
-		"縦横比", aspect, "縦横比固定", fixed_aspect, "形状", shape_name, "PI",
-		pi_head..math.max(width, height, 4000));
-	if do_fill then return end
-	if line <= 0 then
-		if alpha_back < 1 then
-			obj.pixelshader("const_alpha@透明度適用@Basic_S", "object", nil, { alpha_back }, "mask");
-		end
-		return;
-	end
-end
-obj.copybuffer("tempbuffer", "object");
-
--- next the chrome part.
-if line > 0 then
-	obj.clearbuffer("object", color);
-	obj.effect("四隅丸め@Basic_S", "半径", radius,
-		"半径均一", uniform and 1 or 0, "右上半径", r_RT, "右下半径", r_RB, "左下半径", r_LB,
-		"縦横比", aspect, "縦横比固定", fixed_aspect, "形状", shape_name, "PI",
-		pi_head..line);
-else obj.clearbuffer("object") end
-
--- combine them by shader.
-obj.pixelshader("combine", "object", { "object", "tempbuffer" }, {
-	alpha_back;
-});
 
 @楕円
 --information:楕円@Basic_S v2.10 (for beta43b) by σ軸
@@ -175,6 +133,7 @@ obj.pixelshader("combine", "object", { "object", "tempbuffer" }, {
 --group:その他,false
 --value@PI:PI,{}
 local obj, math, tonumber, type = obj, math, tonumber, type;
+local basic_s = require("Basic_S");
 
 -- take parameters.
 --[==[
@@ -190,11 +149,6 @@ local obj, math, tonumber, type = obj, math, tonumber, type;
 		circle:		boolean|number|nil,
 	}
 ]==]
-local function as_bool(t, v)
-	if type(t) == "boolean" then return t;
-	elseif type(t) == "number" then return t ~= 0;
-	else return v end
-end
 width = tonumber(PI.width) or width;
 height = tonumber(PI.height) or height;
 align_x = tonumber(PI.align_x) or align_x;
@@ -203,7 +157,7 @@ line = tonumber(PI.line) or line;
 color = tonumber(PI.color) or color;
 color_back = tonumber(PI.color_back) or color_back;
 alpha_back = tonumber(PI.alpha_back) or alpha_back;
-circle = as_bool(PI.circle, circle);
+circle = basic_s.PI.as_bool(PI.circle, circle);
 
 -- normalize parameters.
 width = math.max(math.floor(0.5 + width), 0);
@@ -215,42 +169,20 @@ color = math.floor(0.5 + color) % 2 ^ 24;
 color_back = math.floor(0.5 + color_back) % 2 ^ 24;
 alpha_back = math.min(math.max(1 - alpha_back / 100, 0), 1);
 
--- further calculations.
 if circle then height = width end
-if width <= 0 or height <= 0 then return end
-local big_radius = math.max(width, height, 4000);
-if color == color_back and alpha_back >= 1 then line = big_radius end
-local do_fill = 2 * line - 1 >= math.min(width, height);
 
--- make rectangle.
-obj.clearbuffer("object", width, height);
+-- pass to core.
+local big_radius = math.max(
+	math.max(pad_L, 0) + obj.w + math.max(pad_R, 0),
+	math.max(pad_T, 0) + obj.h + math.max(pad_B, 0)) + 1;
+local radii =  { big_radius, big_radius };
+radii = { radii, radii, radii, radii };
+basic_s.object.round_rect(width, height, line,
+	color, color_back, alpha_back,
+	radii, { 0, 0, 0, 0 }, fixed_aspect);
+
+-- alignment.
 obj.cx, obj.cy = -width * align_x / 2, -height * align_y / 2;
-if line <= 0 and alpha_back <= 0 then return end
-
--- render the background first.
-if do_fill or alpha_back > 0 then
-	obj.clearbuffer("object", do_fill and color or color_back);
-	obj.effect("四隅丸め@Basic_S", "半径", big_radius,
-		"縦横比固定", 0, "形状", "円", "PI", "line="..big_radius);
-	if do_fill then return end
-	if line <= 0 then
-		if alpha_back < 1 then
-			obj.pixelshader("const_alpha@透明度適用@Basic_S", "object", nil, { alpha_back }, "mask");
-		end
-		return;
-	end
-end
-obj.copybuffer("tempbuffer", "object");
-
--- next the chrome part.
-obj.clearbuffer("object", color);
-obj.effect("四隅丸め@Basic_S", "半径", big_radius,
-	"縦横比固定", 0, "形状", "円", "PI", "line="..line);
-
--- combine them by shader.
-obj.pixelshader("combine@角丸矩形@Basic_S", "object", { "object", "tempbuffer" }, {
-	alpha_back;
-});
 
 @菱形
 --information:菱形@Basic_S v2.10 (for beta43b) by σ軸
@@ -269,6 +201,7 @@ obj.pixelshader("combine@角丸矩形@Basic_S", "object", { "object", "tempbuffe
 --group:その他,false
 --value@PI:PI,{}
 local obj, math, tonumber, type = obj, math, tonumber, type;
+local basic_s = require("Basic_S");
 
 -- take parameters.
 --[==[
@@ -284,11 +217,6 @@ local obj, math, tonumber, type = obj, math, tonumber, type;
 		square:		boolean|number|nil,
 	}
 ]==]
-local function as_bool(t, v)
-	if type(t) == "boolean" then return t;
-	elseif type(t) == "number" then return t ~= 0;
-	else return v end
-end
 width = tonumber(PI.width) or width;
 height = tonumber(PI.height) or height;
 align_x = tonumber(PI.align_x) or align_x;
@@ -297,7 +225,7 @@ line = tonumber(PI.line) or line;
 color = tonumber(PI.color) or color;
 color_back = tonumber(PI.color_back) or color_back;
 alpha_back = tonumber(PI.alpha_back) or alpha_back;
-square = as_bool(PI.square, square);
+square = basic_s.PI.as_bool(PI.square, square);
 
 -- normalize parameters.
 width = math.max(math.floor(0.5 + width), 0);
@@ -309,42 +237,20 @@ color = math.floor(0.5 + color) % 2 ^ 24;
 color_back = math.floor(0.5 + color_back) % 2 ^ 24;
 alpha_back = math.min(math.max(1 - alpha_back / 100, 0), 1);
 
--- further calculations.
 if square then height = width end
-if width <= 0 or height <= 0 then return end
-local big_radius = math.max(width, height, 4000);
-if color == color_back and alpha_back >= 1 then line = big_radius end
-local do_fill = 2 * line - 1 >= math.min(width, height);
 
--- make rectangle.
-obj.clearbuffer("object", width, height);
+-- pass to core.
+local big_radius = math.max(
+	math.max(pad_L, 0) + obj.w + math.max(pad_R, 0),
+	math.max(pad_T, 0) + obj.h + math.max(pad_B, 0)) + 1;
+local radii =  { big_radius, big_radius };
+radii = { radii, radii, radii, radii };
+basic_s.object.round_rect(width, height, line,
+	color, color_back, alpha_back,
+	radii, { 2, 2, 2, 2 }, fixed_aspect);
+
+-- alignment.
 obj.cx, obj.cy = -width * align_x / 2, -height * align_y / 2;
-if line <= 0 and alpha_back <= 0 then return end
-
--- render the background first.
-if do_fill or alpha_back > 0 then
-	obj.clearbuffer("object", do_fill and color or color_back);
-	obj.effect("四隅丸め@Basic_S", "半径", big_radius,
-		"縦横比固定", 0, "形状", "菱形", "PI", "line="..big_radius);
-	if do_fill then return end
-	if line <= 0 then
-		if alpha_back < 1 then
-			obj.pixelshader("const_alpha@透明度適用@Basic_S", "object", nil, { alpha_back }, "mask");
-		end
-		return;
-	end
-end
-obj.copybuffer("tempbuffer", "object");
-
--- next the chrome part.
-obj.clearbuffer("object", color);
-obj.effect("四隅丸め@Basic_S", "半径", big_radius,
-	"縦横比固定", 0, "形状", "菱形", "PI", "line="..line);
-
--- combine them by shader.
-obj.pixelshader("combine@角丸矩形@Basic_S", "object", { "object", "tempbuffer" }, {
-	alpha_back;
-});
 
 @スーパー楕円
 --information:スーパー楕円@Basic_S v2.10 (for beta43b) by σ軸
@@ -472,6 +378,7 @@ end
 --group:その他,false
 --value@PI:PI,{}
 local obj, tonumber, type = obj, tonumber, type;
+local basic_s = require("Basic_S");
 
 -- take parameters.
 --[==[
@@ -484,11 +391,6 @@ local obj, tonumber, type = obj, tonumber, type;
 		alpha:		boolean|number|nil,
 	}
 ]==]
-local function as_bool(t, v)
-	if type(t) == "boolean" then return t;
-	elseif type(t) == "number" then return t ~= 0;
-	else return v end
-end
 if PI.index_base then
 	local name2num = {
 		["絶対指定"] = 0, ["相対指定"] = 1,
@@ -496,10 +398,10 @@ if PI.index_base then
 	index_base = name2num[PI.index_base] or index_base;
 end
 index = tonumber(PI.index) or tonumber(index) or -1;
-effect = as_bool(PI.effect, effect);
-position = as_bool(PI.position, position);
-rotation = as_bool(PI.rotation, rotation);
-alpha = as_bool(PI.alpha, alpha);
+effect = basic_s.PI.as_bool(PI.effect, effect);
+position = basic_s.PI.as_bool(PI.position, position);
+rotation = basic_s.PI.as_bool(PI.rotation, rotation);
+alpha = basic_s.PI.as_bool(PI.alpha, alpha);
 
 -- normalize parameters.
 if index_base == 1 then index = obj.layer + index end
@@ -516,39 +418,22 @@ if obj.w <= 0 or obj.h <= 0 then return end -- failed to load the layer.
 -- even if the object on the target layer had modified them.
 if position then
 	obj.ox, obj.oy, obj.oz = gv(hdr..".pos");
-
 	obj.cx, obj.cy, obj.cz = gv(hdr..".center");
 end
 if rotation then
+	-- apply the rotation (before the rotation of this object).
 	local rx, ry, rz = gv(hdr..".angle");
-	local sx, sy, sz = gv(hdr..".scale");
-
-	local my_cx, my_cy, my_cz = gv("center");
-	local my_rx, my_ry, my_rz = gv("angle");
-
-	-- revert the object states first.
-	obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz =
-		obj.cx - my_cx, obj.cy - my_cy, obj.cz - my_cz,
-		rx - my_rx, ry - my_ry, rz - my_rz;
-
-	-- apply the reverted center.
 	rx, ry, rz = math.pi / 180 * rx, math.pi / 180 * ry, math.pi / 180 * rz;
-	local c_x, s_x, c_y, s_y, c_z, s_z =
-		math.cos(rx), -math.sin(rx), math.cos(ry), -math.sin(ry), math.cos(rz), -math.sin(rz);
-	my_cy, my_cz = c_x * my_cy - s_x * my_cz, s_x * my_cy + c_x * my_cz;
-	my_cz, my_cx = c_y * my_cz - s_y * my_cx, s_y * my_cz + c_y * my_cx;
-	my_cx, my_cy = c_z * my_cx - s_z * my_cy, s_z * my_cx + c_z * my_cy;
-	my_cx, my_cy, my_cz = my_cx / sx, my_cy / sy, my_cz / sz;
-	obj.cx, obj.cy, obj.cz = obj.cx + my_cx, obj.cy + my_cy, obj.cz + my_cz;
-
-	-- apply the scaling.
-	obj.sx, obj.sy, obj.sz = sx, sy, sz;
-
-	-- apply the reverted rotation.
-	if my_rx ~= 0 or my_ry ~= 0 or my_rz ~= 0 then
-		obj.effect("XYZ追加回転@Basic_S", "PI",
-			([[X=%s,Y=%s,Z=%s]]):format(my_rx, my_ry, my_rz));
-	end
+	local Rx, Ry, Rz = gv("angle");
+	Rx, Ry, Rz = math.pi / 180 * Rx, math.pi / 180 * Ry, math.pi / 180 * Rz;
+	local qr, qi, qj, qk = basic_s.quat.euler_to_quat(Rx, Ry, Rz);
+	rx, ry, rz = basic_s.quat.quat_to_euler(basic_s.quat.mul(
+		qr, qi, qj, qk,
+		basic_s.quat.euler_to_quat(rx, ry, rz)));
+	obj.rx, obj.ry, obj.rz =
+		180 / math.pi * (rx - Rx),
+		180 / math.pi * (ry - Ry),
+		180 / math.pi * (rz - Rz);
 end
 if alpha then
 	obj.alpha = gv(hdr..".alpha");

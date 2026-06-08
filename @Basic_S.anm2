@@ -1,4 +1,4 @@
--- under development for v2.20, r3
+-- under development for v2.20, r4
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -39,12 +39,13 @@ https://mit-license.org/
 --check@fixed_aspect:縦横比固定,true
 --group:その他,false
 --track@line:ライン幅,0,4000,4000,0.01,,0.25
+--track@alpha_hole:内側透明度,0,100,100,0.01
 --value@PI:PI,{}
 --[[pixelshader@carve:
 cbuffer constant0 : register(b0) {
 	float3 size_shape[4];
 	float2 size;
-	float line_width;
+	float line_width, alpha_hole;
 };
 
 float shape_circle(float2 pt, float2 sz, float pad)
@@ -157,7 +158,7 @@ float4 carve(float4 pos : SV_Position) : SV_Target
 			szs.xy - abs(pos.xy - corners[c] * size), szs.xy, int(szs.z)));
 	}
 	const float2 alpha = saturate(0.5 - outer);
-	return float4(0, 0, 0, alpha[0] * (1 - alpha[1]));
+	return float4(0, 0, 0, alpha[0] * (1 - alpha_hole * alpha[1]));
 }
 ]]
 local obj, math, tonumber = obj, math, tonumber;
@@ -178,18 +179,21 @@ local radii, shapes = {
 		fixed_aspect:	boolean|number|nil,
 		shapes:			table|string|nil,
 		line:			number?,
+		alpha_hole:		number?,
 	}
 ]==]
 radii = basic_s.PI.corner_radii(PI.radii, radii);
 fixed_aspect = basic_s.PI.as_bool(PI.fixed_aspect, fixed_aspect);
 shapes = basic_s.PI.corner_shape(PI.shapes, shapes);
 line = tonumber(PI.line) or line;
+alpha_hole = tonumber(PI.alpha_hole) or alpha_hole;
 
 -- normalize parameters.
 line = math.max(line, 0);
+alpha_hole = math.min(math.max(1 - alpha_hole / 100, 0), 1);
 
 -- pass to core.
-basic_s.effect.round_corners(radii, shapes, line, fixed_aspect);
+basic_s.effect.round_corners(radii, shapes, line, 1 - alpha_hole, fixed_aspect);
 
 @背景角丸矩形
 --information:背景角丸矩形@Basic_S v2.10 (for beta43b) by σ軸
@@ -225,7 +229,7 @@ Texture2D lin : register(t1);
 Texture2D bkg : register(t2);
 cbuffer constant0 : register(b0) {
 	float2 ofs_obj, ofs_bkg;
-	float alpha_object, alpha_line, alpha_back, clip_f;
+	float alpha_object, clip_f;
 	float4 color_line, color_back;
 };
 static const int clip = int(clip_f);
@@ -244,8 +248,8 @@ float4 combine(float4 pos : SV_Position) : SV_Target
 		clip_bkg = (1 - a_obj) * (a_bkg - a_lin);
 
 	return clip_obj * alpha_object * c_obj
-		+ clip_lin * alpha_line * a_lin * color_line
-		+ clip_bkg * alpha_back * a_bkg * color_back;
+		+ clip_lin * a_lin * color_line
+		+ clip_bkg * a_bkg * color_back;
 }
 ]]
 --[[pixelshader@combine_img:
@@ -341,8 +345,6 @@ if type(PI.clip) == "string" then
 	clip = ({ ["なし"] = 0, ["あり"] = 1, ["ライン内"] = 2 })[PI.clip] or clip;
 end
 line = tonumber(PI.line) or line;
-radii = basic_s.PI.corner_radii(PI.radii, radii);
-shapes = basic_s.PI.corner_shape(PI.shapes, shapes);
 color = tonumber(PI.color) or color;
 file_image = type(PI.file_image) == "string" and PI.file_image or file_image;
 local line_x, line_y = tonumber(PI.line_x) or 0, tonumber(PI.line_y) or 0;
@@ -352,7 +354,9 @@ file_back = type(PI.file_back) == "string" and PI.file_back or file_back;
 local back_x, back_y = tonumber(PI.back_x) or 0, tonumber(PI.back_y) or 0;
 alpha_back = tonumber(PI.alpha_back) or alpha_back;
 alpha_front = tonumber(PI.alpha_front) or alpha_front;
+radii = basic_s.PI.corner_radii(PI.radii, radii);
 fixed_aspect = basic_s.PI.as_bool(PI.fixed_aspect, fixed_aspect);
+shapes = basic_s.PI.corner_shape(PI.shapes, shapes);
 
 -- normalize parameters.
 pad_L = math.floor(0.5 + pad_L);
@@ -482,9 +486,9 @@ local dx, dy = 0, 0 do
 end
 pad_L, pad_R = dx + pad_L, dx + pad_R;
 pad_T, pad_B = dy + pad_T, dy + pad_B;
-local big_radius = math.max(4000,
+local big_radius = math.max(
 	math.max(pad_L, 0) + obj.w + math.max(pad_R, 0),
-	math.max(pad_T, 0) + obj.h + math.max(pad_B, 0));
+	math.max(pad_T, 0) + obj.h + math.max(pad_B, 0)) + 1;
 local radii =  { big_radius, big_radius };
 radii = { radii, radii, radii, radii };
 
@@ -609,9 +613,9 @@ local dx, dy = 0, 0 do
 end
 pad_L, pad_R = dx + pad_L, dx + pad_R;
 pad_T, pad_B = dy + pad_T, dy + pad_B;
-local big_radius = math.max(4000,
+local big_radius = math.max(
 	math.max(pad_L, 0) + obj.w + math.max(pad_R, 0),
-	math.max(pad_T, 0) + obj.h + math.max(pad_B, 0));
+	math.max(pad_T, 0) + obj.h + math.max(pad_B, 0)) + 1;
 local radii =  { big_radius, big_radius };
 radii = { radii, radii, radii, radii };
 
@@ -2305,6 +2309,7 @@ basic_s.effect.prec_blur(range_x, range_y, luma_weight, fixed_size);
 --require:2004200
 --separator:このスクリプトは非推奨です．
 --separator:より高速で高機能な「縁取りσ」の利用を推奨します．
+--separator:https://github.com/sigma-axis/aviutl2_Border_S
 --track@size:サイズ,-500,500,5,1
 --track@blur:ぼかし,0,100,5,1
 --color@color:縁色,0xffffff
@@ -2317,6 +2322,8 @@ basic_s.effect.prec_blur(range_x, range_y, luma_weight, fixed_size);
 --trackgroup@X,Y:pos
 --group:その他,false
 --value@PI:PI,{}
+
+-- 非推奨化に伴い，この部分は更新凍結．
 local obj, math, bit, tonumber, type = obj, math, bit, tonumber, type;
 
 -- set anchors.
@@ -2756,7 +2763,7 @@ img_Y = math.floor(0.5 + img_Y);
 -- prepare for blending.
 local cache_name, w, h = "cache:basic_s/inner_shadow/obj", obj.w, obj.h;
 obj.copybuffer(cache_name, "object");
-if blur > 0 then obj.effect("小数ぼかし@Basic_S", "PI", "range="..blur) end
+if blur > 0 then basic_s.effect.prec_blur(blur, blur, 0, false) end
 if X ~= 0 or Y ~= 0 or blur > 0 then
 	obj.setoption("drawtarget", "tempbuffer", w, h);
 	obj.draw(X, Y);
@@ -3508,6 +3515,7 @@ sync_oz = sync_oz / 100;
 sync_cx = sync_cx / 100;
 sync_cy = sync_cy / 100;
 sync_cz = sync_cz / 100;
+sync_rot = sync_rot / 100;
 sync_sx = sync_sx / 100;
 sync_sy = sync_sy / 100;
 sync_sz = sync_sz / 100;
@@ -3536,17 +3544,25 @@ if sync_sx ~= 0 or sync_sy ~= 0 or sync_sz ~= 0 then
 	obj.sy = obj.sy * sy ^ sync_sy;
 	obj.sz = obj.sz * sz ^ sync_sz;
 end
+if sync_rot ~= 0 then
+	local rx, ry, rz = gv(hdr..".angle");
+	local qr, qi, qj, qk = basic_s.quat.pow(sync_rot, basic_s.quat.euler_to_quat(
+		math.pi / 180 * rx, math.pi / 180 * ry, math.pi / 180 * rz));
+	local Rx, Ry, Rz = gv("angle");
+	rx, ry, rz = basic_s.quat.quat_to_euler(basic_s.quat.mul(
+		qr, qi, qj, qk,
+		basic_s.quat.euler_to_quat(
+			math.pi / 180 * (obj.rx + Rx),
+			math.pi / 180 * (obj.ry + Ry),
+			math.pi / 180 * (obj.rz + Rz))));
+	obj.rx, obj.ry, obj.rz =
+		180 / math.pi * rx - Rx,
+		180 / math.pi * ry - Ry,
+		180 / math.pi * rz - Rz;
+end
 if sync_alpha ~= 0 then
 	obj.alpha = math.min(math.max(
 		obj.alpha * gv(hdr..".alpha") ^ sync_alpha, 0), 1);
-end
-if sync_rot ~= 0 then
-	local qr, qi, qj, qk = basic_s.quat.pow(sync_rot, basic_s.quat.euler_to_quat(gv(hdr..".angle")));
-	local Rx, Ry, Rz = gv("angle");
-	local rx, ry, rz = basic_s.quat.quat_to_euler(basic_s.quat.mul(
-		qr, qi, qj, qk,
-		basic_s.quat.euler_to_quat(obj.rx + Rx, obj.ry + Ry, obj.rz + Rz)));
-	obj.rx, obj.ry, obj.rz = rx - Rx, ry - Ry, rz - Rz;
 end
 
 @バッファをコピー

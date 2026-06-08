@@ -1,4 +1,4 @@
--- under development for v2.20, r3
+-- under development for v2.20, r4
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -673,11 +673,12 @@ end
 ---@param radii round_corners_radii_set 四隅の丸め半径を指定．
 ---@param shapes round_corners_shape_set 四隅の丸め形状を指定．
 ---@param line number ライン幅を指定．0 以上．
+---@param alpha_inner number ライン内部のアルファ値．0.0 -- 1.0.
 ---@param fixed_aspect boolean サイズが小さい場合に合わせて半径を縮小するとき，縦横比を維持するかどうか．
 ---@param cache_name string? バッファ名 (`"tempbuffer"` など). 省略時は現在オブジェクト．
 ---@param width integer? バッファの幅を指定．`cache_name` 指定時は必須．
 ---@param height integer? バッファの高さを指定．`cache_name` 指定時は必須．
-local function round_corners_buff(radii, shapes, line, fixed_aspect, cache_name, width, height)
+local function round_corners_buff(radii, shapes, line, alpha_inner, fixed_aspect, cache_name, width, height)
 	if not (cache_name and width and height) then
 		cache_name, width, height = "object", obj.w, obj.h;
 	end
@@ -725,7 +726,7 @@ local function round_corners_buff(radii, shapes, line, fixed_aspect, cache_name,
 		modified[2][1], modified[2][2], shapes[2], 0;
 		modified[3][1], modified[3][2], shapes[3], 0;
 		modified[4][1], modified[4][2], shapes[4], 0;
-		width, height; line;
+		width, height; line; 1 - alpha_inner;
 	}, "mask");
 end
 
@@ -950,7 +951,7 @@ end
 --#endregion helper functions.
 
 
---#region actual processes for filters.
+--#region actual processes for effects.
 local
 	round_corners, -- 四隅丸め
 	back_round_rect, -- 背景角丸矩形
@@ -958,16 +959,17 @@ local
 	cut_move, -- カットずらし
 	inner_loop, -- 画像中間ループ
 	prec_blur, -- 小数ぼかし
+	round_rect, -- 角丸矩形
 	_;
 
 ---四隅丸めの実体関数．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
 ---@param radii round_corners_radii_set 四隅の丸め半径を指定．
 ---@param shapes round_corners_shape_set 四隅の丸め形状を指定．
 ---@param line number ライン幅を指定．0 以上．
+---@param alpha_inner number ライン内部のアルファ値．0.0 -- 1.0.
 ---@param fixed_aspect boolean サイズが小さい場合に合わせて半径を縮小するとき，縦横比を維持するかどうか．
-function round_corners(radii, shapes, line, fixed_aspect)
-	-- TODO: add a parameter "inner alpha", so the area inside the line can be semi-transparent.
-	round_corners_buff(radii, shapes, line, fixed_aspect, "object", obj.w, obj.h)
+function round_corners(radii, shapes, line, alpha_inner, fixed_aspect)
+	round_corners_buff(radii, shapes, line, alpha_inner, fixed_aspect, "object", obj.w, obj.h)
 end
 
 ---背景角丸矩形の実体関数．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
@@ -1029,7 +1031,7 @@ function back_round_rect(pad_L, pad_R, pad_T, pad_B, line, clip, alpha_fore,
 	local cache_src, cache_back, cache_line, cache_back_image, cache_line_image =
 		"cache:basic_s/backrect/obj", "cache:basic_s/backrect/bkg", "cache:basic_s/backrect/lin",
 		"cache:basic_s/backrect/bkg_i", "cache:basic_s/backrect/lin_i";
-	local size_image_line_x, size_image_line_y, size_image_back_x, size_image_back_y, has_image_line, has_image_back =
+	local image_line_w, image_line_h, image_back_w, image_back_h, has_image_line, has_image_back =
 		1, 1, 1, 1, #image_line >= 4 and alpha_line > 0, #image_back >= 4 and not do_fill and alpha_back > 0;
 
 	-- backup the current object.
@@ -1042,25 +1044,19 @@ function back_round_rect(pad_L, pad_R, pad_T, pad_B, line, clip, alpha_fore,
 		-- line image.
 		if has_image_line and obj.load("image", image_line) then
 			obj.copybuffer(cache_line_image, "object");
-			size_image_line_x, size_image_line_y = obj.w, obj.h;
-		else
-			obj.clearbuffer(cache_line_image, 1, 1, color_line);
-			has_image_line = false;
-		end
+			image_line_w, image_line_h = obj.w, obj.h;
+		else has_image_line = false end
 
 		-- back image.
 		if has_image_back and image_back == image_line then
 			-- reuse the one that is already loaded.
-			cache_back_image, has_image_back, size_image_back_x, size_image_back_y =
-				cache_line_image, has_image_line, size_image_line_x, size_image_line_y;
+			cache_back_image, has_image_back, image_back_w, image_back_h =
+				cache_line_image, has_image_line, image_line_w, image_line_h;
 		elseif has_image_back and obj.load("image", image_back) then
 			obj.copybuffer(cache_back_image, "object");
-			size_image_back_x, size_image_back_y = obj.w, obj.h;
+			image_back_w, image_back_h = obj.w, obj.h;
 			obj.load("image", image_back);
-		else
-			obj.clearbuffer(cache_back_image, 1, 1, color_back);
-			has_image_back = false;
-		end
+		else has_image_back = false end
 
 		load_obj_props(obj_props);
 	end
@@ -1076,12 +1072,12 @@ function back_round_rect(pad_L, pad_R, pad_T, pad_B, line, clip, alpha_fore,
 
 	-- render the "line" part.
 	obj.clearbuffer(cache_line, W, H, 0x000000);
-	round_corners_buff(radii, shapes, line, fixed_aspect, cache_line, W, H);
+	round_corners_buff(radii, shapes, line, 0, fixed_aspect, cache_line, W, H);
 
 	-- render the "background" part if necessary.
 	if not do_fill then
 		obj.clearbuffer(cache_back, W, H, 0x000000);
-		round_corners_buff(radii, shapes, big_radius, fixed_aspect, cache_back, W, H);
+		round_corners_buff(radii, shapes, big_radius, 0, fixed_aspect, cache_back, W, H);
 	else cache_back = cache_line end
 
 	-- combine them by shader.
@@ -1093,21 +1089,22 @@ function back_round_rect(pad_L, pad_R, pad_T, pad_B, line, clip, alpha_fore,
 			alpha_fore; alpha_line; alpha_back;
 			clip;
 
-			size_image_line_x, size_image_line_y; size_image_back_x, size_image_back_y;
+			image_line_w, image_line_h; image_back_w, image_back_h;
 			math_floor(W / 2) + pos_image_line_x, math_floor(H / 2) + pos_image_line_y;
 			math_floor(W / 2) + pos_image_back_x, math_floor(H / 2) + pos_image_back_y;
 		});
 	else
+		if not has_image_line then obj.clearbuffer(cache_line_image, 1, 1, color_line) end
+		if not has_image_back then obj.clearbuffer(cache_back_image, 1, 1, color_back) end
 		local r_line, g_line, b_line, a_line = rgba_color_opt(color_line);
 		local r_back, g_back, b_back, a_back = rgba_color_opt(color_back);
 		obj.pixelshader("combine@背景角丸矩形@Basic_S", "object",
 			{ cache_src, cache_line, cache_back }, {
 			L, T; L - pad_L, T - pad_T;
-			alpha_fore; alpha_line; alpha_back;
-			clip;
+			alpha_fore; clip; 0, 0;
 
-			r_line, g_line, b_line, a_line;
-			r_back, g_back, b_back, a_back;
+			alpha_line * r_line, alpha_line * g_line, alpha_line * b_line, alpha_line * a_line;
+			alpha_back * r_back, alpha_back * g_back, alpha_back * b_back, alpha_back * a_back;
 		});
 	end
 
@@ -1515,8 +1512,112 @@ function prec_blur(span_x, span_y, luma_weight, fixed_size)
 		obj.pixelshader("unweight_luma@小数ぼかし@Basic_S", "object", "object", { 1 / log_base, 1 / luma_scale });
 	end
 end
---#endregion actual processes for filters.
+--#endregion actual processes for effects.
 
+
+--#region actual processes for objects.
+---角丸矩形の実体関数．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
+---@param width integer 幅，0 以上．
+---@param height integer 高さ，0 以上．
+---@param line number ライン幅，0 以上．
+---@param color_line integer 色．
+---@param color_back integer 背景色．
+---@param alpha_back number 背景のアルファ値，0.0 -- 1.0.
+---@param radii round_corners_radii_set 四隅の丸め半径を指定．
+---@param shapes round_corners_shape_set 四隅の丸め形状を指定．
+---@param fixed_aspect boolean サイズが小さい場合に合わせて半径を縮小するとき，縦横比を維持するかどうか．
+function round_rect(width, height, line, color_line, color_back, alpha_back, radii, shapes, fixed_aspect)
+	-- the case of nothing.
+	if width <= 0 or height <= 0 then return void_return() end
+
+	-- the case of simple rectangle.
+	if math_max(
+		math_min(radii[1][1], radii[1][2]),
+		math_min(radii[2][1], radii[2][2]),
+		math_min(radii[3][1], radii[3][2]),
+		math_min(radii[4][1], radii[4][2])) <= 0 then
+		if 2 * line + 1 >= math_min(width, height) or
+			(color_line == color_back and alpha_back >= 1) or line <= 0 then
+			obj.clearbuffer("object", width, height, line > 0 and color_line or color_back);
+			if line <= 0 then apply_alpha(alpha_back) end
+			return;
+		end
+	end
+
+	-- the case of single color.
+	if 2 * line + 1 >= math_min(width, height) or
+		color_line == color_back or alpha_back <= 0 or line <= 0 then
+		obj.clearbuffer("object", width, height, line > 0 and color_line or color_back);
+		if line > 0 then round_corners(radii, shapes, line, alpha_back, fixed_aspect);
+		else
+			round_corners(radii, shapes, math_max(width, height) + 1, 1, fixed_aspect);
+			apply_alpha(alpha_back);
+		end
+		return;
+	end
+
+	-- the case of multiple colors.
+	obj.clearbuffer("object", width, height, 0x000000);
+	round_corners_buff(radii, shapes, line, 0, fixed_aspect, "object", width, height);
+	obj.clearbuffer("tempbuffer", width, height, 0x000000);
+	round_corners_buff(radii, shapes, line, math_max(width, height) + 1, fixed_aspect, "tempbuffer", width, height);
+	local r_line, g_line, b_line, a_line = rgba_color_opt(color_line);
+	local r_back, g_back, b_back, a_back = rgba_color_opt(color_back);
+	obj.pixelshader("combine@角丸矩形@Basic_S", "object", { "object", "tempbuffer" }, {
+		r_line, g_line, b_line, a_line;
+		alpha_back * r_back, alpha_back * g_back, alpha_back * b_back, alpha_back * a_back;
+	});
+
+
+
+--track@width:幅,0,4000,100,1,,0.25
+--track@height:高さ,0,4000,100,1,,0.25
+--track@line:ライン幅,0,4000,4000,0.01,,0.25
+--color@color:色,0xffffff
+--color@color_back:背景色,0xffffff
+--track@alpha_back:背景透明度,0,100,100,0.01
+--track@radius:角半径,0,2000,40,0.01,,0.25
+--select@shape:丸角形状=0,円=0,円(凹)=1,菱形=2,四角形(凹)=3,正8角形=4,正8角形(凹)=5,正8角形(凹斜)=6,正12角形=7,正12角形(凹)=8,正12角形(凹斜)=9,スパイク=10,スパイク(凹)=11
+--track@align_x:水平揃え,-100,100,0,0.001
+--track@align_y:垂直揃え,-100,100,0,0.001
+--check@uniform:半径均一,true
+--track@r_RT:右上半径,0,2000,40,0.01,,0.25
+--track@r_RB:右下半径,0,2000,40,0.01,,0.25
+--track@r_LB:左下半径,0,2000,40,0.01,,0.25
+--track@aspect:丸角縦横比,-100,100,0,0.001
+--check@fixed_aspect:丸角縦横比固定,true
+
+--[==[
+	PI = {
+		width:			number?,
+		height:			number?,
+		align_x:		number?,
+		align_y:		number?,
+		line:			number?,
+		color:			number?,
+		color_back:		number?,
+		alpha_back:		number?,
+		radii:			table|number|nil,
+		fixed_aspect:	boolean|number|nil,
+		shapes:			table|string|nil,
+	}
+]==]
+
+	--[[
+width = tonumber(PI.width) or width;
+height = tonumber(PI.height) or height;
+align_x = tonumber(PI.align_x) or align_x;
+align_y = tonumber(PI.align_y) or align_y;
+line = tonumber(PI.line) or line;
+color = tonumber(PI.color) or color;
+color_back = tonumber(PI.color_back) or color_back;
+alpha_back = tonumber(PI.alpha_back) or alpha_back;
+radii = basic_s.PI.corner_radii(PI.radii, radii);
+fixed_aspect = basic_s.PI.as_bool(PI.fixed_aspect, fixed_aspect);
+shapes = basic_s.PI.corner_shape(PI.shapes, shapes);
+	]]
+end
+--#endregion actual processes for objects.
 
 return {
 	quat = {
@@ -1576,5 +1677,9 @@ return {
 		["カットずらし"] = cut_move, cut_move = cut_move,
 		["画像中間ループ"] = inner_loop, inner_loop = inner_loop,
 		["小数ぼかし"] = prec_blur, prec_blur = prec_blur,
-	};
+	},
+
+	object = {
+		["角丸矩形"] = round_rect, round_rect = round_rect,
+	},
 };
