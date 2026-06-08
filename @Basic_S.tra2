@@ -1,3 +1,4 @@
+-- under development for v2.20, r5
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -27,11 +28,8 @@ https://mit-license.org/
 --label:Basic_S
 --require:2004200
 --timecontrol
-local gp = obj.getpoint;
-local n, i, t = gp("num"), math.modf(gp("timecontrol", "index"));
-if i >= n - 1 then i, t = n - 2, 1;
-elseif i < 0 then i, t = 0, 0 end
-local v0, v1 = gp(i), gp(i + 1);
+local i, t = require("Basic_S").track.curve.entire();
+local v0, v1 = obj.getpoint(i), obj.getpoint(i + 1)
 return v0 + (v1 - v0) * t;
 
 @区間ごとに時間制御
@@ -39,11 +37,8 @@ return v0 + (v1 - v0) * t;
 --label:Basic_S
 --require:2004200
 --timecontrol
-local gp = obj.getpoint;
-local n, i, t = gp("num"), math.modf(gp("index"));
-if i >= n - 1 then i, t = n - 2, 1 end
-t = gp("timecontrol", "value", t * gp("time", n - 1));
-local v0, v1 = gp(i), gp(i + 1);
+local i, t = require("Basic_S").track.curve.section();
+local v0, v1 = obj.getpoint(i), obj.getpoint(i + 1)
 return v0 + (v1 - v0) * t;
 
 @全体で時間制御(回転)
@@ -52,84 +47,8 @@ return v0 + (v1 - v0) * t;
 --require:2004200
 --param:1周角度,360
 --timecontrol
-local gp, math = obj.getpoint, math;
-local n, i, t = gp("num"), math.modf(gp("timecontrol", "index"));
-if i >= n - 1 then i, t = n - 2, 1;
-elseif i < 0 then i, t = 0, 0 end
-local k, l = gp("link");
-if l == 3 then
-	local cycle = gp("param");
-
-	-- calculate two quaternions.
-	local cos, sin, atan2, r = math.cos, math.sin, math.atan2, 2 * math.pi / cycle;
-	local cx1, cy1, cz1, cx2, cy2, cz2, sx1, sy1, sz1, sx2, sy2, sz2 do local
-		A = r * (gp(i    ,    -k) % cycle) / 2; cx1, sx1 = cos(A), sin(A);
-		A = r * (gp(i    , 1 - k) % cycle) / 2; cy1, sy1 = cos(A), sin(A);
-		A = r * (gp(i    , 2 - k) % cycle) / 2; cz1, sz1 = cos(A), sin(A);
-		A = r * (gp(i + 1,    -k) % cycle) / 2; cx2, sx2 = cos(A), sin(A);
-		A = r * (gp(i + 1, 1 - k) % cycle) / 2; cy2, sy2 = cos(A), sin(A);
-		A = r * (gp(i + 1, 2 - k) % cycle) / 2; cz2, sz2 = cos(A), sin(A);
-	end
-	local q1r, q1i, q1j, q1k, q2r, q2i, q2j, q2k =
-		-- (c_x + i s_x) x (c_y + j s_y).
-		cx1 * cy1, sx1 * cy1, cx1 * sy1, sx1 * sy1,
-		cx2 * cy2, sx2 * cy2, cx2 * sy2, sx2 * sy2;
-	q1r, q1i, q1j, q1k, q2r, q2i, q2j, q2k =
-		-- x (c_z + k s_z).
-		q1r * cz1 - q1k * sz1,
-		q1i * cz1 + q1j * sz1,
-		q1j * cz1 - q1i * sz1,
-		q1k * cz1 + q1r * sz1,
-
-		q2r * cz2 - q2k * sz2,
-		q2i * cz2 + q2j * sz2,
-		q2j * cz2 - q2i * sz2,
-		q2k * cz2 + q2r * sz2;
-
-	-- calculate q2' = q2 q1^-1.
-	q2r, q2i, q2j, q2k =
-		 q2r * q1r + q2i * q1i + q2j * q1j + q2k * q1k,
-		-q2r * q1i + q2i * q1r - q2j * q1k + q2k * q1j,
-		-q2r * q1j + q2i * q1k + q2j * q1r - q2k * q1i,
-		-q2r * q1k - q2i * q1j + q2j * q1i + q2k * q1r;
-	if q2r < 0 then q2r, q2i, q2j, q2k = -q2r, -q2i, -q2j, -q2k end
-
-	-- calculate q2'' = q2'^t = exp(t log(q2')).
-	local a = (q2i ^ 2 + q2j ^ 2 + q2k ^ 2) ^ 0.5;
-	if a > 0 then
-		local A = t * atan2(a, q2r);
-		q2r, A = cos(A), sin(A);
-		q2i, q2j, q2k = A * q2i / a, A * q2j / a, A * q2k / a;
-	else return gp(i, 0) end
-
-	-- calculate q = q2'' q1.
-	q1r, q1i, q1j, q1k =
-		q2r * q1r - q2i * q1i - q2j * q1j - q2k * q1k,
-		q2r * q1i + q2i * q1r + q2j * q1k - q2k * q1j,
-		q2r * q1j - q2i * q1k + q2j * q1r + q2k * q1i,
-		q2r * q1k + q2i * q1j - q2j * q1i + q2k * q1r;
-
-	-- determine the euler angles.
-	-- cf.) https://github.com/sigma-axis/sigma_aviutl_scripts/blob/79bce1098a69b1e8da7cb77811aa3356a411ee2d/sigma_rot_helper.lua#L80-L94
-	a = atan2(
-		2 * (q1r * q1i - q1j * q1k),
-		q1r ^ 2 - q1i ^ 2 - q1j ^ 2 + q1k ^ 2);
-	if k > 0 then
-		cx1, sx1 = cos(a / 2), sin(a / 2);
-		q1r, q1i, q1j, q1k = -- (c - i s) x q
-			cx1 * q1r + sx1 * q1i,
-			cx1 * q1i - sx1 * q1r,
-			cx1 * q1j + sx1 * q1k,
-			cx1 * q1k - sx1 * q1j;
-		if k > 1 then q1j, q1k = q1k, q1j end
-		if q1r ^ 2 + q1j ^ 2 < q1k ^ 2 + q1i ^ 2 then q1r, q1j = q1k, q1i end
-		if q1r < 0 then q1r, q1j = -q1r, -q1j end
-		a = 2 * atan2(q1j, q1r);
-	end
-	return a / r;
-end
-local v0, v1 = gp(i), gp(i + 1);
-return v0 + (v1 - v0) * t;
+local track = require("Basic_S").track;
+return track.linear_rotation(track.curve.entire())
 
 @区間ごとに時間制御(回転)
 --information:区間ごとに時間制御(回転)@Basic_S v2.10 (for beta43b) by σ軸
@@ -137,101 +56,16 @@ return v0 + (v1 - v0) * t;
 --require:2004200
 --param:1周角度,360
 --timecontrol
-local gp, math = obj.getpoint, math;
-local n, i, t = gp("num"), math.modf(gp("index"));
-if i >= n - 1 then i, t = n - 2, 1 end
-t = gp("timecontrol", "value", t * gp("time", n - 1));
-local k, l = gp("link");
-if l == 3 then
-	local cycle = gp("param");
-
-	-- calculate two quaternions.
-	local cos, sin, atan2, r = math.cos, math.sin, math.atan2, 2 * math.pi / cycle;
-	local cx1, cy1, cz1, cx2, cy2, cz2, sx1, sy1, sz1, sx2, sy2, sz2 do local
-		A = r * (gp(i    ,    -k) % cycle) / 2; cx1, sx1 = cos(A), sin(A);
-		A = r * (gp(i    , 1 - k) % cycle) / 2; cy1, sy1 = cos(A), sin(A);
-		A = r * (gp(i    , 2 - k) % cycle) / 2; cz1, sz1 = cos(A), sin(A);
-		A = r * (gp(i + 1,    -k) % cycle) / 2; cx2, sx2 = cos(A), sin(A);
-		A = r * (gp(i + 1, 1 - k) % cycle) / 2; cy2, sy2 = cos(A), sin(A);
-		A = r * (gp(i + 1, 2 - k) % cycle) / 2; cz2, sz2 = cos(A), sin(A);
-	end
-	local q1r, q1i, q1j, q1k, q2r, q2i, q2j, q2k =
-		-- (c_x + i s_x) x (c_y + j s_y).
-		cx1 * cy1, sx1 * cy1, cx1 * sy1, sx1 * sy1,
-		cx2 * cy2, sx2 * cy2, cx2 * sy2, sx2 * sy2;
-	q1r, q1i, q1j, q1k, q2r, q2i, q2j, q2k =
-		-- x (c_z + k s_z).
-		q1r * cz1 - q1k * sz1,
-		q1i * cz1 + q1j * sz1,
-		q1j * cz1 - q1i * sz1,
-		q1k * cz1 + q1r * sz1,
-
-		q2r * cz2 - q2k * sz2,
-		q2i * cz2 + q2j * sz2,
-		q2j * cz2 - q2i * sz2,
-		q2k * cz2 + q2r * sz2;
-
-	-- calculate q2' = q2 q1^-1.
-	q2r, q2i, q2j, q2k =
-		 q2r * q1r + q2i * q1i + q2j * q1j + q2k * q1k,
-		-q2r * q1i + q2i * q1r - q2j * q1k + q2k * q1j,
-		-q2r * q1j + q2i * q1k + q2j * q1r - q2k * q1i,
-		-q2r * q1k - q2i * q1j + q2j * q1i + q2k * q1r;
-	if q2r < 0 then q2r, q2i, q2j, q2k = -q2r, -q2i, -q2j, -q2k end
-
-	-- calculate q2'' = q2'^t = exp(t log(q2')).
-	local a = (q2i ^ 2 + q2j ^ 2 + q2k ^ 2) ^ 0.5;
-	if a > 0 then
-		local A = t * atan2(a, q2r);
-		q2r, A = cos(A), sin(A);
-		q2i, q2j, q2k = A * q2i / a, A * q2j / a, A * q2k / a;
-	else return gp(i, 0) end
-
-	-- calculate q = q2'' q1.
-	q1r, q1i, q1j, q1k =
-		q2r * q1r - q2i * q1i - q2j * q1j - q2k * q1k,
-		q2r * q1i + q2i * q1r + q2j * q1k - q2k * q1j,
-		q2r * q1j - q2i * q1k + q2j * q1r + q2k * q1i,
-		q2r * q1k + q2i * q1j - q2j * q1i + q2k * q1r;
-
-	-- determine the euler angles.
-	-- cf.) https://github.com/sigma-axis/sigma_aviutl_scripts/blob/79bce1098a69b1e8da7cb77811aa3356a411ee2d/sigma_rot_helper.lua#L80-L94
-	a = atan2(
-		2 * (q1r * q1i - q1j * q1k),
-		q1r ^ 2 - q1i ^ 2 - q1j ^ 2 + q1k ^ 2);
-	if k > 0 then
-		cx1, sx1 = cos(a / 2), sin(a / 2);
-		q1r, q1i, q1j, q1k = -- (c - i s) x q
-			cx1 * q1r + sx1 * q1i,
-			cx1 * q1i - sx1 * q1r,
-			cx1 * q1j + sx1 * q1k,
-			cx1 * q1k - sx1 * q1j;
-		if k > 1 then q1j, q1k = q1k, q1j end
-		if q1r ^ 2 + q1j ^ 2 < q1k ^ 2 + q1i ^ 2 then q1r, q1j = q1k, q1i end
-		if q1r < 0 then q1r, q1j = -q1r, -q1j end
-		a = 2 * atan2(q1j, q1r);
-	end
-	return a / r;
-end
-local v0, v1 = gp(i), gp(i + 1);
-return v0 + (v1 - v0) * t;
+local track = require("Basic_S").track;
+return track.linear_rotation(track.curve.section())
 
 @正弦波
 --information:正弦波@Basic_S v2.10 (for beta43b) by σ軸
 --label:Basic_S\基本緩急
 --require:2004200
 --speed:0,1
-local gp, math = obj.getpoint, math;
-local i, t = math.modf(gp("index"));
-local v0, v1, sp0, sp1 = gp(i), gp(i + 1), gp("accelerate"), gp("decelerate");
-if sp0 == sp1 then
-	if t < 0.5 then t, v1, sp1 = 2 * t, (v0 + v1) / 2, not sp1;
-	else t, v0 = 2 * t - 1, (v0 + v1) / 2 end
-end
-if sp1 then v0, v1, t = v1, v0, 1 - t end
-
+local t, v0, v1 = require("Basic_S").track.ease_inout_core();
 local rho = 1 - math.cos(math.pi / 2 * t);
-
 return v0 + (v1 - v0) * rho;
 
 @2次式
@@ -239,17 +73,8 @@ return v0 + (v1 - v0) * rho;
 --label:Basic_S\基本緩急
 --require:2004200
 --speed:0,1
-local gp, math = obj.getpoint, math;
-local i, t = math.modf(gp("index"));
-local v0, v1, sp0, sp1 = gp(i), gp(i + 1), gp("accelerate"), gp("decelerate");
-if sp0 == sp1 then
-	if t < 0.5 then t, v1, sp1 = 2 * t, (v0 + v1) / 2, not sp1;
-	else t, v0 = 2 * t - 1, (v0 + v1) / 2 end
-end
-if sp1 then v0, v1, t = v1, v0, 1 - t end
-
+local t, v0, v1 = require("Basic_S").track.ease_inout_core();
 local rho = t ^ 2;
-
 return v0 + (v1 - v0) * rho;
 
 @3次式
@@ -257,17 +82,8 @@ return v0 + (v1 - v0) * rho;
 --label:Basic_S\基本緩急
 --require:2004200
 --speed:0,1
-local gp, math = obj.getpoint, math;
-local i, t = math.modf(gp("index"));
-local v0, v1, sp0, sp1 = gp(i), gp(i + 1), gp("accelerate"), gp("decelerate");
-if sp0 == sp1 then
-	if t < 0.5 then t, v1, sp1 = 2 * t, (v0 + v1) / 2, not sp1;
-	else t, v0 = 2 * t - 1, (v0 + v1) / 2 end
-end
-if sp1 then v0, v1, t = v1, v0, 1 - t end
-
+local t, v0, v1 = require("Basic_S").track.ease_inout_core();
 local rho = t ^ 3;
-
 return v0 + (v1 - v0) * rho;
 
 @4次式
@@ -275,17 +91,8 @@ return v0 + (v1 - v0) * rho;
 --label:Basic_S\基本緩急
 --require:2004200
 --speed:0,1
-local gp, math = obj.getpoint, math;
-local i, t = math.modf(gp("index"));
-local v0, v1, sp0, sp1 = gp(i), gp(i + 1), gp("accelerate"), gp("decelerate");
-if sp0 == sp1 then
-	if t < 0.5 then t, v1, sp1 = 2 * t, (v0 + v1) / 2, not sp1;
-	else t, v0 = 2 * t - 1, (v0 + v1) / 2 end
-end
-if sp1 then v0, v1, t = v1, v0, 1 - t end
-
+local t, v0, v1 = require("Basic_S").track.ease_inout_core();
 local rho = t ^ 4;
-
 return v0 + (v1 - v0) * rho;
 
 @N次式
@@ -294,16 +101,9 @@ return v0 + (v1 - v0) * rho;
 --require:2004200
 --speed:0,1
 --param:次数N,5
-local gp, math = obj.getpoint, math;
-local i, t = math.modf(gp("index"));
-local v0, v1, sp0, sp1 = gp(i), gp(i + 1), gp("accelerate"), gp("decelerate");
-if sp0 == sp1 then
-	if t < 0.5 then t, v1, sp1 = 2 * t, (v0 + v1) / 2, not sp1;
-	else t, v0 = 2 * t - 1, (v0 + v1) / 2 end
-end
-if sp1 then v0, v1, t = v1, v0, 1 - t end
+local t, v0, v1 = require("Basic_S").track.ease_inout_core();
 
-local N = math.max(gp("param"), 0);
+local N = math.max(obj.getpoint("param"), 0);
 local rho = (N > 0 or t > 0) and t ^ N or 0;
 
 return v0 + (v1 - v0) * rho;
@@ -314,16 +114,9 @@ return v0 + (v1 - v0) * rho;
 --require:2004200
 --speed:0,1
 --param:減衰率,2
-local gp, math = obj.getpoint, math;
-local i, t = math.modf(gp("index"));
-local v0, v1, sp0, sp1 = gp(i), gp(i + 1), gp("accelerate"), gp("decelerate");
-if sp0 == sp1 then
-	if t < 0.5 then t, v1, sp1 = 2 * t, (v0 + v1) / 2, not sp1;
-	else t, v0 = 2 * t - 1, (v0 + v1) / 2 end
-end
-if sp1 then v0, v1, t = v1, v0, 1 - t end
+local t, v0, v1 = require("Basic_S").track.ease_inout_core();
 
-local a = math.max(gp("param"), 0);
+local a = math.max(obj.getpoint("param"), 0);
 local rho = a > 0 and (math.exp(a * t) - 1) / (math.exp(a) - 1) or t;
 
 return v0 + (v1 - v0) * rho;
@@ -333,17 +126,8 @@ return v0 + (v1 - v0) * rho;
 --label:Basic_S\基本緩急
 --require:2004200
 --speed:0,1
-local gp, math = obj.getpoint, math;
-local i, t = math.modf(gp("index"));
-local v0, v1, sp0, sp1 = gp(i), gp(i + 1), gp("accelerate"), gp("decelerate");
-if sp0 == sp1 then
-	if t < 0.5 then t, v1, sp1 = 2 * t, (v0 + v1) / 2, not sp1;
-	else t, v0 = 2 * t - 1, (v0 + v1) / 2 end
-end
-if sp1 then v0, v1, t = v1, v0, 1 - t end
-
+local t, v0, v1 = require("Basic_S").track.ease_inout_core();
 local rho = 1 - (1 - t ^ 2) ^ 0.5;
-
 return v0 + (v1 - v0) * rho;
 
 @等速移動(秒)
@@ -379,11 +163,8 @@ return v0 + (v1 - v0) * f / F;
 --param:周期(秒),0.5
 --param:周期ずれ%,0
 --param:デューティ比%,50
-local gp = obj.getpoint;
-local t, T, d, R = gp("time"), gp("param");
-if 1 / T < 0 then t, T = t - gp("time", 1) - 1 / gp("framerate"), -T end
-if T == 0 then T = 1 end
-return gp(((t / T + d / 100) % 1) < math.min(math.max(R / 100, 0), 1) and 0 or 1);
+local track = require("Basic_S").track;
+return track.discrete_repeat(track.period.sec(obj.getpoint("param")))
 
 @コマ落ち反復(フレーム)
 --information:コマ落ち反復(フレーム)@Basic_S v2.10 (for beta43b) by σ軸
@@ -393,12 +174,8 @@ return gp(((t / T + d / 100) % 1) < math.min(math.max(R / 100, 0), 1) and 0 or 1
 --param:周期(フレーム),30
 --param:周期ずれ%,0
 --param:デューティ比%,50
-local gp = obj.getpoint;
-local fr = gp("framerate");
-local f, F, d, R = fr * gp("time"), gp("param");
-if 1 / F < 0 then f, F = f - fr * gp("time", 1) - 1, -F end
-if F == 0 then F = 1 end
-return gp(((f / F + d / 100) % 1) < math.min(math.max(R / 100, 0), 1) and 0 or 1);
+local track = require("Basic_S").track;
+return track.discrete_repeat(track.period.frame(obj.getpoint("param")))
 
 @コマ落ち反復(Hz)
 --information:コマ落ち反復(Hz)@Basic_S v2.10 (for beta43b) by σ軸
@@ -408,10 +185,8 @@ return gp(((f / F + d / 100) % 1) < math.min(math.max(R / 100, 0), 1) and 0 or 1
 --param:周期(Hz),2
 --param:周期ずれ%,0
 --param:デューティ比%,50
-local gp = obj.getpoint;
-local t, N, d, R = gp("time"), gp("param");
-if 1 / N < 0 then t, N = t - gp("time", 1) - 1 / gp("framerate"), -N end
-return gp(((t * N + d / 100) % 1) < math.min(math.max(R / 100, 0), 1) and 0 or 1);
+local track = require("Basic_S").track;
+return track.discrete_repeat(track.period.hertz(obj.getpoint("param")))
 
 @コマ落ち反復(BPM)
 --information:コマ落ち反復(BPM)@Basic_S v2.10 (for beta43b) by σ軸
@@ -421,10 +196,8 @@ return gp(((t * N + d / 100) % 1) < math.min(math.max(R / 100, 0), 1) and 0 or 1
 --param:周期(BPM),120
 --param:周期ずれ%,0
 --param:デューティ比%,50
-local gp = obj.getpoint;
-local t, N, d, R = gp("time"), gp("param");
-if 1 / N < 0 then t, N = t - gp("time", 1) - 1 / gp("framerate"), -N end
-return gp(((t * N / 60 + d / 100) % 1) < math.min(math.max(R / 100, 0), 1) and 0 or 1);
+local track = require("Basic_S").track;
+return track.discrete_repeat(track.period.bpm(obj.getpoint("param")))
 
 @コマ落ち反復(BPMグリッド)
 --information:コマ落ち反復(BPMグリッド)@Basic_S v2.10 (for beta43b) by σ軸
@@ -436,12 +209,8 @@ return gp(((t * N / 60 + d / 100) % 1) < math.min(math.max(R / 100, 0), 1) and 0
 --param:グリッド1拍のN分音符,4
 --param:周期ずれ%,0
 --param:デューティ比%,50
-local math, gp, tempo, beats = math, obj.getpoint, obj.getinfo("bpm");
-local t, p, n, N, d, R = gp("time"), gp("param");
-n, N = math.max(n, 0), math.max(N, 1);
-if 1 / p < 0 then t, p = t - gp("time", 1) - 1 / gp("framerate"), -p end
-if n == 0 then n, N = 1, beats end
-return gp(((t * tempo * n / (60 * p * N) + d / 100) % 1) < math.min(math.max(R / 100, 0), 1) and 0 or 1);
+local track = require("Basic_S").track;
+return track.discrete_repeat(track.period.bpmgrid(obj.getpoint("param")))
 
 @コマ落ちランダム(秒)
 --information:コマ落ちランダム(秒)@Basic_S v2.10 (for beta43b) by σ軸
@@ -450,12 +219,8 @@ return gp(((t * tempo * n / (60 * p * N) + d / 100) % 1) < math.min(math.max(R /
 --twopoint
 --param:周期(秒),0.5
 --param:周期ずれ%,0
-local gp = obj.getpoint;
-local t, T, d = gp("time"), gp("param");
-if 1 / T < 0 then t = t - gp("time", 1) - 1 / gp("framerate") end
-if T == 0 then T = 1 end
-local v0, v1 = gp(0), gp(1);
-return v0 + (v1 - v0) * rand1(2525, math.floor(t / T + d / 100) + 1);
+local track = require("Basic_S").track;
+return track.discrete_random(track.period.sec(obj.getpoint("param")))
 
 @コマ落ちランダム(フレーム)
 --information:コマ落ちランダム(フレーム)@Basic_S v2.10 (for beta43b) by σ軸
@@ -464,13 +229,8 @@ return v0 + (v1 - v0) * rand1(2525, math.floor(t / T + d / 100) + 1);
 --twopoint
 --param:周期(フレーム),30
 --param:周期ずれ%,0
-local gp = obj.getpoint;
-local fr = gp("framerate");
-local f, F, d = fr * gp("time"), gp("param");
-if 1 / F < 0 then f = f - fr * gp("time", 1) - 1 end
-if F == 0 then F = 1 end
-local v0, v1 = gp(0), gp(1);
-return v0 + (v1 - v0) * rand1(2525, math.floor(f / F + d / 100) + 1);
+local track = require("Basic_S").track;
+return track.discrete_random(track.period.frame(obj.getpoint("param")))
 
 @コマ落ちランダム(Hz)
 --information:コマ落ちランダム(Hz)@Basic_S v2.10 (for beta43b) by σ軸
@@ -479,11 +239,8 @@ return v0 + (v1 - v0) * rand1(2525, math.floor(f / F + d / 100) + 1);
 --twopoint
 --param:周期(Hz),2
 --param:周期ずれ%,0
-local gp = obj.getpoint;
-local t, N, d = gp("time"), gp("param");
-if 1 / N < 0 then t = t - gp("time", 1) - 1 / gp("framerate") end
-local v0, v1 = gp(0), gp(1);
-return v0 + (v1 - v0) * rand1(2525, math.floor(t * N + d / 100) + 1);
+local track = require("Basic_S").track;
+return track.discrete_random(track.period.hertz(obj.getpoint("param")))
 
 @コマ落ちランダム(BPM)
 --information:コマ落ちランダム(BPM)@Basic_S v2.10 (for beta43b) by σ軸
@@ -492,11 +249,8 @@ return v0 + (v1 - v0) * rand1(2525, math.floor(t * N + d / 100) + 1);
 --twopoint
 --param:周期(BPM),120
 --param:周期ずれ%,0
-local gp = obj.getpoint;
-local t, N, d = gp("time"), gp("param");
-if 1 / N < 0 then t = t - gp("time", 1) - 1 / gp("framerate") end
-local v0, v1 = gp(0), gp(1);
-return v0 + (v1 - v0) * rand1(2525, math.floor(t * N / 60 + d / 100) + 1);
+local track = require("Basic_S").track;
+return track.discrete_random(track.period.bpm(obj.getpoint("param")))
 
 @コマ落ちランダム(BPMグリッド)
 --information:コマ落ちランダム(BPMグリッド)@Basic_S v2.10 (for beta43b) by σ軸
@@ -507,13 +261,8 @@ return v0 + (v1 - v0) * rand1(2525, math.floor(t * N / 60 + d / 100) + 1);
 --param:基準のN分音符(0:小節),4
 --param:グリッド1拍のN分音符,4
 --param:周期ずれ%,0
-local math, gp, tempo, beats = math, obj.getpoint, obj.getinfo("bpm");
-local t, p, n, N, d = gp("time"), gp("param");
-n, N = math.max(n, 0), math.max(N, 1);
-if 1 / p < 0 then t, p = t - gp("time", 1) - 1 / gp("framerate"), -p end
-if n == 0 then n, N = 1, beats end
-local v0, v1 = gp(0), gp(1);
-return v0 + (v1 - v0) * rand1(2525, math.floor(t * tempo * n / (60 * p * N) + d / 100) + 1);
+local track = require("Basic_S").track;
+return track.discrete_random(track.period.bpmgrid(obj.getpoint("param")))
 
 @時間制御繰り返し(秒)
 --information:時間制御繰り返し(秒)@Basic_S v2.10 (for beta43b) by σ軸
@@ -523,13 +272,8 @@ return v0 + (v1 - v0) * rand1(2525, math.floor(t * tempo * n / (60 * p * N) + d 
 --param:周期(秒),0.5
 --param:周期ずれ%,0
 --timecontrol
-local gp = obj.getpoint;
-local T1 = gp("time", 1);
-local t, T, d = gp("time"), gp("param");
-if 1 / T < 0 then t, T = t - T1 - 1 / gp("framerate"), -T end
-if T == 0 then T = 1 end
-local v0, v1 = gp(0), gp(1);
-return v0 + (v1 - v0) * gp("timecontrol", "value", ((t / T + d / 100) % 1) * T1);
+local track = require("Basic_S").track;
+return track.curve_repeat(track.period.sec(obj.getpoint("param")))
 
 @時間制御繰り返し(フレーム)
 --information:時間制御繰り返し(フレーム)@Basic_S v2.10 (for beta43b) by σ軸
@@ -539,13 +283,8 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", ((t / T + d / 100) % 1) * T1)
 --param:周期(フレーム),30
 --param:周期ずれ%,0
 --timecontrol
-local gp = obj.getpoint;
-local fr, T1 = gp("framerate"), gp("time", 1);
-local f, F, d = fr * gp("time"), gp("param");
-if 1 / F < 0 then f, F = f - fr * T1 - 1, -F end
-if F == 0 then F = 1 end
-local v0, v1 = gp(0), gp(1);
-return v0 + (v1 - v0) * gp("timecontrol", "value", ((f / F + d / 100) % 1) * T1);
+local track = require("Basic_S").track;
+return track.curve_repeat(track.period.frame(obj.getpoint("param")))
 
 @時間制御繰り返し(Hz)
 --information:時間制御繰り返し(Hz)@Basic_S v2.10 (for beta43b) by σ軸
@@ -555,12 +294,8 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", ((f / F + d / 100) % 1) * T1)
 --param:周期(Hz),2
 --param:周期ずれ%,0
 --timecontrol
-local gp = obj.getpoint;
-local T1 = gp("time", 1);
-local t, N, d = gp("time"), gp("param");
-if 1 / N < 0 then t, N = t - T1 - 1 / gp("framerate"), -N end
-local v0, v1 = gp(0), gp(1);
-return v0 + (v1 - v0) * gp("timecontrol", "value", ((t * N + d / 100) % 1) * T1);
+local track = require("Basic_S").track;
+return track.curve_repeat(track.period.hertz(obj.getpoint("param")))
 
 @時間制御繰り返し(BPM)
 --information:時間制御繰り返し(BPM)@Basic_S v2.10 (for beta43b) by σ軸
@@ -570,12 +305,8 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", ((t * N + d / 100) % 1) * T1)
 --param:周期(BPM),120
 --param:周期ずれ%,0
 --timecontrol
-local gp = obj.getpoint;
-local T1 = gp("time", 1);
-local t, N, d = gp("time"), gp("param");
-if 1 / N < 0 then t, N = t - T1 - 1 / gp("framerate"), -N end
-local v0, v1 = gp(0), gp(1);
-return v0 + (v1 - v0) * gp("timecontrol", "value", ((t * N / 60 + d / 100) % 1) * T1);
+local track = require("Basic_S").track;
+return track.curve_repeat(track.period.bpm(obj.getpoint("param")))
 
 @時間制御繰り返し(BPMグリッド)
 --information:時間制御繰り返し(BPMグリッド)@Basic_S v2.10 (for beta43b) by σ軸
@@ -587,14 +318,8 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", ((t * N / 60 + d / 100) % 1) 
 --param:グリッド1拍のN分音符,4
 --param:周期ずれ%,0
 --timecontrol
-local math, gp, tempo, beats = math, obj.getpoint, obj.getinfo("bpm");
-local T1 = gp("time", 1);
-local t, p, n, N, d = gp("time"), gp("param");
-n, N = math.max(n, 0), math.max(N, 1);
-if 1 / p < 0 then t, p = t - T1 - 1 / gp("framerate"), -p end
-if n == 0 then n, N = 1, beats end
-local v0, v1 = gp(0), gp(1);
-return v0 + (v1 - v0) * gp("timecontrol", "value", ((t * tempo * n / (60 * p * N) + d / 100) % 1) * T1);
+local track = require("Basic_S").track;
+return track.curve_repeat(track.period.bpmgrid(obj.getpoint("param")))
 
 @時間制御繰り返し往復(秒)
 --information:時間制御繰り返し往復(秒)@Basic_S v2.10 (for beta43b) by σ軸
@@ -604,15 +329,8 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", ((t * tempo * n / (60 * p * N
 --param:周期(秒),0.5
 --param:周期ずれ%,0
 --timecontrol
-local gp = obj.getpoint;
-local T1 = gp("time", 1);
-local t, T, d = gp("time"), gp("param");
-if 1 / T < 0 then t, T = t - T1 - 1 / gp("framerate"), -T end
-if T == 0 then T = 1 end
-local v0, v1 = gp(0), gp(1);
-local x = 2 * ((t / T + d / 100) % 1);
-if x >= 1 then v0, v1, x = v1, v0, x - 1 end
-return v0 + (v1 - v0) * gp("timecontrol", "value", x * T1);
+local track = require("Basic_S").track;
+return track.curve_backforth(track.period.sec(obj.getpoint("param")))
 
 @時間制御繰り返し往復(フレーム)
 --information:時間制御繰り返し往復(フレーム)@Basic_S v2.10 (for beta43b) by σ軸
@@ -622,15 +340,8 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", x * T1);
 --param:周期(フレーム),30
 --param:周期ずれ%,0
 --timecontrol
-local gp = obj.getpoint;
-local fr, T1 = gp("framerate"), gp("time", 1);
-local f, F, d = fr * gp("time"), gp("param");
-if 1 / F < 0 then f, F = f - fr * T1 - 1, -F end
-if F == 0 then F = 1 end
-local v0, v1 = gp(0), gp(1);
-local x = 2 * ((f / F + d / 100) % 1);
-if x >= 1 then v0, v1, x = v1, v0, x - 1 end
-return v0 + (v1 - v0) * gp("timecontrol", "value", x * T1);
+local track = require("Basic_S").track;
+return track.curve_backforth(track.period.frame(obj.getpoint("param")))
 
 @時間制御繰り返し往復(Hz)
 --information:時間制御繰り返し往復(Hz)@Basic_S v2.10 (for beta43b) by σ軸
@@ -640,14 +351,8 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", x * T1);
 --param:周期(Hz),2
 --param:周期ずれ%,0
 --timecontrol
-local gp = obj.getpoint;
-local T1 = gp("time", 1);
-local t, N, d = gp("time"), gp("param");
-if 1 / N < 0 then t, N = t - T1 - 1 / gp("framerate"), -N end
-local v0, v1 = gp(0), gp(1);
-local x = 2 * ((t * N + d / 100) % 1);
-if x >= 1 then v0, v1, x = v1, v0, x - 1 end
-return v0 + (v1 - v0) * gp("timecontrol", "value", x * T1);
+local track = require("Basic_S").track;
+return track.curve_backforth(track.period.hertz(obj.getpoint("param")))
 
 @時間制御繰り返し往復(BPM)
 --information:時間制御繰り返し往復(BPM)@Basic_S v2.10 (for beta43b) by σ軸
@@ -657,14 +362,8 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", x * T1);
 --param:周期(BPM),120
 --param:周期ずれ%,0
 --timecontrol
-local gp = obj.getpoint;
-local T1 = gp("time", 1);
-local t, N, d = gp("time"), gp("param");
-if 1 / N < 0 then t, N = t - T1 - 1 / gp("framerate"), -N end
-local v0, v1 = gp(0), gp(1);
-local x = 2 * ((t * N / 60 + d / 100) % 1);
-if x >= 1 then v0, v1, x = v1, v0, x - 1 end
-return v0 + (v1 - v0) * gp("timecontrol", "value", x * T1);
+local track = require("Basic_S").track;
+return track.curve_backforth(track.period.bpm(obj.getpoint("param")))
 
 @時間制御繰り返し往復(BPMグリッド)
 --information:時間制御繰り返し往復(BPMグリッド)@Basic_S v2.10 (for beta43b) by σ軸
@@ -676,16 +375,8 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", x * T1);
 --param:グリッド1拍のN分音符,4
 --param:周期ずれ%,0
 --timecontrol
-local math, gp, tempo, beats = math, obj.getpoint, obj.getinfo("bpm");
-local T1 = gp("time", 1);
-local t, p, n, N, d = gp("time"), gp("param");
-n, N = math.max(n, 0), math.max(N, 1);
-if 1 / p < 0 then t, p = t - T1 - 1 / gp("framerate"), -p end
-if n == 0 then n, N = 1, beats end
-local v0, v1 = gp(0), gp(1);
-local x = 2 * ((t * tempo * n / (60 * p * N) + d / 100) % 1);
-if x >= 1 then v0, v1, x = v1, v0, x - 1 end
-return v0 + (v1 - v0) * gp("timecontrol", "value", x * T1);
+local track = require("Basic_S").track;
+return track.curve_backforth(track.period.bpmgrid(obj.getpoint("param")))
 
 @対数補間
 --information:対数補間@Basic_S v2.10 (for beta43b) by σ軸
@@ -693,17 +384,9 @@ return v0 + (v1 - v0) * gp("timecontrol", "value", x * T1);
 --require:2004200
 --param:原点,0
 --timecontrol
-local gp, math = obj.getpoint, math;
-local n, i, t = gp("num"), math.modf(gp("index"));
-if i >= n - 1 then i, t = n - 2, 1 end
-t = gp("timecontrol", "value", t * gp("time", n - 1));
-local v0, v1, O = gp(i), gp(i + 1), gp("param");
-v0, v1 = v0 - O, v1 - O;
-if v0 == 0 or v1 == 0 or (v0 > 0) ~= (v1 > 0) then
-	-- fall back to the linear interpolation instead.
-	return v0 + (v1 - v0) * t + O;
-end
-return v0 * (v1 / v0) ^ t + O;
+local gp, track = obj.getpoint, require("Basic_S").track;
+local i, t = track.curve.section();
+return track.logarithmic(t, gp(i), gp(i + 1), gp("param"))
 
 @対数補間(全体時間制御)
 --information:対数補間(全体時間制御)@Basic_S v2.10 (for beta43b) by σ軸
@@ -711,17 +394,9 @@ return v0 * (v1 / v0) ^ t + O;
 --require:2004200
 --param:原点,0
 --timecontrol
-local gp, math = obj.getpoint, math;
-local n, i, t = gp("num"), math.modf(gp("timecontrol", "index"));
-if i >= n - 1 then i, t = n - 2, 1;
-elseif i < 0 then i, t = 0, 0 end
-local v0, v1, O = gp(i), gp(i + 1), gp("param");
-v0, v1 = v0 - O, v1 - O;
-if v0 == 0 or v1 == 0 or (v0 > 0) ~= (v1 > 0) then
-	-- fall back to the linear interpolation instead.
-	return v0 + (v1 - v0) * t + O;
-end
-return v0 * (v1 / v0) ^ t + O;
+local gp, track = obj.getpoint, require("Basic_S").track;
+local i, t = track.curve.entire();
+return track.logarithmic(t, gp(i), gp(i + 1), gp("param"))
 
 @逆数補間
 --information:逆数補間@Basic_S v2.10 (for beta43b) by σ軸
@@ -729,17 +404,9 @@ return v0 * (v1 / v0) ^ t + O;
 --require:2004200
 --param:原点,0
 --timecontrol
-local gp, math = obj.getpoint, math;
-local n, i, t = gp("num"), math.modf(gp("index"));
-if i >= n - 1 then i, t = n - 2, 1 end
-t = gp("timecontrol", "value", t * gp("time", n - 1));
-local v0, v1, O = gp(i), gp(i + 1), gp("param");
-v0, v1 = v0 - O, v1 - O;
-if v0 == 0 or v1 == 0 or (v0 > 0) ~= (v1 > 0) then
-	-- fall back to the linear interpolation instead.
-	return v0 + (v1 - v0) * t + O;
-end
-return 1 / (1 / v0 + (1 / v1 - 1 / v0) * t) + O;
+local gp, track = obj.getpoint, require("Basic_S").track;
+local i, t = track.curve.section();
+return track.harmonic(t, gp(i), gp(i + 1), gp("param"))
 
 @逆数補間(全体時間制御)
 --information:逆数補間(全体時間制御)@Basic_S v2.10 (for beta43b) by σ軸
@@ -747,17 +414,9 @@ return 1 / (1 / v0 + (1 / v1 - 1 / v0) * t) + O;
 --require:2004200
 --param:原点,0
 --timecontrol
-local gp, math = obj.getpoint, math;
-local n, i, t = gp("num"), math.modf(gp("timecontrol", "index"));
-if i >= n - 1 then i, t = n - 2, 1;
-elseif i < 0 then i, t = 0, 0 end
-local v0, v1, O = gp(i), gp(i + 1), gp("param");
-v0, v1 = v0 - O, v1 - O;
-if v0 == 0 or v1 == 0 or (v0 > 0) ~= (v1 > 0) then
-	-- fall back to the linear interpolation instead.
-	return v0 + (v1 - v0) * t + O;
-end
-return 1 / (1 / v0 + (1 / v1 - 1 / v0) * t) + O;
+local gp, track = obj.getpoint, require("Basic_S").track;
+local i, t = track.curve.entire();
+return track.harmonic(t, gp(i), gp(i + 1), gp("param"))
 
 @バウンス
 --information:バウンス@Basic_S v2.10 (for beta43b) by σ軸
@@ -767,31 +426,11 @@ return 1 / (1 / v0 + (1 / v1 - 1 / v0) * t) + O;
 --param:反発係数,0.70710678
 --param:回数,0
 --timecontrol
-local gp, math = obj.getpoint, math;
-local n, i, t = gp("num"), math.modf(gp("index"));
-if i >= n - 1 then i, t = n - 2, 1 end
-t = gp("timecontrol", "value", t * gp("time", n - 1));
-local v0, v1, sp0, sp1 = gp(i), gp(i + 1), gp("accelerate"), gp("decelerate");
-if sp0 == sp1 then
-	if t < 0.5 then t, v1, sp1 = 2 * t, (v0 + v1) / 2, not sp1;
-	else t, v0 = 2 * t - 1, (v0 + v1) / 2 end
-end
-if sp1 then v0, v1, t = v1, v0, 1 - t end
-
-local e, k = gp("param");
-e = math.min(math.max(e, 0), 0.999);
-k = math.max(k, 0);
-local sum, sum2 = e / (1 - e), 0;
-if k >= 0.5 then
-	local i, f = math.modf(k);
-	sum2 = (i > 0 and e ^ i or 1) * ((1 - f) + f * e) / (1 - e);
-end
-local T = t * (0.5 + sum) + (1 - t) * sum2;
-local scale = e > 0 and e ^ math.ceil(math.log(T / sum) / math.log(e)) or 1;
-local tau = T - scale * sum;
-local rho = 4 * tau * (scale - tau);
-
-return v0 + (v1 - v0) * rho;
+local gp, basic_s = obj.getpoint, require("Basic_S");
+local i, t = basic_s.track.curve.section();
+local v0, v1 = gp(i), gp(i + 1);
+t, v0, v1 = basic_s.reduce_inout_ease(t, v0, v1, gp("accelerate"), gp("decelerate"));
+return basic_s.track.bounce(t, v0, v1, gp("param"));
 
 @バウンス(全体時間制御)
 --information:バウンス(全体時間制御)@Basic_S v2.10 (for beta43b) by σ軸
@@ -801,31 +440,11 @@ return v0 + (v1 - v0) * rho;
 --param:反発係数,0.70710678
 --param:回数,0
 --timecontrol
-local gp, math = obj.getpoint, math;
-local n, i, t = gp("num"), math.modf(gp("timecontrol", "index"));
-if i >= n - 1 then i, t = n - 2, 1;
-elseif i < 0 then i, t = 0, 0 end
-local v0, v1, sp0, sp1 = gp(i), gp(i + 1), gp("accelerate"), gp("decelerate");
-if sp0 == sp1 then
-	if t < 0.5 then t, v1, sp1 = 2 * t, (v0 + v1) / 2, not sp1;
-	else t, v0 = 2 * t - 1, (v0 + v1) / 2 end
-end
-if sp1 then v0, v1, t = v1, v0, 1 - t end
-
-local e, k = gp("param");
-e = math.min(math.max(e, 0), 0.999);
-k = math.max(k, 0);
-local sum, sum2 = e / (1 - e), 0;
-if k >= 0.5 then
-	local i, f = math.modf(k);
-	sum2 = (i > 0 and e ^ i or 1) * ((1 - f) + f * e) / (1 - e);
-end
-local T = t * (0.5 + sum) + (1 - t) * sum2;
-local scale = e > 0 and e ^ math.ceil(math.log(T / sum) / math.log(e)) or 1;
-local tau = T - scale * sum;
-local rho = 4 * tau * (scale - tau);
-
-return v0 + (v1 - v0) * rho;
+local gp, basic_s = obj.getpoint, require("Basic_S");
+local i, t = basic_s.track.curve.entire();
+local v0, v1 = gp(i), gp(i + 1);
+t, v0, v1 = basic_s.reduce_inout_ease(t, v0, v1, gp("accelerate"), gp("decelerate"));
+return basic_s.track.bounce(t, v0, v1, gp("param"));
 
 @バック
 --information:バック@Basic_S v2.10 (for beta43b) by σ軸
@@ -834,21 +453,11 @@ return v0 + (v1 - v0) * rho;
 --speed:0,1
 --param:勢い,0.8
 --timecontrol
-local gp, math = obj.getpoint, math;
-local n, i, t = gp("num"), math.modf(gp("index"));
-if i >= n - 1 then i, t = n - 2, 1 end
-t = gp("timecontrol", "value", t * gp("time", n - 1));
-local v0, v1, sp0, sp1 = gp(i), gp(i + 1), gp("accelerate"), gp("decelerate");
-if sp0 == sp1 then
-	if t < 0.5 then t, v1, sp1 = 2 * t, (v0 + v1) / 2, not sp1;
-	else t, v0 = 2 * t - 1, (v0 + v1) / 2 end
-end
-if sp1 then v0, v1, t = v1, v0, 1 - t end
-
-local a = math.max(gp("param"), 0);
-local rho = t ^ 3 - t * a * math.sin(math.pi * t);
-
-return v0 + (v1 - v0) * rho;
+local gp, basic_s = obj.getpoint, require("Basic_S");
+local i, t = basic_s.track.curve.section();
+local v0, v1 = gp(i), gp(i + 1);
+t, v0, v1 = basic_s.reduce_inout_ease(t, v0, v1, gp("accelerate"), gp("decelerate"));
+return basic_s.track.back(t, v0, v1, gp("param"));
 
 @バック(全体時間制御)
 --information:バック(全体時間制御)@Basic_S v2.10 (for beta43b) by σ軸
@@ -857,21 +466,11 @@ return v0 + (v1 - v0) * rho;
 --speed:0,1
 --param:勢い,0.8
 --timecontrol
-local gp, math = obj.getpoint, math;
-local n, i, t = gp("num"), math.modf(gp("timecontrol", "index"));
-if i >= n - 1 then i, t = n - 2, 1;
-elseif i < 0 then i, t = 0, 0 end
-local v0, v1, sp0, sp1 = gp(i), gp(i + 1), gp("accelerate"), gp("decelerate");
-if sp0 == sp1 then
-	if t < 0.5 then t, v1, sp1 = 2 * t, (v0 + v1) / 2, not sp1;
-	else t, v0 = 2 * t - 1, (v0 + v1) / 2 end
-end
-if sp1 then v0, v1, t = v1, v0, 1 - t end
-
-local a = math.max(gp("param"), 0);
-local rho = t ^ 3 - t * a * math.sin(math.pi * t);
-
-return v0 + (v1 - v0) * rho;
+local gp, basic_s = obj.getpoint, require("Basic_S");
+local i, t = basic_s.track.curve.entire();
+local v0, v1 = gp(i), gp(i + 1);
+t, v0, v1 = basic_s.reduce_inout_ease(t, v0, v1, gp("accelerate"), gp("decelerate"));
+return basic_s.track.back(t, v0, v1, gp("param"));
 
 @バネ振動
 --information:バネ振動@Basic_S v2.10 (for beta43b) by σ軸
@@ -881,24 +480,11 @@ return v0 + (v1 - v0) * rho;
 --param:振動回数,3
 --param:減衰率,0.3
 --timecontrol
-local gp, math = obj.getpoint, math;
-local n, i, t = gp("num"), math.modf(gp("index"));
-if i >= n - 1 then i, t = n - 2, 1 end
-t = gp("timecontrol", "value", t * gp("time", n - 1));
-local v0, v1, sp0, sp1 = gp(i), gp(i + 1), gp("accelerate"), gp("decelerate");
-if sp0 == sp1 then
-	if t < 0.5 then t, v1, sp1 = 2 * t, (v0 + v1) / 2, not sp1;
-	else t, v0 = 2 * t - 1, (v0 + v1) / 2 end
-end
-if sp1 then v0, v1, t = v1, v0, 1 - t end
-
-local n, r = gp("param");
-n = math.max(n, 0);
-r = math.max(r, 0);
-r = (r > 0 or t < 1) and (r >= 1 and t or (r ^ (1 - t) - r) / (1 - r)) or 1;
-local rho = r * math.sin(2 * math.pi * ((n + 0.25) * (1 - t) + 0.25));
-
-return v0 + (v1 - v0) * rho;
+local gp, basic_s = obj.getpoint, require("Basic_S");
+local i, t = basic_s.track.curve.section();
+local v0, v1 = gp(i), gp(i + 1);
+t, v0, v1 = basic_s.reduce_inout_ease(t, v0, v1, gp("accelerate"), gp("decelerate"));
+return basic_s.track.elastic(t, v0, v1, gp("param"));
 
 @バネ振動(全体時間制御)
 --information:バネ振動(全体時間制御)@Basic_S v2.10 (for beta43b) by σ軸
@@ -908,21 +494,8 @@ return v0 + (v1 - v0) * rho;
 --param:振動回数,3
 --param:減衰率,0.3
 --timecontrol
-local gp, math = obj.getpoint, math;
-local n, i, t = gp("num"), math.modf(gp("timecontrol", "index"));
-if i >= n - 1 then i, t = n - 2, 1;
-elseif i < 0 then i, t = 0, 0 end
-local v0, v1, sp0, sp1 = gp(i), gp(i + 1), gp("accelerate"), gp("decelerate");
-if sp0 == sp1 then
-	if t < 0.5 then t, v1, sp1 = 2 * t, (v0 + v1) / 2, not sp1;
-	else t, v0 = 2 * t - 1, (v0 + v1) / 2 end
-end
-if sp1 then v0, v1, t = v1, v0, 1 - t end
-
-local n, r = gp("param");
-n = math.max(n, 0);
-r = math.max(r, 0);
-r = (r > 0 or t < 1) and (r >= 1 and t or (r ^ (1 - t) - r) / (1 - r)) or 1;
-local rho = r * math.sin(2 * math.pi * ((n + 0.25) * (1 - t) + 0.25));
-
-return v0 + (v1 - v0) * rho;
+local gp, basic_s = obj.getpoint, require("Basic_S");
+local i, t = basic_s.track.curve.entire();
+local v0, v1 = gp(i), gp(i + 1);
+t, v0, v1 = basic_s.reduce_inout_ease(t, v0, v1, gp("accelerate"), gp("decelerate"));
+return basic_s.track.elastic(t, v0, v1, gp("param"));
