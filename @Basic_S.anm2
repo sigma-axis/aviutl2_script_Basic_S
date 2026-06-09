@@ -1,4 +1,4 @@
--- under development for v2.20, r4
+-- under development for v2.20, r6
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -2148,7 +2148,7 @@ basic_s.effect.inner_loop(width, height,
 --check@fixed_size:サイズ固定,false
 --group:その他,false
 --value@PI:PI,{}
---[[computeshader@convol1:
+--[[computeshader@convol:
 RWTexture2D<half4> dst : register(u0);
 Texture2D src : register(t0);
 cbuffer constant0 : register(b0) {
@@ -2162,60 +2162,17 @@ int4 quantize(float4 v)
 	return int4(round((1 << 12) * v));
 }
 [numthreads(1, 64, 1)]
-void convol1(uint2 id : SV_DispatchThreadID)
+void convol(uint2 id : SV_DispatchThreadID)
 {
 	if (id.y >= dst_size.x) return;
 	uint dst_x = dst_size.x - 1 - id.y;
 
 	int4 sum = 0;
-	for (uint x = 0; x < span_i; x++) {
-		float4 c = src[uint2(x, id.y)];
-		dst[uint2(dst_x, x)] = inv_span * (sum + span_f * c);
-		sum += quantize(c);
-	}
-	for (; x < dst_size.y - span_i; x++) {
-		float4 c = src[uint2(x, id.y)], c0 = src[uint2(x - span_i, id.y)];
+	for (uint x = 0; x < dst_size.y; x++) {
+		const float4 c = src.Load(int3(x, id.y, 0)),
+			c0 = src.Load(int3(x - span_i, id.y, 0));
 		dst[uint2(dst_x, x)] = inv_span * (sum + span_f * c);
 		sum += quantize(c) - quantize(c0);
-	}
-	for (; x < dst_size.y; x++) {
-		float4 c0 = src[uint2(x - span_i, id.y)];
-		dst[uint2(dst_x, x)] = inv_span * sum;
-		sum -= quantize(c0);
-	}
-}
-]]
---[[computeshader@convol2:
-RWTexture2D<half4> dst : register(u0);
-Texture2D src : register(t0);
-cbuffer constant0 : register(b0) {
-	float2 dst_size_f;
-	float span_i_f, span_f, inv_span;
-};
-static const uint2 dst_size = uint2(dst_size_f);
-static const uint span_i = uint(span_i_f);
-int4 quantize(float4 v)
-{
-	return int4(round((1 << 12) * v));
-}
-[numthreads(1, 64, 1)]
-void convol2(uint2 id : SV_DispatchThreadID)
-{
-	if (id.y >= dst_size.x) return;
-	uint dst_x = dst_size.x - 1 - id.y;
-
-	int4 sum = 0;
-	for (uint x = 0; x < dst_size.y - span_i; x++) {
-		float4 c = src[uint2(x, id.y)];
-		dst[uint2(dst_x, x)] = inv_span * (sum + span_f * c);
-		sum += quantize(c);
-	}
-	for (; x < span_i; x++)
-		dst[uint2(dst_x, x)] = inv_span * sum;
-	for (; x < dst_size.y; x++) {
-		float4 c0 = src[uint2(x - span_i, id.y)];
-		dst[uint2(dst_x, x)] = inv_span * sum;
-		sum -= quantize(c0);
 	}
 }
 ]]
@@ -2322,6 +2279,21 @@ basic_s.effect.prec_blur(range_x, range_y, luma_weight, fixed_size);
 --trackgroup@X,Y:pos
 --group:その他,false
 --value@PI:PI,{}
+--[[pixelshader@carve:
+Texture2D src : register(t0);
+Texture2D eff : register(t1);
+cbuffer constant0 : register(b0) {
+	float4 color;
+	float2 size;
+};
+float4 carve(float4 pos : SV_Position) : SV_Target
+{
+	const float
+		a = src.Load(int3(pos.xy - 0.5 - size, 0)).a,
+		A = eff.Load(int3(pos.xy, 0)).a;
+	return saturate(A - a) * color;
+}
+]]
 
 -- 非推奨化に伴い，この部分は更新凍結．
 local obj, math, bit, tonumber, type = obj, math, bit, tonumber, type;
@@ -2381,7 +2353,7 @@ obj.copybuffer("tempbuffer", "object");
 if size > 0 then
 	-- outer (ordinary) border.
 	obj.effect("縁取り", "サイズ", size, "ぼかし", blur, "縁色", color);
-	obj.pixelshader("carve@四角縁取り@Basic_S", "object", { "tempbuffer", "object" }, {
+	obj.pixelshader("carve", "object", { "tempbuffer", "object" }, {
 		bit.band(color, 0xff0000) / 0xff0000,
 		bit.band(color, 0x00ff00) / 0x00ff00,
 		bit.band(color, 0x0000ff) / 0x0000ff, 1;
@@ -2450,19 +2422,99 @@ end
 --trackgroup@X,Y:pos
 --group:その他,false
 --value@PI:PI,{}
---[[pixelshader@carve:
+--[[pixelshader@promote:
+Texture2D src : register(t0);
+half4 encode(float a)
+{
+	const uint v = asuint(a);
+	return half4((v >> 0) & 0xff, (v >> 8) & 0xff, (v >> 16) & 0xff, (v >> 24) & 0xff);
+}
+float decode(half4 p)
+{
+	const uint4 v4 = round(p);
+	const uint v = v4[0] | (v4[1] << 8) | (v4[2] << 16) | (v4[3] << 24);
+	return asfloat(v);
+}
+float4 promote(float4 pos : SV_Position) : SV_Target
+{
+	return encode(src[pos.xy].a);
+}
+]]
+--[[computeshader@convol:
+RWTexture2D<half4> dst : register(u0);
+Texture2D src : register(t0);
+cbuffer constant0 : register(b0) {
+	float2 dst_size_f;
+	float size_i_f, size_f;
+	float rate, crop_f;
+};
+static const uint2 dst_size = uint2(dst_size_f);
+static const uint size_i = uint(size_i_f), crop = uint(crop_f);
+half4 encode(float a)
+{
+	const uint v = asuint(a);
+	return half4((v >> 0) & 0xff, (v >> 8) & 0xff, (v >> 16) & 0xff, (v >> 24) & 0xff);
+}
+float decode(half4 p)
+{
+	const uint4 v4 = round(p);
+	const uint v = v4[0] | (v4[1] << 8) | (v4[2] << 16) | (v4[3] << 24);
+	return asfloat(v);
+}
+int quantize(float v)
+{
+	return int(round((1 << 16) * v));
+}
+[numthreads(1, 64, 1)]
+void convol(uint2 id : SV_DispatchThreadID)
+{
+	if (id.y >= dst_size.x) return;
+
+	int sum = 0; float a0 = 0;
+	for (uint x = 0; x < dst_size.y + crop; x++) {
+		const float a = decode(src.Load(int3(x, id.y, 0))),
+			a1 = decode(src.Load(int3(x - 2 * size_i - 1, id.y, 0)));
+		if (x >= crop)
+			dst[uint2(id.y, x - crop)] = encode((sum + size_f * (a + a0)) * rate);
+		sum += quantize(a) - quantize(a1);
+		a0 = a1;
+	}
+}
+]]
+--[[pixelshader@transpose:
+Texture2D src : register(t0);
+float4 transpose(float4 pos : SV_Position) : SV_Target
+{
+	return src[pos.yx];
+}
+]]
+--[[pixelshader@halven:
 Texture2D src : register(t0);
 Texture2D eff : register(t1);
 cbuffer constant0 : register(b0) {
-	float4 color;
-	float2 size;
+	float3 color;
+	float alpha_src, invert, rate;
+	float2 offset;
 };
-float4 carve(float4 pos : SV_Position) : SV_Target
+half4 encode(float a)
+{
+	const uint v = asuint(a);
+	return half4((v >> 0) & 0xff, (v >> 8) & 0xff, (v >> 16) & 0xff, (v >> 24) & 0xff);
+}
+float decode(half4 p)
+{
+	const uint4 v4 = round(p);
+	const uint v = v4[0] | (v4[1] << 8) | (v4[2] << 16) | (v4[3] << 24);
+	return asfloat(v);
+}
+float4 halven(float4 pos : SV_Position) : SV_Target
 {
 	const float
-		a = src.Load(int3(pos.xy - 0.5 - size, 0)).a,
-		A = eff.Load(int3(pos.xy, 0)).a;
-	return saturate(A - a) * color;
+		a = src.Load(int3(floor(pos.xy - offset), 0)).a,
+		A = decode(eff.Load(int3(pos.xy, 0))),
+		alpha = saturate(alpha_src * a
+			+ saturate(rate * ((1 - 2 * invert) * A + invert)));
+	return float4(alpha * color, alpha);
 }
 ]]
 --[[pixelshader@recolor:
@@ -2508,61 +2560,6 @@ float4 combine(float4 pos : SV_Position) : SV_Target
 	return col_i.a * col_o + a_i * (1 - col_o.a) * col_i;
 }
 ]]
---[[computeshader@convol_h:
-RWTexture2D<half4> dst : register(u0);
-Texture2D src : register(t0);
-cbuffer constant0 : register(b0) {
-	float2 dst_size_f;
-	float size_i_f, size_f, offset_f;
-};
-half4 encode(float a)
-{
-	const uint n = asuint(a);
-	return half4((n >> 0) & 0xff, (n >> 8) & 0xff, (n >> 16) & 0xff, (n >> 24) & 0xff);
-}
-[numthreads(8, 8, 1)]
-void convol_h(uint2 id : SV_DispatchThreadID)
-{
-	if (any(id >= uint2(dst_size_f))) return;
-
-	static const int
-		size_i = floor(size_i_f),
-		offset = offset_f;
-	const int x0 = id.x - offset, y0 = id.y;
-	float a = size_f * src.Load(int3(x0, y0, 0)).a;
-	for (int x = 0; x <= 2 * size_i; x++)
-		a += src.Load(int3(x0 + x + 1, y0, 0)).a;
-	a += size_f * src.Load(int3(x0 + 2 * size_i + 2, y0, 0)).a;
-	dst[id] = encode(a);
-}
-]]
---[[pixelshader@convol_v:
-Texture2D<half4> src : register(t0);
-cbuffer constant0 : register(b0) {
-	float4 color;
-	float size_i_f, size_f, offset_f, blur, inv;
-};
-float decode(half4 c)
-{
-	const uint n =
-		(uint(c.r) << 0) | (uint(c.g) << 8) | (uint(c.b) << 16) | (uint(c.a) << 24);
-	return asfloat(n);
-}
-float4 convol_v(float4 pos : SV_Position) : SV_Target
-{
-	static const int
-		size_i = floor(size_i_f),
-		offset = offset_f;
-	const int x0 = floor(pos.x), y0 = floor(pos.y) - offset;
-	float a = size_f * decode(src.Load(int3(x0, y0, 0)));
-	for (int y = 0; y <= 2 * size_i; y++)
-		a += decode(src.Load(int3(x0, y0 + y + 1, 0)));
-	a += size_f * decode(src.Load(int3(x0, y0 + 2 * size_i + 2, 0)));
-	if (inv >= 0) a = inv - a;
-
-	return saturate(blur * a) * color;
-}
-]]
 local obj, math, bit, tonumber, type = obj, math, bit, tonumber, type;
 local basic_s = require("Basic_S");
 
@@ -2601,82 +2598,11 @@ blur = math.min(math.max(blur / 100, 0), 1);
 alpha = math.min(math.max(1 - alpha / 100, 0), 1);
 color = math.floor(0.5 + color) % 2 ^ 24;
 alpha_front = math.min(math.max(1 - alpha_front / 100, 0), 1);
-local has_image = #file_image >= 4;
 
--- further calculations.
-local col_r, col_g, col_b = basic_s.rgba_color_opt(color);
+-- pass to core.
 local size_x, size_y = basic_s.size_from_aspect(size, aspect);
-local size_x_i, size_y_i = math.ceil(math.abs(size_x)) - 1, math.ceil(math.abs(size_y)) - 1;
-local size_x_f, size_y_f = math.abs(size_x) - size_x_i, math.abs(size_y) - size_y_i;
-if size_x_i < 0 then size_x_f = size_x_f / 2 end
-if size_y_i < 0 then size_y_f = size_y_f / 2 end
-local size_xy = (2 * math.abs(size_x) + 1) * (2 * math.abs(size_y) + 1);
-local w, h, W, H = obj.w, obj.h,
-	obj.w + 2 * (size > 0 and size_x_i + 1 or 0),
-	obj.h + 2 * (size > 0 and size_y_i + 1 or 0);
-
--- early returns for trivial cases.
-if size == 0 or alpha == 0 then
-	basic_s.apply_alpha(alpha_front);
-	if size > 0 then
-		basic_s.add_canvas_size(
-			size_x_i + 1, size_x_i + 1,
-			size_y_i + 1, size_y_i + 1);
-	end
-	return;
-end
-
--- prepare border.
-obj.clearbuffer("tempbuffer", W, H);
-obj.computeshader("convol_h", "tempbuffer", "object", {
-	W, h;
-	size_x_i, size_x_f,
-	size > 0 and 2 * (size_x_i + 1) or (size_x_i + 1);
-}, math.ceil(W / 8), math.ceil(h / 8));
-obj.pixelshader("convol_v", "tempbuffer", "tempbuffer", {
-	col_r, col_g, col_b, 1;
-	size_y_i; size_y_f;
-	size > 0 and 2 * (size_y_i + 1) or (size_y_i + 1);
-	1 / (blur * (size_xy - 1) + 1);
-	size > 0 and -1 or size_xy;
-});
-if size > 0 then
-	obj.pixelshader("carve@四角縁取り@Basic_S", "tempbuffer", { "object", "tempbuffer" }, {
-		col_r, col_g, col_b, 1;
-		size_x_i + 1, size_y_i + 1;
-	});
-end
-
--- color by image when set.
-if has_image then
-	local obj_props = basic_s.save_obj_props();
-	local cache_name = "cache:basic_s/border_rect/obj";
-	obj.copybuffer(cache_name, "object");
-
-	obj.load("image", file_image);
-	if obj.w > 0 or obj.h > 0 then
-		obj.pixelshader("recolor@四角縁取り@Basic_S", "tempbuffer", { "tempbuffer", "object" }, {
-			math.floor((W - obj.w) / 2) + X, math.floor((H - obj.h) / 2) + Y;
-			obj.w, obj.h;
-		});
-	else has_image = false end
-
-	obj.copybuffer("object", cache_name);
-	basic_s.load_obj_props(obj_props);
-end
-
--- combine by shaders.
-if size > 0 then
-	obj.pixelshader("blend@四角縁取り@Basic_S", "tempbuffer", { "object", "tempbuffer" }, {
-		size_x_i + 1, size_y_i + 1;
-		alpha_front, alpha,
-	});
-	obj.copybuffer("object", "tempbuffer");
-else
-	obj.pixelshader("combine@四角縁取り@Basic_S", "object", { "object", "tempbuffer" }, {
-		alpha_front, alpha,
-	});
-end
+basic_s.effect.rect_border(size_x, size_y, blur,
+	color, file_image, X, Y, alpha, alpha_front);
 
 @内側シャドウ
 --information:内側シャドウ@Basic_S v2.10 (for beta43b) by σ軸

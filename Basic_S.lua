@@ -1,4 +1,4 @@
--- under development for v2.20, r5
+-- under development for v2.20, r6
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -29,7 +29,7 @@ https://mit-license.org/
 --
 
 local obj, print, type, tonumber, tostring, unpack, loadstring, pcall, setfenv, setmetatable, bit = obj, print, type, tonumber, tostring, unpack, loadstring, pcall, setfenv, setmetatable, require("bit");
-local math_pi, math_tau, math_cos, math_sin, math_atan2, math_abs, math_min, math_max, math_floor, math_ceil, bit_band = math.pi, 2 * math.pi, math.cos, math.sin, math.atan2, math.abs, math.min, math.max, math.floor, math.ceil, bit.band;
+local math_pi, math_tau, math_cos, math_sin, math_atan2, math_log, math_abs, math_min, math_max, math_floor, math_ceil, math_modf, bit_band = math.pi, 2 * math.pi, math.cos, math.sin, math.atan2, math.log, math.abs, math.min, math.max, math.floor, math.ceil, math.modf, bit.band;
 local image_max_w, image_max_h = obj.getinfo("image_max");
 
 if obj.getinfo("version") < 2004200 then
@@ -635,25 +635,32 @@ local function print_script_error(err_mes, source)
 	print("@warn", err_mes); -- raw message.
 end
 
----ユーザー入力のスクリプトを実行する．エラーが起きた場合は相応の書式でログに出力する．
----@param source string ソースコード．
----@return boolean code エラーなく終了した場合は true, エラーが起きた場合は false.
-local function execute_user_script(source)
-	local f, c, e = nil, false, nil;
-	f, e = loadstring(source);
-	if f then c, e = pcall(f) end
-	if not c then
+
+local execute_user_script do
+	local function pcall_wrapper(source, code, ...)
+		if code then return true, ... end
+		print_script_error(tostring((...)), source);
+		return false;
+	end
+
+	---ユーザー入力のスクリプトを実行する．エラーが起きた場合は相応の書式でログに出力する．
+	---@param source string ソースコード．
+	---@param ... any スクリプトに渡す引数．
+	---@return boolean code エラーなく終了した場合は true, エラーが起きた場合は false.
+	---@return any ... エラーなく終了した場合はスクリプトの戻り値．エラーが起きた場合，この戻り値はなし.
+	function execute_user_script(source, ...)
+		local f, e = loadstring(source);
+		if f then return pcall_wrapper(source, pcall(f, ...)) end
 		print_script_error(tostring(e), source);
 		return false;
 	end
-	return true;
 end
 
 local execute_text_script do
 	local subst_callback = nil;
 
-	---ユーザー入力のテキスト内の `<?---?>` 形式のスクリプトを実行して，テキストを補間する．
-	---@param text string ユーザー入力のテキスト．`<?---?>` 形式の部分は，そのスクリプト実行で置き換えられる．
+	---ユーザー入力のテキスト内の `<?---?>` 形式のスクリプトを実行して，テキストを補間する．エラーが起きた場合は相応の書式でログに出力する．
+	---@param text string ユーザー入力のテキスト．`<?---?>` 形式の部分は，そのスクリプト実行で置き換えられる．エラーが起きた場合は空文字列で置き換える．
 	---@return string # 補間した結果のテキスト
 	function execute_text_script(text)
 		if not subst_callback then
@@ -997,6 +1004,7 @@ local
 	cut_move, -- カットずらし
 	inner_loop, -- 画像中間ループ
 	prec_blur, -- 小数ぼかし
+	rect_border, -- 四角縁取り
 	round_rect, -- 角丸矩形
 	_;
 
@@ -1374,12 +1382,13 @@ function cut_move(X, Y, crack_x, crack_y, crack_dx, crack_dy, crop, move_center,
 		math_ceil(B + obj.h / 2) - obj.h / 2;
 
 	-- draw by shader.
-	obj.clearbuffer("tempbuffer", R - L, B - T);
-	obj.pixelshader("place@カットずらし@Basic_S", "tempbuffer", "object", {
+	local cache_name = "cache:basic_s/cut_move/dst";
+	obj.copybuffer(cache_name, "object");
+	obj.clearbuffer("object", R - L, B - T);
+	obj.pixelshader("place@カットずらし@Basic_S", "object", cache_name, {
 		obj.w, obj.h; -L - obj.w / 2, -T - obj.h / 2 ; crack_dy, -crack_dx; X, Y;
 		c - (L * crack_dy - T * crack_dx); crop; gap; mode;
 	}, "copy", "clip");
-	obj.copybuffer("object", "tempbuffer");
 
 	-- adjust center.
 	if not move_center then
@@ -1481,9 +1490,10 @@ do -- inner_loop
 		end
 
 		-- invoke shader.
-		obj.copybuffer("tempbuffer", "object");
+		local cache_name = "cache:basic_s/inner_loop/dst";
+		obj.copybuffer(cache_name, "object");
 		obj.clearbuffer("object", W, H);
-		obj.pixelshader("mid_loop@画像中間ループ@Basic_S", "object", "tempbuffer", {
+		obj.pixelshader("mid_loop@画像中間ループ@Basic_S", "object", cache_name, {
 			margin_l, margin_u, len1_x + margin_l, len1_y + margin_u;
 			piv0_x - ((-offset_x) % (mid_x / piv1_x)), piv1_x, piv0_y - ((-offset_y) % (mid_y / piv1_y)), piv1_y;
 			1 / w, 1 / h;
@@ -1504,12 +1514,16 @@ end
 ---@param luma_weight number 光の強さ，0 -- 60.
 ---@param fixed_size boolean サイズ固定．
 function prec_blur(span_x, span_y, luma_weight, fixed_size)
+	-- cap by maximum size.
+	span_x = math_min(span_x, math_floor((image_max_w - obj.w) / 2));
+	span_y = math_min(span_y, math_floor((image_max_h - obj.h) / 2));
+
 	span_x, span_y = span_x + 1, span_y + 1;
 	local span_x_i, span_y_i = math_ceil(span_x) - 1, math_ceil(span_y) - 1;
 	local span_x_f, span_y_f = span_x - span_x_i, span_y - span_y_i;
 
 	-- weight to luma.
-	local log_base = 256 * math.log(1 + luma_weight / 1000, 2);
+	local log_base = 256 * math_log(1 + luma_weight / 1000, 2);
 	local luma_scale = 2 ^ (9 - log_base); -- for float16 not to overflow.
 	if luma_weight > 0 then
 		obj.pixelshader("weight_luma@小数ぼかし@Basic_S", "object", "object", { log_base, luma_scale });
@@ -1517,21 +1531,22 @@ function prec_blur(span_x, span_y, luma_weight, fixed_size)
 
 	-- apply the blur by shaders.
 	local w, h = obj.w, obj.h;
-	obj.clearbuffer("tempbuffer", h + 2 * span_y_i, w + 2 * span_x_i);
-	obj.computeshader(w > span_x_i and "convol1@小数ぼかし@Basic_S" or "convol2@小数ぼかし@Basic_S", "tempbuffer", "object", {
+	local cache_name = "cache:basic_s/prec_blur/intermed";
+	obj.clearbuffer(cache_name, h + 2 * span_y_i, w + 2 * span_x_i);
+	obj.computeshader("convol@小数ぼかし@Basic_S", cache_name, "object", {
 		h, w + span_x_i;
 		span_x_i, 2 ^ 12 * span_x_f, 2 ^ -12 / span_x,
 	}, 1, math_ceil(h / 64), 1);
 	obj.clearbuffer("object", w + 2 * span_x_i, h + 2 * span_y_i);
-	obj.computeshader(h > span_y_i and "convol1@小数ぼかし@Basic_S" or "convol2@小数ぼかし@Basic_S", "object", "tempbuffer", {
+	obj.computeshader("convol@小数ぼかし@Basic_S", "object", cache_name, {
 		w + span_x_i, h + span_y_i;
 		span_y_i, 2 ^ 12 * span_y_f, 2 ^ -12 / span_y,
 	}, 1, math_ceil((w + span_x_i) / 64), 1);
-	obj.computeshader("convol1@小数ぼかし@Basic_S", "tempbuffer", "object", {
+	obj.computeshader("convol@小数ぼかし@Basic_S", cache_name, "object", {
 		h + span_y_i, w + 2 * span_x_i;
 		span_x_i, 2 ^ 12 * span_x_f, 2 ^ -12 / span_x,
 	}, 1, math_ceil((h + span_y_i) / 64), 1);
-	obj.computeshader("convol1@小数ぼかし@Basic_S", "object", "tempbuffer", {
+	obj.computeshader("convol@小数ぼかし@Basic_S", "object", cache_name, {
 		w + 2 * span_x_i, h + 2 * span_y_i;
 		span_y_i, 2 ^ 12 * span_y_f, 2 ^ -12 / span_y,
 	}, 1, math_ceil((w + 2 * span_x_i) / 64), 1);
@@ -1548,6 +1563,107 @@ function prec_blur(span_x, span_y, luma_weight, fixed_size)
 	-- remove the weight of luma.
 	if luma_weight > 0 then
 		obj.pixelshader("unweight_luma@小数ぼかし@Basic_S", "object", "object", { 1 / log_base, 1 / luma_scale });
+	end
+end
+
+---四角縁取りの実体関数．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
+---@param size_x number 横方向のサイズ，nan, infty 以外．`size_y` と同符号または 0 の必要がある．
+---@param size_y number 縦方向のサイズ，nan, infty 以外．`size_x` と同符号または 0 の必要がある．
+---@param blur number ぼかし，0.0 -- 1.0.
+---@param color_border integer 縁色．
+---@param image_border string パターン画像のファイルパス．
+---@param image_pos_x integer パターン画像の X 方向位置ずれ．範囲指定なし．
+---@param image_pos_y integer パターン画像の Y 方向位置ずれ．範囲指定なし．
+---@param alpha_border number 縁部分のアルファ値．0.0 -- 1.0.
+---@param alpha_source number 元画像のアルファ値．0.0 -- 1.0.
+function rect_border(size_x, size_y, blur,
+	color_border, image_border, image_pos_x, image_pos_y,
+	alpha_border, alpha_source)
+
+	-- cap by maximum size.
+	size_x = math_min(size_x, math_floor((image_max_w - obj.w) / 2));
+	size_y = math_min(size_y, math_floor((image_max_h - obj.h) / 2));
+
+	local outer = size_x > 0;
+	local col_r, col_g, col_b = rgba_color_opt(color_border);
+	local size_x_i, size_y_i = math_ceil(math_abs(size_x)) - 1, math_ceil(math_abs(size_y)) - 1;
+	local size_x_f, size_y_f = math_abs(size_x) - size_x_i, math_abs(size_y) - size_y_i;
+	if size_x_i < 0 then size_x_f = 1 / 2 end
+	if size_y_i < 0 then size_y_f = 1 / 2 end
+	local w, h, W, H, crop_x, crop_y = obj.w, obj.h,
+		obj.w + 2 * (outer and size_x_i + 1 or 0),
+		obj.h + 2 * (outer and size_y_i + 1 or 0),
+		outer and 0 or size_x_i + 1, outer and 0 or size_y_i + 1;
+
+	-- early returns for trivial cases.
+	if (size_x == 0 and size_y == 0) or alpha_border == 0 then
+		apply_alpha(alpha_source);
+		if outer then
+			add_canvas_size(
+				size_x_i + 1, size_x_i + 1,
+				size_y_i + 1, size_y_i + 1);
+		end
+		return;
+	end
+
+	local cache_name, cache_border = "cache:basic_s/rect_border/obj","cache:basic_s/rect_border/bdr";
+	obj.copybuffer(cache_name, "object");
+
+	-- prepare border.
+	obj.pixelshader("promote@四角縁取り@Basic_S", "object", cache_name);
+	obj.clearbuffer(cache_border, h, W);
+	if size_x == 0 then
+		obj.pixelshader("transpose@四角縁取り@Basic_S", cache_border, "object");
+	else
+		obj.computeshader("convol@四角縁取り@Basic_S", cache_border, "object", {
+			h, W;
+			size_x_i, 2 ^ 16 * size_x_f;
+			2 ^ -16 / (2 * math_abs(size_x) + 1); crop_x;
+		}, 1, math_ceil(H / 64));
+	end
+	obj.clearbuffer("object", W, H);
+	if size_y == 0 then
+		obj.pixelshader("transpose@四角縁取り@Basic_S", "object", cache_border);
+	else
+		obj.computeshader("convol@四角縁取り@Basic_S", "object", cache_border, {
+			W, H;
+			size_y_i, 2 ^ 16 * size_y_f;
+			2 ^ -16 / (2 * math_abs(size_y) + 1); crop_y;
+		}, 1, math_ceil(W / 64));
+	end
+	local rate = (2 * math_abs(size_x) + 1) / (2 * math_abs(size_x) * blur + 1)
+		* (2 * math_abs(size_y) + 1) / (2 * math_abs(size_y) * blur + 1);
+	obj.clearbuffer(cache_border, W, H);
+	obj.pixelshader("halven@四角縁取り@Basic_S", cache_border, { cache_name, "object" }, {
+		col_r, col_g, col_b;
+		outer and -1 or 0, outer and 0 or 1, rate;
+		size_x_i + 1, size_y_i + 1;
+	});
+
+	-- color by image when set.
+	if #image_border >= 4 then
+		local obj_props = save_obj_props();
+		if obj.load("image", image_border) then
+			obj.pixelshader("recolor@四角縁取り@Basic_S", cache_border, { cache_border, "object" }, {
+				math_floor((W - obj.w) / 2) + image_pos_x,
+				math_floor((H - obj.h) / 2) + image_pos_y;
+				obj.w, obj.h;
+			});
+		end
+		load_obj_props(obj_props);
+	end
+
+	-- combine by shaders.
+	obj.clearbuffer("object", W, H);
+	if outer then
+		obj.pixelshader("blend@四角縁取り@Basic_S", "object", { cache_name, cache_border }, {
+			size_x_i + 1, size_y_i + 1;
+			alpha_source, alpha_border,
+		});
+	else
+		obj.pixelshader("combine@四角縁取り@Basic_S", "object", { cache_name, cache_border }, {
+			alpha_source, alpha_border,
+		});
 	end
 end
 --#endregion actual processes for effects.
@@ -1595,13 +1711,14 @@ function round_rect(width, height, line, color_line, color_back, alpha_back, rad
 	end
 
 	-- the case of multiple colors.
+	local cache_name = "cache:basic_s/round_rect/temp";
 	obj.clearbuffer("object", width, height, 0x000000);
 	round_corners_buff(radii, shapes, line, 0, fixed_aspect, "object", width, height);
-	obj.clearbuffer("tempbuffer", width, height, 0x000000);
-	round_corners_buff(radii, shapes, line, math_max(width, height) + 1, fixed_aspect, "tempbuffer", width, height);
+	obj.clearbuffer(cache_name, width, height, 0x000000);
+	round_corners_buff(radii, shapes, line, math_max(width, height) + 1, fixed_aspect, cache_name, width, height);
 	local r_line, g_line, b_line, a_line = rgba_color_opt(color_line);
 	local r_back, g_back, b_back, a_back = rgba_color_opt(color_back);
-	obj.pixelshader("combine@角丸矩形@Basic_S", "object", { "object", "tempbuffer" }, {
+	obj.pixelshader("combine@角丸矩形@Basic_S", "object", { "object", cache_name }, {
 		r_line, g_line, b_line, a_line;
 		alpha_back * r_back, alpha_back * g_back, alpha_back * b_back, alpha_back * a_back;
 	});
@@ -1637,7 +1754,7 @@ do
 	---@return integer section 区間の位置．0, 1, ... n - 1 (n は区間の個数).
 	---@return number time 区間内で正規化した時間．0.0 -- 1.0.
 	function track_curve_entire()
-		local n, i, t = gp("num"), math.modf(gp("timecontrol", "index"));
+		local n, i, t = gp("num"), math_modf(gp("timecontrol", "index"));
 		if i >= n - 1 then i, t = n - 2, 1;
 		elseif i < 0 then i, t = 0, 0 end
 		return i, t;
@@ -1648,7 +1765,7 @@ do
 	---@return number time 区間内で正規化した時間．0.0 -- 1.0.
 	function track_curve_section()
 		local gp = obj.getpoint;
-		local n, i, t = gp("num"), math.modf(gp("index"));
+		local n, i, t = gp("num"), math_modf(gp("index"));
 		if i >= n - 1 then i, t = n - 2, 1 end
 		t = gp("timecontrol", "value", t * gp("time", n - 1));
 		return i, t;
@@ -1721,7 +1838,7 @@ do
 	---基本緩急 (正弦波など) の共通形式．
 	---@return number time, number value1, number value2 正規化した時間, `time` が 0 のときの値, `time` が 1 のときの値．これらを元に ease-in として計算する．
 	function track_ease_inout_core()
-		local i, t = math.modf(gp("index"));
+		local i, t = math_modf(gp("index"));
 		return reduce_inout_ease(t, gp(i), gp(i + 1), gp("accelerate"), gp("decelerate"));
 	end
 
@@ -1825,11 +1942,11 @@ do
 		k = math_max(k, 0);
 		local sum, sum2 = e / (1 - e), 0;
 		if k >= 0.5 then
-			local i, f = math.modf(k);
+			local i, f = math_modf(k);
 			sum2 = (i > 0 and e ^ i or 1) * ((1 - f) + f * e) / (1 - e);
 		end
 		local T = t * (0.5 + sum) + (1 - t) * sum2;
-		local scale = e > 0 and e ^ math_ceil(math.log(T / sum) / math.log(e)) or 1;
+		local scale = e > 0 and e ^ math_ceil(math_log(T / sum) / math_log(e)) or 1;
 		local tau = T - scale * sum;
 		local rho = 4 * tau * (scale - tau);
 		return value1 + (value2 - value1) * rho;
@@ -1855,10 +1972,10 @@ do
 	---@param decay number 「減衰率」の値．
 	---@return number # トラックバーの計算値．
 	function track_elastic(t, value1, value2, oscillation, decay)
-		oscillation = math.max(oscillation, 0);
-		decay = math.max(decay, 0);
+		oscillation = math_max(oscillation, 0);
+		decay = math_max(decay, 0);
 		decay = (decay > 0 or t < 1) and (decay >= 1 and t or (decay ^ (1 - t) - decay) / (1 - decay)) or 1;
-		local rho = decay * math_sin(2 * math.pi * ((oscillation + 0.25) * (1 - t) + 0.25));
+		local rho = decay * math_sin(math_tau * ((oscillation + 0.25) * (1 - t) + 0.25));
 		return value1 + (value2 - value1) * rho;
 	end
 end
@@ -1924,6 +2041,7 @@ return {
 		["カットずらし"] = cut_move, cut_move = cut_move,
 		["画像中間ループ"] = inner_loop, inner_loop = inner_loop,
 		["小数ぼかし"] = prec_blur, prec_blur = prec_blur,
+		["四角縁取り"] = rect_border, rect_border = rect_border,
 	},
 
 	object = {
