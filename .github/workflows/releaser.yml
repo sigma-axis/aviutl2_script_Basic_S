@@ -37,6 +37,7 @@ jobs:
         cp *.anm2 pack/Script
         cp *.obj2 pack/Script
         cp *.tra2 pack/Script
+        cp *.lua pack/Script
         cp *.md pack/Script/${{ env.REPOSITORY_NAME }}
         cp LICENSE pack/Script/${{ env.REPOSITORY_NAME }}/LICENSE
         cp assets/package.txt pack

@@ -1,4 +1,4 @@
--- under development for v2.20, r6
+-- under development for v2.20, r7
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -1748,7 +1748,7 @@ local
 	track_elastic, -- バネ振動
 	_;
 do
-	local gp, rand1 = obj.getpoint, rand1;
+	local gp, rand1 = obj.getpoint, obj.rand1;
 
 	---全体で時間制御をするスクリプトでの共通形式．
 	---@return integer section 区間の位置．0, 1, ... n - 1 (n は区間の個数).
