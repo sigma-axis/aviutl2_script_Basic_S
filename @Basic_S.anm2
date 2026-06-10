@@ -1,4 +1,4 @@
--- under development for v2.20, r6
+-- under development for v2.20, r9
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -48,14 +48,55 @@ cbuffer constant0 : register(b0) {
 	float line_width, alpha_hole;
 };
 
-float shape_circle(float2 pt, float2 sz, float pad)
+float2 ellipse_eval_func_deriv(float2 u, float2 p, float2 r2yx)
 {
-	const float2 p0 = max(pt, 0),
-		sz0 = sz - pad, r = (sz0 * sz0).yx;
-	if (any(sz0 <= 0)) return -1;
-	const float v = dot(p0 * p0, r) - r.x * r.y,
-		d = 2 * length(p0 * r); // |grad(v)|
-	return d > 0 ? v / d : sign(v);
+	const float2
+		q = p - u,
+		v = r2yx * u,
+		u1 = float2(1, -v.x / v.y),
+		v1 = r2yx * u1;
+	return float2(
+		dot(q, float2(-v.y, v.x)),
+		dot(-u1, float2(-v.y, v.x)) + dot(q, float2(-v1.y, v1.x)));
+}
+float ellipse_dist(float2 pt, float2 sz)
+{
+	const bool do_flip = dot(float2(1, -1), pt / sz) > 0;
+	if (do_flip) { pt = pt.yx; sz = sz.yx; }
+
+	const float2 sz2 = sz * sz;
+	float2 u = sqrt(0.5) * sz;
+	for (int i = 0; i < 8; i++) {
+		if (dot(pt - u, pt - u) < 0.25 / 65536) break;
+
+		float2 w = ellipse_eval_func_deriv(u, pt, sz2.yx);
+		if (w[1] == 0) break;
+		if (w[1] < 0) w[1] *= -0.5;
+		float dx = -w[0] / w[1];
+
+		if (u.x + dx < 0) dx = -u.x / 2;
+		else if (u.x + dx > sz.x) dx = (sz.x - u.x) / 2;
+		u.x = clamp(u.x + dx, 0, sz.x);
+		u.y = sz.y * sqrt(abs(1 - u.x * u.x / sz2.x));
+		if (abs(dx) < 1.0 / 256) break;
+	}
+
+	int s = -1;
+	if (all(pt > 0)) s = sign(dot(1, pow(pt / sz, 2)) - 1);
+	return s * length(u - pt);
+}
+float circle_dist(float2 pt, float r)
+{
+	if (any(pt <= 0)) return max(pt.x, pt.y) - r;
+	return length(pt) - r;
+}
+
+float2 shape_circle(float2 pt, float2 sz, float pad)
+{
+	float v;
+	[branch] if (sz.x == sz.y) v = circle_dist(pt, sz.x);
+	else v = ellipse_dist(pt, sz);
+	return v + float2(0, pad);
 }
 float2 shape_rhombus(float2 pt, float2 sz, float pad)
 {
@@ -127,12 +168,8 @@ float2 carve_shape(float2 pt, float2 sz, int shape)
 	[branch] if (any(sz <= 0)) return -1;
 	else {
 		[branch] switch (shape) {
-		case 0: default: return float2(
-			shape_circle(pt, sz, 0),
-			shape_circle(pt, sz, line_width));
-		case 1: return -float2(
-			shape_circle(sz - pt, sz, 0),
-			shape_circle(sz - pt, sz, -line_width));
+		case 0: default: return shape_circle(pt, sz, line_width);
+		case 1: return -shape_circle(sz - pt, sz, -line_width);
 		case 2: return shape_rhombus(pt, sz, line_width);
 		case 3: return min(pt.x, pt.y) + float2(0, line_width);
 		case 4: return shape_octagon_S(pt, sz, line_width);

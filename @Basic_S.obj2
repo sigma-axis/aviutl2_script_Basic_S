@@ -1,4 +1,4 @@
--- under development for v2.20, r8
+-- under development for v2.20, r9
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -368,7 +368,7 @@ float2 find_closest(float2 p, float2 r, float2 irre)
 		v.zw = r * pow(abs(1 - irre.yx * pow(inv_mean_radius * v.yx, e)), 1 / e);
 		u = choose_closest(u, v.zy, v.xw, p);
 	}
-	for (int i = 0; i < 16; i++) {
+	for (int i = 0; i < 8; i++) {
 		if (dot(p - u, p - u) < 0.25 / 65536) break;
 
 		float2 w = eval_func_deriv(u, p, irre);
