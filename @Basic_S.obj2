@@ -1,4 +1,4 @@
--- under development for v2.20, r4
+-- under development for v2.20, r8
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -175,11 +175,10 @@ if circle then height = width end
 local big_radius = math.max(
 	math.max(pad_L, 0) + obj.w + math.max(pad_R, 0),
 	math.max(pad_T, 0) + obj.h + math.max(pad_B, 0)) + 1;
-local radii =  { big_radius, big_radius };
-radii = { radii, radii, radii, radii };
+local r =  { big_radius, big_radius };
 basic_s.object.round_rect(width, height, line,
 	color, color_back, alpha_back,
-	radii, { 0, 0, 0, 0 }, fixed_aspect);
+	{ r, r, r, r }, { 0, 0, 0, 0 }, fixed_aspect);
 
 -- alignment.
 obj.cx, obj.cy = -width * align_x / 2, -height * align_y / 2;
@@ -243,11 +242,10 @@ if square then height = width end
 local big_radius = math.max(
 	math.max(pad_L, 0) + obj.w + math.max(pad_R, 0),
 	math.max(pad_T, 0) + obj.h + math.max(pad_B, 0)) + 1;
-local radii =  { big_radius, big_radius };
-radii = { radii, radii, radii, radii };
+local r =  { big_radius, big_radius };
 basic_s.object.round_rect(width, height, line,
 	color, color_back, alpha_back,
-	radii, { 2, 2, 2, 2 }, fixed_aspect);
+	{ r, r, r, r }, { 2, 2, 2, 2 }, fixed_aspect);
 
 -- alignment.
 obj.cx, obj.cy = -width * align_x / 2, -height * align_y / 2;
@@ -259,7 +257,7 @@ obj.cx, obj.cy = -width * align_x / 2, -height * align_y / 2;
 --track@exponent:膨らみ,-300,300,-60,0.001
 --track@width:幅,0,4000,100,1,,0.25
 --track@height:高さ,0,4000,100,1,,0.25
---track@line:ライン幅,0,4000,4000,1,,0.25
+--track@line:ライン幅,0,4000,4000,0.01,,0.25
 --color@color:色,0xffffff
 --color@color_back:背景色,0xffffff
 --track@alpha_back:背景透明度,0,100,100,0.01
@@ -269,20 +267,147 @@ obj.cx, obj.cy = -width * align_x / 2, -height * align_y / 2;
 --track@align_y:垂直揃え,-100,100,0,0.001
 --group:その他,false
 --value@PI:PI,{}
---[[pixelshader@carve:
+--[[pixelshader@shape_L1:
 cbuffer constant0 : register(b0) {
-	float2 r_hsize; float e;
+	float4 color_line, color_back;
+	float2 size;
+	float e, thick, stalk;
 };
-float4 carve(float4 pos : SV_Position) : SV_Target
+static const float2 n_slope = normalize(size.yx);
+static const float L = size.x * n_slope.x / 2;
+float4 shape_L1(float4 pos : SV_Position) : SV_Target
 {
-	const float2 p = r_hsize * pos.xy - 1;
-	const float v = 1 - dot(pow(abs(p), e), 1),
-		d = fwidth(v),
-		l = d > 0 ? v / d : sign(v);
-	return float4(0, 0, 0, saturate(l + 0.5));
+	const float2 p = abs(pos.xy - size / 2);
+	const float l = L - dot(n_slope, p);
+	return saturate(l) * lerp(color_line, color_back, saturate(l - thick));
+}
+]]
+--[[pixelshader@shape_box:
+cbuffer constant0 : register(b0) {
+	float4 color_line, color_back;
+	float2 size;
+	float e, thick, stalk;
+};
+float min_xy(float2 p)
+{
+	return min(p.x, p.y);
+}
+float4 shape_box(float4 pos : SV_Position) : SV_Target
+{
+	const float2 p = abs(pos.xy - size / 2);
+	const float l = min_xy(size / 2 - p);
+	return saturate(l) * lerp(color_line, color_back, saturate(l - thick));
+}
+]]
+--[[pixelshader@shape_cross:
+cbuffer constant0 : register(b0) {
+	float4 color_line, color_back;
+	float2 size;
+	float e, thick, stalk;
+};
+float min_xy(float2 p)
+{
+	return min(p.x, p.y);
+}
+float4 shape_cross(float4 pos : SV_Position) : SV_Target
+{
+	const float2 p = abs(pos.xy - size / 2);
+	const float l = min(1.5 - min_xy(p), min_xy(size / 2 - p));
+	return saturate(l) * lerp(color_line, color_back, saturate(l - thick));
+}
+]]
+--[[pixelshader@shape_circle:
+cbuffer constant0 : register(b0) {
+	float4 color_line, color_back;
+	float2 size;
+	float e, thick, stalk;
+};
+float min_xy(float2 p)
+{
+	return min(p.x, p.y);
+}
+float4 shape_circle(float4 pos : SV_Position) : SV_Target
+{
+	const float2 p = abs(pos.xy - size / 2);
+	const float l = size.x / 2 - length(p);
+	return saturate(l) * lerp(color_line, color_back, saturate(l - thick));
+}
+]]
+--[[pixelshader@shape_gen:
+cbuffer constant0 : register(b0) {
+	float4 color_line, color_back;
+	float2 size;
+	float e, thick, stalk;
+};
+float2 choose_closest(float2 u1, float2 u2, float2 u3, float2 p)
+{
+	float q1 = dot(u1 - p, u1 - p), q2 = dot (u2 - p, u2 - p);
+	if (q1 > q2) { u1 = u2; q1 = q2; }
+	return q1 > dot (u3 - p, u3 - p) ? u3 : u1;
+}
+static const float2 radius = max(size - stalk, 1) / 2;
+static const float inv_mean_radius = 1 / sqrt(radius.x * radius.y);
+static const float2 inv_rr_e = pow(inv_mean_radius * radius, -e);
+float2 eval_func_deriv(float2 u, float2 p, float2 irre)
+{
+	const float2
+		q = p - u,
+		v = irre * pow(inv_mean_radius * abs(u), e - 1),
+		u1 = float2(1, -v.x / v.y),
+		v1 = irre * inv_mean_radius * (e - 1) * pow(inv_mean_radius * abs(u), e - 2) * u1;
+	return float2(
+		dot(q, float2(-v.y, v.x)),
+		dot(-u1, float2(-v.y, v.x)) + dot(q, float2(-v1.y, v1.x)));
+}
+float2 find_closest(float2 p, float2 r, float2 irre)
+{
+	float2 u = r * pow(0.5, 1 / e);
+	if (e < 1) {
+		float4 v;
+		v.xy = max(p, 0.5);
+		v.zw = r * pow(abs(1 - irre.yx * pow(inv_mean_radius * v.yx, e)), 1 / e);
+		u = choose_closest(u, v.zy, v.xw, p);
+	}
+	for (int i = 0; i < 16; i++) {
+		if (dot(p - u, p - u) < 0.25 / 65536) break;
+
+		float2 w = eval_func_deriv(u, p, irre);
+		if (w[1] == 0) break;
+		if (w[1] < 0) w[1] *= -0.5;
+		float dx = -w[0] / w[1];
+
+		if (u.x + dx < 0) dx = -u.x / 2;
+		else if (u.x + dx > r.x) dx = (r.x - u.x) / 2;
+		u.x = clamp(u.x + dx, 0, r.x);
+		u.y = r.y * pow(abs(1 - irre.x * pow(inv_mean_radius * u.x, e)), 1 / e);
+		if (abs(dx) < 1.0 / 256) break;
+	}
+	return u;
+}
+float2 find_closest(float2 p)
+{
+	const bool do_flip = (dot(float2(1, -1), p / radius) > 0) == (e > 1);
+	float2 r = radius, irre = inv_rr_e;
+	if (do_flip) { p = p.yx; r = r.yx; irre = irre.yx; }
+	float2 ret = find_closest(p, r, irre);
+	if (do_flip) ret = ret.yx;
+	return ret;
+}
+float4 shape_gen(float4 pos : SV_Position) : SV_Target
+{
+	const float2 p0 = abs(pos.xy - size / 2),
+		p = max(p0 - stalk / 2, 0),
+		u = find_closest(p);
+	const float
+		l0 = 0.75 * stalk - min(p0.x, p0.y),
+		l1 = min(size.x / 2 - p0.x, size.y / 2 - p0.y),
+		l2 = sign(1 - dot(inv_rr_e, pow(inv_mean_radius * p, e))) * length(u - p),
+		l = min(max(l0, l2), l1);
+	return saturate(l) * lerp(color_line, color_back, saturate(l - thick));
 }
 ]]
 local obj, math, tonumber, type = obj, math, tonumber, type;
+local basic_s = require("Basic_S");
 
 -- take parameters.
 --[==[
@@ -299,11 +424,6 @@ local obj, math, tonumber, type = obj, math, tonumber, type;
 		symmetric:	boolean|number|nil,
 	}
 ]==]
-local function as_bool(t, v)
-	if type(t) == "boolean" then return t;
-	elseif type(t) == "number" then return t ~= 0;
-	else return v end
-end
 exponent = tonumber(PI.exponent) or exponent;
 width = tonumber(PI.width) or width;
 height = tonumber(PI.height) or height;
@@ -313,7 +433,7 @@ line = tonumber(PI.line) or line;
 color = tonumber(PI.color) or color;
 color_back = tonumber(PI.color_back) or color_back;
 alpha_back = tonumber(PI.alpha_back) or alpha_back;
-symmetric = as_bool(PI.symmetric, symmetric);
+symmetric = basic_s.PI.as_bool(PI.symmetric, symmetric);
 
 -- normalize parameters.
 exponent = math.min(math.max(exponent / 100, -3), 3);
@@ -321,48 +441,24 @@ width = math.max(math.floor(0.5 + width), 0);
 height = math.max(math.floor(0.5 + height), 0);
 align_x = math.min(math.max(align_x / 100, -1), 1);
 align_y = math.min(math.max(align_y / 100, -1), 1);
-line = math.max(math.floor(0.5 + line), 0);
+line = math.max(line, 0);
 color = math.floor(0.5 + color) % 2 ^ 24;
 color_back = math.floor(0.5 + color_back) % 2 ^ 24;
 alpha_back = math.min(math.max(1 - alpha_back / 100, 0), 1);
 
 -- further calculations.
 if symmetric then height = width end
-if width <= 0 or height <= 0 then return end
-local big_radius = math.max(width, height, 4000);
-if color == color_back and alpha_back >= 1 then line = big_radius end
-local do_fill = 2 * line - 1 >= math.min(width, height);
-
--- make rectangle.
-obj.clearbuffer("object", width, height);
-obj.cx, obj.cy = -width * align_x / 2, -height * align_y / 2;
-if line <= 0 and alpha_back <= 0 then return end
-obj.clearbuffer("object", do_fill and color or color_back);
-
 -- e = (3 + e')/(3 - e'), astroid at e' = -3/5.
 -- e = 0 is replaced by some E < log(2)/log((w/2) / 0.5),
 -- e = oo can be replaced by some E > -log(2)/log(1-0.5/w);
 -- where w is the maximum possible length.
 local e = (3 + exponent) / (3 - exponent);
-if exponent >= 3 or e > 1.39 * math.max(width, height) then
-	-- e is recognized as inifinity (log(2) ~ 0.693147).
-	-- nothing to do.
-else
-	if exponent <= -3 or e < 1 / 14 then
-		-- e is recognized as zero.
-		e = 1 / 14; -- max(w, h) is at most 2 ^ 14.
-	end
-	-- carve the shape by shader.
-	obj.pixelshader("carve", "object", nil, {
-		2 / width, 2 / height; e;
-	}, "mask");
-end
 
--- draw the outline.
-if not do_fill then
-	obj.effect("縁取りα@Basic_S", "サイズ", -line, "ぼかし", 0,
-		"縁色", color, "前景透明度", 100 * (1 - alpha_back))
-end
+-- pass to core.
+basic_s.object.superellipse(width, height, line, color, color_back, alpha_back, e);
+
+-- alignment.
+obj.cx, obj.cy = -width * align_x / 2, -height * align_y / 2;
 
 @別レイヤー
 --information:別レイヤー@Basic_S v2.10 (for beta43b) by σ軸

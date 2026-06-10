@@ -1,4 +1,4 @@
--- under development for v2.20, r5
+-- under development for v2.20, r8
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -136,9 +136,8 @@ return v0 + (v1 - v0) * rho;
 --require:2004200
 --twopoint
 --param:単位時間(秒),1
-local gp = obj.getpoint;
-local t, T, v0, v1 = gp("time"), gp("param"), gp(0), gp(1);
-if 1 / T < 0 then t, T, v0, v1 = gp("time", 1) - t, -T, v1, v0 end
+local t, T, v0, v1 = obj.getpoint("time"), obj.getpoint("param"), obj.getpoint(0), obj.getpoint(1);
+if 1 / T < 0 then t, T, v0, v1 = obj.getpoint("time", 1) - t, -T, v1, v0 end
 if T == 0 then T = 1 end
 return v0 + (v1 - v0) * t / T;
 
@@ -148,10 +147,9 @@ return v0 + (v1 - v0) * t / T;
 --require:2004200
 --twopoint
 --param:単位時間(フレーム),60
-local gp = obj.getpoint;
-local fr = gp("framerate");
-local f, F, v0, v1 = fr * gp("time"), gp("param"), gp(0), gp(1);
-if 1 / F < 0 then f, F, v0, v1 = fr * gp("time", 1) - f, -F, v1, v0 end
+local fr = obj.getpoint("framerate");
+local f, F, v0, v1 = fr * obj.getpoint("time"), obj.getpoint("param"), obj.getpoint(0), obj.getpoint(1);
+if 1 / F < 0 then f, F, v0, v1 = fr * obj.getpoint("time", 1) - f, -F, v1, v0 end
 if F == 0 then F = 1 end
 return v0 + (v1 - v0) * f / F;
 
@@ -384,9 +382,9 @@ return track.curve_backforth(track.period.bpmgrid(obj.getpoint("param")))
 --require:2004200
 --param:原点,0
 --timecontrol
-local gp, track = obj.getpoint, require("Basic_S").track;
+local track = require("Basic_S").track;
 local i, t = track.curve.section();
-return track.logarithmic(t, gp(i), gp(i + 1), gp("param"))
+return track.logarithmic(t, obj.getpoint(i), obj.getpoint(i + 1), obj.getpoint("param"))
 
 @対数補間(全体時間制御)
 --information:対数補間(全体時間制御)@Basic_S v2.10 (for beta43b) by σ軸
@@ -394,9 +392,9 @@ return track.logarithmic(t, gp(i), gp(i + 1), gp("param"))
 --require:2004200
 --param:原点,0
 --timecontrol
-local gp, track = obj.getpoint, require("Basic_S").track;
+local track = require("Basic_S").track;
 local i, t = track.curve.entire();
-return track.logarithmic(t, gp(i), gp(i + 1), gp("param"))
+return track.logarithmic(t, obj.getpoint(i), obj.getpoint(i + 1), obj.getpoint("param"))
 
 @逆数補間
 --information:逆数補間@Basic_S v2.10 (for beta43b) by σ軸
@@ -404,9 +402,9 @@ return track.logarithmic(t, gp(i), gp(i + 1), gp("param"))
 --require:2004200
 --param:原点,0
 --timecontrol
-local gp, track = obj.getpoint, require("Basic_S").track;
+local track = require("Basic_S").track;
 local i, t = track.curve.section();
-return track.harmonic(t, gp(i), gp(i + 1), gp("param"))
+return track.harmonic(t, obj.getpoint(i), obj.getpoint(i + 1), obj.getpoint("param"))
 
 @逆数補間(全体時間制御)
 --information:逆数補間(全体時間制御)@Basic_S v2.10 (for beta43b) by σ軸
@@ -414,9 +412,9 @@ return track.harmonic(t, gp(i), gp(i + 1), gp("param"))
 --require:2004200
 --param:原点,0
 --timecontrol
-local gp, track = obj.getpoint, require("Basic_S").track;
+local track = require("Basic_S").track;
 local i, t = track.curve.entire();
-return track.harmonic(t, gp(i), gp(i + 1), gp("param"))
+return track.harmonic(t, obj.getpoint(i), obj.getpoint(i + 1), obj.getpoint("param"))
 
 @バウンス
 --information:バウンス@Basic_S v2.10 (for beta43b) by σ軸
@@ -426,11 +424,11 @@ return track.harmonic(t, gp(i), gp(i + 1), gp("param"))
 --param:反発係数,0.70710678
 --param:回数,0
 --timecontrol
-local gp, basic_s = obj.getpoint, require("Basic_S");
+local basic_s = require("Basic_S");
 local i, t = basic_s.track.curve.section();
-local v0, v1 = gp(i), gp(i + 1);
-t, v0, v1 = basic_s.reduce_inout_ease(t, v0, v1, gp("accelerate"), gp("decelerate"));
-return basic_s.track.bounce(t, v0, v1, gp("param"));
+local v0, v1 = obj.getpoint(i), obj.getpoint(i + 1);
+t, v0, v1 = basic_s.reduce_inout_ease(t, v0, v1, obj.getpoint("accelerate"), obj.getpoint("decelerate"));
+return basic_s.track.bounce(t, v0, v1, obj.getpoint("param"));
 
 @バウンス(全体時間制御)
 --information:バウンス(全体時間制御)@Basic_S v2.10 (for beta43b) by σ軸
@@ -440,11 +438,11 @@ return basic_s.track.bounce(t, v0, v1, gp("param"));
 --param:反発係数,0.70710678
 --param:回数,0
 --timecontrol
-local gp, basic_s = obj.getpoint, require("Basic_S");
+local basic_s = require("Basic_S");
 local i, t = basic_s.track.curve.entire();
-local v0, v1 = gp(i), gp(i + 1);
-t, v0, v1 = basic_s.reduce_inout_ease(t, v0, v1, gp("accelerate"), gp("decelerate"));
-return basic_s.track.bounce(t, v0, v1, gp("param"));
+local v0, v1 = obj.getpoint(i), obj.getpoint(i + 1);
+t, v0, v1 = basic_s.reduce_inout_ease(t, v0, v1, obj.getpoint("accelerate"), obj.getpoint("decelerate"));
+return basic_s.track.bounce(t, v0, v1, obj.getpoint("param"));
 
 @バック
 --information:バック@Basic_S v2.10 (for beta43b) by σ軸
@@ -453,11 +451,11 @@ return basic_s.track.bounce(t, v0, v1, gp("param"));
 --speed:0,1
 --param:勢い,0.8
 --timecontrol
-local gp, basic_s = obj.getpoint, require("Basic_S");
+local basic_s = require("Basic_S");
 local i, t = basic_s.track.curve.section();
-local v0, v1 = gp(i), gp(i + 1);
-t, v0, v1 = basic_s.reduce_inout_ease(t, v0, v1, gp("accelerate"), gp("decelerate"));
-return basic_s.track.back(t, v0, v1, gp("param"));
+local v0, v1 = obj.getpoint(i), obj.getpoint(i + 1);
+t, v0, v1 = basic_s.reduce_inout_ease(t, v0, v1, obj.getpoint("accelerate"), obj.getpoint("decelerate"));
+return basic_s.track.back(t, v0, v1, obj.getpoint("param"));
 
 @バック(全体時間制御)
 --information:バック(全体時間制御)@Basic_S v2.10 (for beta43b) by σ軸
@@ -466,11 +464,11 @@ return basic_s.track.back(t, v0, v1, gp("param"));
 --speed:0,1
 --param:勢い,0.8
 --timecontrol
-local gp, basic_s = obj.getpoint, require("Basic_S");
+local basic_s = require("Basic_S");
 local i, t = basic_s.track.curve.entire();
-local v0, v1 = gp(i), gp(i + 1);
-t, v0, v1 = basic_s.reduce_inout_ease(t, v0, v1, gp("accelerate"), gp("decelerate"));
-return basic_s.track.back(t, v0, v1, gp("param"));
+local v0, v1 = obj.getpoint(i), obj.getpoint(i + 1);
+t, v0, v1 = basic_s.reduce_inout_ease(t, v0, v1, obj.getpoint("accelerate"), obj.getpoint("decelerate"));
+return basic_s.track.back(t, v0, v1, obj.getpoint("param"));
 
 @バネ振動
 --information:バネ振動@Basic_S v2.10 (for beta43b) by σ軸
@@ -480,11 +478,11 @@ return basic_s.track.back(t, v0, v1, gp("param"));
 --param:振動回数,3
 --param:減衰率,0.3
 --timecontrol
-local gp, basic_s = obj.getpoint, require("Basic_S");
+local basic_s = require("Basic_S");
 local i, t = basic_s.track.curve.section();
-local v0, v1 = gp(i), gp(i + 1);
-t, v0, v1 = basic_s.reduce_inout_ease(t, v0, v1, gp("accelerate"), gp("decelerate"));
-return basic_s.track.elastic(t, v0, v1, gp("param"));
+local v0, v1 = obj.getpoint(i), obj.getpoint(i + 1);
+t, v0, v1 = basic_s.reduce_inout_ease(t, v0, v1, obj.getpoint("accelerate"), obj.getpoint("decelerate"));
+return basic_s.track.elastic(t, v0, v1, obj.getpoint("param"));
 
 @バネ振動(全体時間制御)
 --information:バネ振動(全体時間制御)@Basic_S v2.10 (for beta43b) by σ軸
@@ -494,8 +492,8 @@ return basic_s.track.elastic(t, v0, v1, gp("param"));
 --param:振動回数,3
 --param:減衰率,0.3
 --timecontrol
-local gp, basic_s = obj.getpoint, require("Basic_S");
+local basic_s = require("Basic_S");
 local i, t = basic_s.track.curve.entire();
-local v0, v1 = gp(i), gp(i + 1);
-t, v0, v1 = basic_s.reduce_inout_ease(t, v0, v1, gp("accelerate"), gp("decelerate"));
-return basic_s.track.elastic(t, v0, v1, gp("param"));
+local v0, v1 = obj.getpoint(i), obj.getpoint(i + 1);
+t, v0, v1 = basic_s.reduce_inout_ease(t, v0, v1, obj.getpoint("accelerate"), obj.getpoint("decelerate"));
+return basic_s.track.elastic(t, v0, v1, obj.getpoint("param"));

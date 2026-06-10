@@ -1,4 +1,4 @@
--- under development for v2.20, r7
+-- under development for v2.20, r8
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -43,7 +43,7 @@ end
 ---@param y number? 第 2 成分 (2 次元以上).
 ---@param z number? 第 3 成分 (3 次元以上).
 ---@param w number? 第 4 成分 (4 次元).
----@return number x1, number ... 正規化したベクトル．
+---@return number x1, number ... 正規化したベクトルの各成分．
 local function vector_normalize(x, y, z, w)
 	if w then
 		local l = (x ^ 2 + y ^ 2 + z ^ 2 + w ^ 2) ^ 0.5;
@@ -161,7 +161,7 @@ local angle_quat_to_euler do
 	end
 end
 
----四元数が表す回転を表す行列を計算する．
+---四元数が表す回転を表す行列を計算する．四元数は正規化済みとする．
 ---@param qr number 四元数の実部．
 ---@param qi number 四元数の i-虚部．
 ---@param qj number 四元数の j-虚部．
@@ -196,7 +196,7 @@ local function angle_euler_to_matrix(rx, ry, rz)
 		-cx * sy * cz + sx * sz, sx * cz + cx * sy * sz,  cx * cy;
 end
 
----点 (x, y, z) に対して四元数による回転を適用する．
+---点 (x, y, z) に対して四元数による回転を適用する．四元数は正規化済みとする．
 ---@param x number 点の X 座標．
 ---@param y number 点の Y 座標．
 ---@param z number 点の Z 座標．
@@ -315,6 +315,7 @@ local PI_choose_corner_shape, PI_choose_corner_radii, normalize_corner_shape, no
 		end
 		return nil;
 	end
+	---@alias round_corners_radii_set { [round_corners_indices]: { [1|2]: number } }
 
 	---四隅丸めの「半径」指定を正規化する．
 	---@param radii round_corners_radii_set
@@ -326,7 +327,6 @@ local PI_choose_corner_shape, PI_choose_corner_radii, normalize_corner_shape, no
 		return radii;
 	end
 
-	---@alias round_corners_radii_set { [round_corners_indices]: { [1|2]: number } }
 	---PI で四隅丸めの「半径」指定を適用する．
 	---@param pi_value any PI に渡ってきた値．
 	---@param gui_value round_corners_radii_set 実際にスクリプトのパラメタとして渡ってきた値．
@@ -1005,7 +1005,6 @@ local
 	inner_loop, -- 画像中間ループ
 	prec_blur, -- 小数ぼかし
 	rect_border, -- 四角縁取り
-	round_rect, -- 角丸矩形
 	_;
 
 ---四隅丸めの実体関数．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
@@ -1670,6 +1669,11 @@ end
 
 
 --#region actual processes for objects.
+local
+	round_rect, -- 角丸矩形
+	superellipse, -- スーパー楕円
+	_;
+
 ---角丸矩形の実体関数．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
 ---@param width integer 幅，0 以上．
 ---@param height integer 高さ，0 以上．
@@ -1723,6 +1727,45 @@ function round_rect(width, height, line, color_line, color_back, alpha_back, rad
 		alpha_back * r_back, alpha_back * g_back, alpha_back * b_back, alpha_back * a_back;
 	});
 end
+
+---スーパー楕円の実体関数．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
+---@param width integer 幅，0 以上．
+---@param height integer 高さ，0 以上．
+---@param line number ライン幅，0 以上．
+---@param color_line integer 色．
+---@param color_back integer 背景色．
+---@param alpha_back number 背景のアルファ値，0.0 -- 1.0.
+---@param e number スーパー楕円の指数を指定．0 以上，無限大を含む．
+function superellipse(width, height, line, color_line, color_back, alpha_back, e)
+	-- make rectangle.
+	obj.clearbuffer("object", width, height);
+	if line <= 0 and alpha_back <= 0 then return end
+
+	-- choose the shader.
+	local shader_name = "shape_gen@スーパー楕円@Basic_S";
+	if e == 2 and width == height then shader_name = "shape_circle@スーパー楕円@Basic_S";
+	elseif e == 1 then shader_name = "shape_L1@スーパー楕円@Basic_S";
+	elseif e >= 0.693147 * math_max(width, height) / 2 then
+		-- e is recognized as inifinity (log(2) ~ 0.693147).
+		shader_name = "shape_box@スーパー楕円@Basic_S";
+	elseif e < 1 / 14 then
+		-- max(w, h) is at most 2 ^ 14.
+		shader_name = "shape_cross@スーパー楕円@Basic_S";
+	end
+
+	-- invoke shader.
+	local line_r, line_g, line_b, line_a = rgba_color_opt(color_line);
+	local back_r, back_g, back_b, back_a = rgba_color_opt(color_back);
+	back_r, back_g, back_b, back_a =
+		alpha_back * back_r, alpha_back * back_g, alpha_back * back_b, alpha_back * back_a;
+	obj.pixelshader(shader_name,
+		"object", nil, {
+		line_r, line_g, line_b, line_a;
+		back_r, back_g, back_b, back_a;
+		width, height;
+		e; line; e < 1 and 2 or 0;
+	});
+end
 --#endregion actual processes for objects.
 
 
@@ -1747,237 +1790,233 @@ local
 	track_back, -- バック
 	track_elastic, -- バネ振動
 	_;
-do
-	local gp, rand1 = obj.getpoint, obj.rand1;
 
-	---全体で時間制御をするスクリプトでの共通形式．
-	---@return integer section 区間の位置．0, 1, ... n - 1 (n は区間の個数).
-	---@return number time 区間内で正規化した時間．0.0 -- 1.0.
-	function track_curve_entire()
-		local n, i, t = gp("num"), math_modf(gp("timecontrol", "index"));
-		if i >= n - 1 then i, t = n - 2, 1;
-		elseif i < 0 then i, t = 0, 0 end
-		return i, t;
+---全体で時間制御をするスクリプトでの共通形式．
+---@return integer section 区間の位置．0, 1, ... n - 1 (n は区間の個数).
+---@return number time 区間内で正規化した時間．0.0 -- 1.0.
+function track_curve_entire()
+	local n, i, t = obj.getpoint("num"), math_modf(obj.getpoint("timecontrol", "index"));
+	if i >= n - 1 then i, t = n - 2, 1;
+	elseif i < 0 then i, t = 0, 0 end
+	return i, t;
+end
+
+---区間ごとに時間制御をするスクリプトでの共通形式．
+---@return integer section 区間の位置．0, 1, ... n - 1 (n は区間の個数).
+---@return number time 区間内で正規化した時間．0.0 -- 1.0.
+function track_curve_section()
+	local n, i, t = obj.getpoint("num"), math_modf(obj.getpoint("index"));
+	if i >= n - 1 then i, t = n - 2, 1 end
+	t = obj.getpoint("timecontrol", "value", t * obj.getpoint("time", n - 1));
+	return i, t;
+end
+
+---トラックバーの周期系スクリプトで，秒単位で設定した周期を計算する．
+---@param T number 「周期(秒)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
+---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
+---@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
+---@return number # 周期回数 (小数点以下の数値も含む).
+---@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
+function track_period_sec(T, d, ...)
+	local t = obj.getpoint("time");
+	if 1 / T < 0 then t, T = t - obj.getpoint("time", 1) - 1 / obj.getpoint("framerate"), -T end
+	if T == 0 then T = 1 end
+	return t / T + d / 100, ...;
+end
+---トラックバーの周期系スクリプトで，フレーム単位で設定した周期を計算する．
+---@param F number 「周期(フレーム)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
+---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
+---@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
+---@return number # 周期回数 (小数点以下の数値も含む).
+---@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
+function track_period_frame(F, d, ...)
+	local fr = obj.getpoint("framerate");
+	local f = fr * obj.getpoint("time");
+	if 1 / F < 0 then f = f - fr * obj.getpoint("time", 1) - 1 end
+	if F == 0 then F = 1 end
+	return f / F + d / 100, ...;
+end
+---トラックバーの周期系スクリプトで，Hz 単位で設定した周期を計算する．
+---@param N number 「周期(Hz)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
+---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
+---@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
+---@return number # 周期回数 (小数点以下の数値も含む).
+---@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
+function track_period_hertz(N, d, ...)
+	local t = obj.getpoint("time");
+	if 1 / N < 0 then t = t - obj.getpoint("time", 1) - 1 / obj.getpoint("framerate") end
+	return t * N + d / 100, ...;
+end
+---トラックバーの周期系スクリプトで，BPM 単位で設定した周期を計算する．
+---@param N number 「周期(BPM)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
+---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
+---@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
+---@return number # 周期回数 (小数点以下の数値も含む).
+---@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
+function track_period_bpm(N, d, ...)
+	local t = obj.getpoint("time");
+	if 1 / N < 0 then t = t - obj.getpoint("time", 1) - 1 / obj.getpoint("framerate") end
+	return t * N / 60 + d / 100, ...;
+end
+---トラックバーの周期系スクリプトで，BPMグリッドに準じた周期を計算する．
+---@param p number 「周期(音符数)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
+---@param n number 「基準のN分音符(0:小節)」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
+---@param N number 「グリッド1拍のN分音符」のパラメタ．`obj.getpoint("param")` の第 3 戻り値．
+---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 4 戻り値．
+---@param ... any `obj.getpoint("param")` の第 5 以降の戻り値．この関数の戻り値として追加される．
+---@return number # 周期回数 (小数点以下の数値も含む).
+---@return any ... `obj.getpoint("param")` の第 5 以降の戻り値．
+function track_period_bpmgrid(p, n, N, d, ...)
+	local tempo, beats = obj.getinfo("bpm");
+	local t = obj.getpoint("time");
+	n, N = math_max(n, 0), math_max(N, 1);
+	if 1 / p < 0 then t, p = t - obj.getpoint("time", 1) - 1 / obj.getpoint("framerate"), -p end
+	if n == 0 then n, N = 1, beats end
+	return t * tempo * n / (60 * p * N) + d / 100, ...;
+end
+
+---基本緩急 (正弦波など) の共通形式．
+---@return number time, number value1, number value2 正規化した時間, `time` が 0 のときの値, `time` が 1 のときの値．これらを元に ease-in として計算する．
+function track_ease_inout_core()
+	local i, t = math_modf(obj.getpoint("index"));
+	return reduce_inout_ease(t, obj.getpoint(i), obj.getpoint(i + 1), obj.getpoint("accelerate"), obj.getpoint("decelerate"));
+end
+
+function track_linear_rotation(i, t)
+	local k, l = obj.getpoint("link");
+	if l ~= 3 then
+		local v0, v1 = obj.getpoint(i), obj.getpoint(i + 1);
+		return v0 + (v1 - v0) * t;
 	end
 
-	---区間ごとに時間制御をするスクリプトでの共通形式．
-	---@return integer section 区間の位置．0, 1, ... n - 1 (n は区間の個数).
-	---@return number time 区間内で正規化した時間．0.0 -- 1.0.
-	function track_curve_section()
-		local gp = obj.getpoint;
-		local n, i, t = gp("num"), math_modf(gp("index"));
-		if i >= n - 1 then i, t = n - 2, 1 end
-		t = gp("timecontrol", "value", t * gp("time", n - 1));
-		return i, t;
-	end
+	local cycle = obj.getpoint("param");
 
-	---トラックバーの周期系スクリプトで，秒単位で設定した周期を計算する．
-	---@param T number 「周期(秒)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
-	---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
-	---@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
-	---@return number # 周期回数 (小数点以下の数値も含む).
-	---@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
-	function track_period_sec(T, d, ...)
-		local t = gp("time");
-		if 1 / T < 0 then t, T = t - gp("time", 1) - 1 / gp("framerate"), -T end
-		if T == 0 then T = 1 end
-		return t / T + d / 100, ...;
-	end
-	---トラックバーの周期系スクリプトで，フレーム単位で設定した周期を計算する．
-	---@param F number 「周期(フレーム)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
-	---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
-	---@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
-	---@return number # 周期回数 (小数点以下の数値も含む).
-	---@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
-	function track_period_frame(F, d, ...)
-		local fr = gp("framerate");
-		local f = fr * gp("time");
-		if 1 / F < 0 then f = f - fr * gp("time", 1) - 1 end
-		if F == 0 then F = 1 end
-		return f / F + d / 100, ...;
-	end
-	---トラックバーの周期系スクリプトで，Hz 単位で設定した周期を計算する．
-	---@param N number 「周期(Hz)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
-	---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
-	---@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
-	---@return number # 周期回数 (小数点以下の数値も含む).
-	---@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
-	function track_period_hertz(N, d, ...)
-		local t = gp("time");
-		if 1 / N < 0 then t = t - gp("time", 1) - 1 / gp("framerate") end
-		return t * N + d / 100, ...;
-	end
-	---トラックバーの周期系スクリプトで，BPM 単位で設定した周期を計算する．
-	---@param N number 「周期(BPM)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
-	---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
-	---@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
-	---@return number # 周期回数 (小数点以下の数値も含む).
-	---@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
-	function track_period_bpm(N, d, ...)
-		local t = gp("time");
-		if 1 / N < 0 then t = t - gp("time", 1) - 1 / gp("framerate") end
-		return t * N / 60 + d / 100, ...;
-	end
-	---トラックバーの周期系スクリプトで，BPMグリッドに準じた周期を計算する．
-	---@param p number 「周期(音符数)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
-	---@param n number 「基準のN分音符(0:小節)」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
-	---@param N number 「グリッド1拍のN分音符」のパラメタ．`obj.getpoint("param")` の第 3 戻り値．
-	---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 4 戻り値．
-	---@param ... any `obj.getpoint("param")` の第 5 以降の戻り値．この関数の戻り値として追加される．
-	---@return number # 周期回数 (小数点以下の数値も含む).
-	---@return any ... `obj.getpoint("param")` の第 5 以降の戻り値．
-	function track_period_bpmgrid(p, n, N, d, ...)
-		local tempo, beats = obj.getinfo("bpm");
-		local t = gp("time");
-		n, N = math_max(n, 0), math_max(N, 1);
-		if 1 / p < 0 then t, p = t - gp("time", 1) - 1 / gp("framerate"), -p end
-		if n == 0 then n, N = 1, beats end
-		return t * tempo * n / (60 * p * N) + d / 100, ...;
-	end
+	-- get angles of two sides of the section.
+	local rx1, ry1, rz1, rx2, ry2, rz2 =
+		obj.getpoint(i, -k), obj.getpoint(i, 1 - k), obj.getpoint(i, 2 - k),
+		obj.getpoint(i + 1, -k), obj.getpoint(i + 1, 1 - k), obj.getpoint(i + 1, 2 - k);
 
-	---基本緩急 (正弦波など) の共通形式．
-	---@return number time, number value1, number value2 正規化した時間, `time` が 0 のときの値, `time` が 1 のときの値．これらを元に ease-in として計算する．
-	function track_ease_inout_core()
-		local i, t = math_modf(gp("index"));
-		return reduce_inout_ease(t, gp(i), gp(i + 1), gp("accelerate"), gp("decelerate"));
+	-- interpolate them.
+	rx1, ry1, rz1 = interpolate_angles_3d(t,
+		math_tau * ((rx1 / cycle) % 1), math_tau * ((ry1 / cycle) % 1), math_tau * ((rz1 / cycle) % 1),
+		math_tau * ((rx2 / cycle) % 1), math_tau * ((ry2 / cycle) % 1), math_tau * ((rz2 / cycle) % 1));
+
+	-- choose the component to return.
+	local a = k == 0 and rx1 or k == 1 and ry1 or rz1;
+	return cycle / math_tau * a;
+end
+
+---コマ落ち反復の実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
+---@param t number 正規化された時間．0.0 -- 1.0.
+---@param R number 「デューティ比%」の値．
+---@return number # トラックバーの計算値．
+function track_discrete_repeat(t, R)
+	return obj.getpoint((t % 1) < math_min(math_max(R / 100, 0), 1) and 0 or 1);
+end
+
+---コマ落ちランダムの実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
+---@param t number 正規化された時間．0.0 -- 1.0.
+---@return number # トラックバーの計算値．
+function track_discrete_random(t)
+	local v0, v1 = obj.getpoint(0), obj.getpoint(1);
+	return v0 + (v1 - v0) * obj.rand1(2525, math_floor(t) + 1);
+end
+
+---時間制御繰り返しの実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
+---@param t number 正規化された時間．0.0 -- 1.0.
+---@return number # トラックバーの計算値．
+function track_curve_repeat(t)
+	local v0, v1 = obj.getpoint(0), obj.getpoint(1);
+	return v0 + (v1 - v0) * obj.getpoint("timecontrol", "value", (t % 1) * obj.getpoint("time", 1));
+end
+
+---時間制御繰り返し往復の実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
+---@param t number 正規化された時間．0.0 -- 1.0.
+---@return number # トラックバーの計算値．
+function track_curve_backforth(t)
+	local v0, v1 = obj.getpoint(0), obj.getpoint(1);
+	local x = 2 * (t % 1);
+	if x >= 1 then v0, v1, x = v1, v0, x - 1 end
+	return v0 + (v1 - v0) * obj.getpoint("timecontrol", "value", x * obj.getpoint("time", 1));
+end
+
+---対数補間の実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
+---@param t number 正規化された時間．0.0 -- 1.0.
+---@param value1 number `t` が 0.0 のときの値．
+---@param value2 number `t` が 1.0 のときの値．
+---@param origin number 「原点」の値．
+---@return number # トラックバーの計算値．
+function track_logarithmic(t, value1, value2, origin)
+	value1, value2 = value1 - origin, value2 - origin;
+	if value1 == 0 or value2 == 0 or (value1 > 0) ~= (value2 > 0) then
+		-- fall back to the linear interpolation instead.
+		return value1 + (value2 - value1) * t + origin;
 	end
+	return value1 * (value2 / value1) ^ t + origin;
+end
 
-	function track_linear_rotation(i, t)
-		local k, l = gp("link");
-		if l ~= 3 then
-			local v0, v1 = gp(i), gp(i + 1);
-			return v0 + (v1 - v0) * t;
-		end
-
-		local cycle = gp("param");
-
-		-- get angles of two sides of the section.
-		local rx1, ry1, rz1, rx2, ry2, rz2 =
-			gp(i, -k), gp(i, 1 - k), gp(i, 2 - k),
-			gp(i + 1, -k), gp(i + 1, 1 - k), gp(i + 1, 2 - k);
-
-		-- interpolate them.
-		rx1, ry1, rz1 = interpolate_angles_3d(t,
-			math_tau * ((rx1 / cycle) % 1), math_tau * ((ry1 / cycle) % 1), math_tau * ((rz1 / cycle) % 1),
-			math_tau * ((rx2 / cycle) % 1), math_tau * ((ry2 / cycle) % 1), math_tau * ((rz2 / cycle) % 1));
-
-		-- choose the component to return.
-		local a = k == 0 and rx1 or k == 1 and ry1 or rz1;
-		return cycle / math_tau * a;
+---逆数補間の実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
+---@param t number 正規化された時間．0.0 -- 1.0.
+---@param value1 number `t` が 0.0 のときの値．
+---@param value2 number `t` が 1.0 のときの値．
+---@param origin number 「原点」の値．
+---@return number # トラックバーの計算値．
+function track_harmonic(t, value1, value2, origin)
+	value1, value2 = value1 - origin, value2 - origin;
+	if value1 == 0 or value2 == 0 or (value1 > 0) ~= (value2 > 0) then
+		-- fall back to the linear interpolation instead.
+		return value1 + (value2 - value1) * t + origin;
 	end
+	return 1 / (1 / value1 + (1 / value2 - 1 / value1) * t) + origin;
+end
 
-	---コマ落ち反復の実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
-	---@param t number 正規化された時間．0.0 -- 1.0.
-	---@param R number 「デューティ比%」の値．
-	---@return number # トラックバーの計算値．
-	function track_discrete_repeat(t, R)
-		return gp((t % 1) < math_min(math_max(R / 100, 0), 1) and 0 or 1);
+---バウンスの実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
+---@param t number 正規化された時間．0.0 -- 1.0.
+---@param value1 number `t` が 0.0 のときの値．
+---@param value2 number `t` が 1.0 のときの値．
+---@param e number 「反発係数」の値．
+---@param k number 「回数」の値．
+---@return number # トラックバーの計算値．
+function track_bounce(t, value1, value2, e, k)
+	e = math_min(math_max(e, 0), 0.999);
+	k = math_max(k, 0);
+	local sum, sum2 = e / (1 - e), 0;
+	if k >= 0.5 then
+		local i, f = math_modf(k);
+		sum2 = (i > 0 and e ^ i or 1) * ((1 - f) + f * e) / (1 - e);
 	end
+	local T = t * (0.5 + sum) + (1 - t) * sum2;
+	local scale = e > 0 and e ^ math_ceil(math_log(T / sum) / math_log(e)) or 1;
+	local tau = T - scale * sum;
+	local rho = 4 * tau * (scale - tau);
+	return value1 + (value2 - value1) * rho;
+end
 
-	---コマ落ちランダムの実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
-	---@param t number 正規化された時間．0.0 -- 1.0.
-	---@return number # トラックバーの計算値．
-	function track_discrete_random(t)
-		local v0, v1 = gp(0), gp(1);
-		return v0 + (v1 - v0) * rand1(2525, math_floor(t) + 1);
-	end
+---バックの実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
+---@param t number 正規化された時間．0.0 -- 1.0.
+---@param value1 number `t` が 0.0 のときの値．
+---@param value2 number `t` が 1.0 のときの値．
+---@param momentum number 「勢い」の値．
+---@return number # トラックバーの計算値．
+function track_back(t, value1, value2, momentum)
+	momentum = math_max(momentum, 0);
+	local rho = t ^ 3 - t * momentum * math_sin(math_pi * t);
+	return value1 + (value2 - value1) * rho;
+end
 
-	---時間制御繰り返しの実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
-	---@param t number 正規化された時間．0.0 -- 1.0.
-	---@return number # トラックバーの計算値．
-	function track_curve_repeat(t)
-		local v0, v1 = gp(0), gp(1);
-		return v0 + (v1 - v0) * gp("timecontrol", "value", (t % 1) * gp("time", 1));
-	end
-
-	---時間制御繰り返し往復の実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
-	---@param t number 正規化された時間．0.0 -- 1.0.
-	---@return number # トラックバーの計算値．
-	function track_curve_backforth(t)
-		local v0, v1 = gp(0), gp(1);
-		local x = 2 * (t % 1);
-		if x >= 1 then v0, v1, x = v1, v0, x - 1 end
-		return v0 + (v1 - v0) * gp("timecontrol", "value", x * gp("time", 1));
-	end
-
-	---対数補間の実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
-	---@param t number 正規化された時間．0.0 -- 1.0.
-	---@param value1 number `t` が 0.0 のときの値．
-	---@param value2 number `t` が 1.0 のときの値．
-	---@param origin number 「原点」の値．
-	---@return number # トラックバーの計算値．
-	function track_logarithmic(t, value1, value2, origin)
-		value1, value2 = value1 - origin, value2 - origin;
-		if value1 == 0 or value2 == 0 or (value1 > 0) ~= (value2 > 0) then
-			-- fall back to the linear interpolation instead.
-			return value1 + (value2 - value1) * t + origin;
-		end
-		return value1 * (value2 / value1) ^ t + origin;
-	end
-
-	---逆数補間の実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
-	---@param t number 正規化された時間．0.0 -- 1.0.
-	---@param value1 number `t` が 0.0 のときの値．
-	---@param value2 number `t` が 1.0 のときの値．
-	---@param origin number 「原点」の値．
-	---@return number # トラックバーの計算値．
-	function track_harmonic(t, value1, value2, origin)
-		value1, value2 = value1 - origin, value2 - origin;
-		if value1 == 0 or value2 == 0 or (value1 > 0) ~= (value2 > 0) then
-			-- fall back to the linear interpolation instead.
-			return value1 + (value2 - value1) * t + origin;
-		end
-		return 1 / (1 / value1 + (1 / value2 - 1 / value1) * t) + origin;
-	end
-
-	---バウンスの実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
-	---@param t number 正規化された時間．0.0 -- 1.0.
-	---@param value1 number `t` が 0.0 のときの値．
-	---@param value2 number `t` が 1.0 のときの値．
-	---@param e number 「反発係数」の値．
-	---@param k number 「回数」の値．
-	---@return number # トラックバーの計算値．
-	function track_bounce(t, value1, value2, e, k)
-		e = math_min(math_max(e, 0), 0.999);
-		k = math_max(k, 0);
-		local sum, sum2 = e / (1 - e), 0;
-		if k >= 0.5 then
-			local i, f = math_modf(k);
-			sum2 = (i > 0 and e ^ i or 1) * ((1 - f) + f * e) / (1 - e);
-		end
-		local T = t * (0.5 + sum) + (1 - t) * sum2;
-		local scale = e > 0 and e ^ math_ceil(math_log(T / sum) / math_log(e)) or 1;
-		local tau = T - scale * sum;
-		local rho = 4 * tau * (scale - tau);
-		return value1 + (value2 - value1) * rho;
-	end
-
-	---バックの実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
-	---@param t number 正規化された時間．0.0 -- 1.0.
-	---@param value1 number `t` が 0.0 のときの値．
-	---@param value2 number `t` が 1.0 のときの値．
-	---@param momentum number 「勢い」の値．
-	---@return number # トラックバーの計算値．
-	function track_back(t, value1, value2, momentum)
-		momentum = math_max(momentum, 0);
-		local rho = t ^ 3 - t * momentum * math_sin(math_pi * t);
-		return value1 + (value2 - value1) * rho;
-	end
-
-	---バネ振動の実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
-	---@param t number 正規化された時間．0.0 -- 1.0.
-	---@param value1 number `t` が 0.0 のときの値．
-	---@param value2 number `t` が 1.0 のときの値．
-	---@param oscillation number 「振動回数」の値．
-	---@param decay number 「減衰率」の値．
-	---@return number # トラックバーの計算値．
-	function track_elastic(t, value1, value2, oscillation, decay)
-		oscillation = math_max(oscillation, 0);
-		decay = math_max(decay, 0);
-		decay = (decay > 0 or t < 1) and (decay >= 1 and t or (decay ^ (1 - t) - decay) / (1 - decay)) or 1;
-		local rho = decay * math_sin(math_tau * ((oscillation + 0.25) * (1 - t) + 0.25));
-		return value1 + (value2 - value1) * rho;
-	end
+---バネ振動の実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
+---@param t number 正規化された時間．0.0 -- 1.0.
+---@param value1 number `t` が 0.0 のときの値．
+---@param value2 number `t` が 1.0 のときの値．
+---@param oscillation number 「振動回数」の値．
+---@param decay number 「減衰率」の値．
+---@return number # トラックバーの計算値．
+function track_elastic(t, value1, value2, oscillation, decay)
+	oscillation = math_max(oscillation, 0);
+	decay = math_max(decay, 0);
+	decay = (decay > 0 or t < 1) and (decay >= 1 and t or (decay ^ (1 - t) - decay) / (1 - decay)) or 1;
+	local rho = decay * math_sin(math_tau * ((oscillation + 0.25) * (1 - t) + 0.25));
+	return value1 + (value2 - value1) * rho;
 end
 --#endregion actual processes trackbars.
 
@@ -2046,6 +2085,7 @@ return {
 
 	object = {
 		["角丸矩形"] = round_rect, round_rect = round_rect,
+		["スーパー楕円"] = superellipse, superellipse = superellipse,
 	},
 
 	track = {
