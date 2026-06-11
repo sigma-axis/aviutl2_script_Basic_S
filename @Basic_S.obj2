@@ -1,4 +1,4 @@
--- under development for v2.20, r9
+-- under development for v2.20, r10
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -348,7 +348,7 @@ float2 choose_closest(float2 u1, float2 u2, float2 u3, float2 p)
 static const float2 radius = max(size - stalk, 1) / 2;
 static const float inv_mean_radius = 1 / sqrt(radius.x * radius.y);
 static const float2 inv_rr_e = pow(inv_mean_radius * radius, -e);
-float2 eval_func_deriv(float2 u, float2 p, float2 irre)
+float2 eval_func(float2 u, float2 p, float2 irre)
 {
 	const float2
 		q = p - u,
@@ -371,7 +371,7 @@ float2 find_closest(float2 p, float2 r, float2 irre)
 	for (int i = 0; i < 8; i++) {
 		if (dot(p - u, p - u) < 0.25 / 65536) break;
 
-		float2 w = eval_func_deriv(u, p, irre);
+		float2 w = eval_func(u, p, irre);
 		if (w[1] == 0) break;
 		if (w[1] < 0) w[1] *= -0.5;
 		float dx = -w[0] / w[1];

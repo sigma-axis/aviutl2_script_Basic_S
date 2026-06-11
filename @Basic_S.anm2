@@ -1,4 +1,4 @@
--- under development for v2.20, r9
+-- under development for v2.20, r10
 --[[
 MIT License
 Copyright (c) 2025-2026 sigma-axis
@@ -48,7 +48,7 @@ cbuffer constant0 : register(b0) {
 	float line_width, alpha_hole;
 };
 
-float2 ellipse_eval_func_deriv(float2 u, float2 p, float2 r2yx)
+float2 ellipse_eval_func(float2 u, float2 p, float2 r2yx)
 {
 	const float2
 		q = p - u,
@@ -69,7 +69,7 @@ float ellipse_dist(float2 pt, float2 sz)
 	for (int i = 0; i < 8; i++) {
 		if (dot(pt - u, pt - u) < 0.25 / 65536) break;
 
-		float2 w = ellipse_eval_func_deriv(u, pt, sz2.yx);
+		float2 w = ellipse_eval_func(u, pt, sz2.yx);
 		if (w[1] == 0) break;
 		if (w[1] < 0) w[1] *= -0.5;
 		float dx = -w[0] / w[1];
@@ -2331,6 +2331,58 @@ float4 carve(float4 pos : SV_Position) : SV_Target
 	return saturate(A - a) * color;
 }
 ]]
+--[[pixelshader@recolor:
+Texture2D mask : register(t0);
+Texture2D img : register(t1);
+cbuffer constant0 : register(b0) {
+	float2 offset, size_f;
+};
+float4 recolor(float4 pos : SV_Position) : SV_Target
+{
+	static const uint2 size = size_f;
+	int2 pt = floor(pos.xy - 0.5 - offset);
+	pt = pt >= 0 ? uint2(pt) % size : size - 1 - int2(uint2(-1 - pt) % size);
+	return mask.Load(int3(pos.xy, 0)).a * img.Load(int3(pt, 0));
+}
+]]
+--[[pixelshader@blend:
+Texture2D img1 : register(t0);
+Texture2D img2 : register(t1);
+cbuffer constant0 : register(b0) {
+	float2 size;
+	float a1, a2;
+};
+float4 blend(float4 pos : SV_Position) : SV_Target
+{
+	const float4
+		col1 = img1.Load(int3(pos.xy - 0.5 - size, 0)),
+		col2 = img2.Load(int3(pos.xy, 0));
+	return a1 * col1 + a2 * col2;
+}
+]]
+--[[pixelshader@combine:
+Texture2D src_i : register(t0);
+Texture2D src_o : register(t1);
+cbuffer constant0 : register(b0) {
+	float a_i, a_o;
+};
+float4 combine(float4 pos : SV_Position) : SV_Target
+{
+	const float4
+		col_i = src_i.Load(int3(pos.xy, 0)),
+		col_o = src_o.Load(int3(pos.xy, 0)) * a_o;
+	return col_i.a * col_o + a_i * (1 - col_o.a) * col_i;
+}
+]]
+--[[pixelshader@const_alpha:
+cbuffer constant0 : register(b0) {
+	float alpha;
+};
+float4 const_alpha(float4 pos : SV_Position) : SV_Target
+{
+	return float4(0, 0, 0, alpha);
+}
+]]
 
 -- 非推奨化に伴い，この部分は更新凍結．
 local obj, math, bit, tonumber, type = obj, math, bit, tonumber, type;
@@ -2373,7 +2425,7 @@ local has_image = #file_image >= 4;
 -- early returns for trivial cases.
 if size == 0 or alpha == 0 then
 	if alpha_front < 1 then
-		obj.pixelshader("const_alpha@透明度適用@Basic_S", "object", nil, { alpha_front }, "mask");
+		obj.pixelshader("const_alpha", "object", nil, { alpha_front }, "mask");
 	end
 	if size > 0 then
 		obj.effect("領域拡張", "左", size, "右", size, "上", size, "下", size);
@@ -2415,7 +2467,7 @@ if has_image then
 
 	obj.load("image", file_image);
 	if obj.w > 0 or obj.h > 0 then
-		obj.pixelshader("recolor@四角縁取り@Basic_S", cache_name, { cache_name, "object" }, {
+		obj.pixelshader("recolor", cache_name, { cache_name, "object" }, {
 			math.floor((w - obj.w) / 2) + X, math.floor((h - obj.h) / 2) + Y;
 			obj.w, obj.h;
 		});
@@ -2431,15 +2483,15 @@ end
 
 -- combine by shaders.
 if size < 0 then
-	obj.pixelshader("combine@四角縁取り@Basic_S", "object", { "tempbuffer", "object" }, {
+	obj.pixelshader("combine", "object", { "tempbuffer", "object" }, {
 		alpha_front, alpha,
 	});
 elseif alpha_front > 0 then
-	obj.pixelshader("blend@四角縁取り@Basic_S", "object", { "tempbuffer", "object" }, {
+	obj.pixelshader("blend", "object", { "tempbuffer", "object" }, {
 		size, size; alpha_front, alpha,
 	});
 elseif alpha < 1 then
-	obj.pixelshader("const_alpha@透明度適用@Basic_S", "object", nil, { alpha }, "mask");
+	obj.pixelshader("const_alpha", "object", nil, { alpha }, "mask");
 end
 
 @四角縁取り
