@@ -2,7 +2,7 @@ name: Make Release
 on:
   push:
     tags:
-    - '*'
+      - '*'
 
 env:
   REPOSITORY_NAME: Basic_S
@@ -17,56 +17,54 @@ jobs:
   release:
     name: Create Release
     if: github.event_name == 'push' && github.ref_type == 'tag'
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
     permissions:
       contents: write
 
     steps:
-    - uses: actions/checkout@v6
-      with:
-        submodules: recursive
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
 
-    - name: Set package version
-      run: |
-        cd assets
-        sed -i 's/\${ver}/${{ github.ref_name }}/g' package.ini
+      - name: Setup aulua
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag=$(gh api repos/karoterra/aviutl2-aulua/releases/latest --jq '.tag_name')
+          archive="aulua-${tag}-windows-x64.zip"
+          mkdir -p aulua
+          gh release download -R karoterra/aviutl2-aulua $tag -p $archive -D aulua
+          unzip aulua/$archive -d aulua
+          echo `pwd`/aulua > $GITHUB_PATH
 
-    - name: Pack and compress
-      run: |
-        mkdir -p pack/Script/${{ env.REPOSITORY_NAME }}
-        cp *.anm2 pack/Script
-        cp *.obj2 pack/Script
-        cp *.tra2 pack/Script
-        cp *.lua pack/Script
-        cp *.md pack/Script/${{ env.REPOSITORY_NAME }}
-        cp LICENSE pack/Script/${{ env.REPOSITORY_NAME }}/LICENSE
-        cp assets/package.txt pack
-        cp assets/package.ini pack
-        cd pack
-        zip -r ../aviutl2_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.au2pkg.zip *
-      # rename .zip file for downloading if necessary.
+      - name: Create package
+        run: aulua pack
+          cp build/package.au2pkg.zip "aviutl2_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.au2pkg.zip"
 
-    - name: Prepare release notes
-      id: release-notes
-      run: |
-        echo "name=${{ github.ref_name }} ($(TZ='${{ env.TIME_ZONE }}' date +'%Y-%m-%d'))" >> $GITHUB_OUTPUT
-        echo "### 更新内容" >> ReleaseNotes.txt
-        phase=0
-        IFS=$'\n'
-        cat README.md | while read line; do
-          if [[ $phase == 0 ]]; then
-            if [[ $line =~ ^##*[[:space:]]{1,}'改版履歴'[[:space:]]*$ ]]; then phase=1; fi
-          elif [[ $phase == 1 ]]; then
-            if [[ $line =~ ^-[[:space:]] ]]; then phase=2; fi
-          elif [[ $line =~ ^(-|##*)[[:space:]] ]]; then break
-          else
-            echo ${line:2} >> ReleaseNotes.txt
-          fi
-        done
+      - name: Prepare release notes
+        id: release-notes
+        run: |
+          echo "name=${{ github.ref_name }} ($(TZ='${{ env.TIME_ZONE }}' date +'%Y-%m-%d'))" >> $GITHUB_OUTPUT
+          echo "### 更新内容" >> ReleaseNotes.txt
+          phase=0
+          IFS=$'\n'
+          cat README.md | while read line; do
+            if [[ $phase == 0 ]]; then
+              if [[ $line =~ ^##*[[:space:]]{1,}'改版履歴'[[:space:]]*$ ]]; then phase=1; fi
+            elif [[ $phase == 1 ]]; then
+              if [[ $line =~ ^-[[:space:]] ]]; then phase=2; fi
+            elif [[ $line =~ ^(-|##*)[[:space:]] ]]; then break
+            else
+              echo ${line:2} >> ReleaseNotes.txt
+            fi
+          done
 
-    - name: Release
-      uses: softprops/action-gh-release@v3
-      with:
-        name: ${{ steps.release-notes.outputs.name }}
-        files: '*.zip'
-        body_path: ReleaseNotes.txt
+      - name: Release
+        uses: softprops/action-gh-release@v3
+        with:
+          name: ${{ steps.release-notes.outputs.name }}
+          files: '*.zip'
+          body_path: ReleaseNotes.txt
