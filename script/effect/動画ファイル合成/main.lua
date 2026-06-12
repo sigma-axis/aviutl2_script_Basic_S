@@ -31,11 +31,11 @@ local rotate = 0
 ---$track:透明度, min = 0, max = 100, step = 0.01
 local alpha = 0
 
----$check:サイズ固定
+---$checksection:サイズ固定
 local fixed_size = false
 
 --group:配置,false
----$check:補間なし
+---$checksection:補間なし
 local no_smooth = false
 
 ---$select:画像ループ

@@ -14,12 +14,12 @@ local angle = 0
 ---$track:輝度, min = 0, max = 200, step = 0.01
 local mul_light = 100
 
----$check:輝度反転
+---$checksection:輝度反転
 local rev_light = false
 
 ---$track:彩度, min = 0, max = 200, step = 0.01
 local mul_sat = 100
----$check:飽和する
+---$checksection:飽和する
 local saturate = false
 
 ---$select:色空間

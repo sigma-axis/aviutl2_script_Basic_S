@@ -20,7 +20,7 @@ local height = 0
 ---$track:余白高さ, min = -4000, max = 4000, step = 1, scale = 0.25
 local gap_y = 0
 
----$check:中心の位置を変更
+---$checksection:中心の位置を変更
 local move_center = false
 
 --group:整列,false

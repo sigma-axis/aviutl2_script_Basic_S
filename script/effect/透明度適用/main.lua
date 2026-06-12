@@ -5,8 +5,9 @@
 ---$track:透明度, min = -100, max = 100, step = 0.01
 local alpha = 0
 
----$check:累積分も適用
+---$checksection:累積分も適用
 local apply_former = false
+
 --[[pixelshader@const_alpha:
 ---$include "const_alpha.hlsl"
 ]]

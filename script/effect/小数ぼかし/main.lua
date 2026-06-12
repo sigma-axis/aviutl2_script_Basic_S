@@ -11,7 +11,7 @@ local aspect = 0
 ---$track:光の強さ, min = 0, max = 60, step = 0.1
 local luma_weight = 0
 
----$check:サイズ固定
+---$checksection:サイズ固定
 local fixed_size = false
 
 --group:その他,false

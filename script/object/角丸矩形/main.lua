@@ -45,7 +45,7 @@ local align_x = 0
 local align_y = 0
 
 --group:丸角設定,false
----$check:半径均一
+---$checksection:半径均一
 local uniform = true
 
 ---$track:右上半径, min = 0, max = 2000, step = 0.01, scale = 0.25
@@ -60,7 +60,7 @@ local r_LB = 40
 ---$track:丸角縦横比, min = -100, max = 100, step = 0.001
 local aspect = 0
 
----$check:丸角縦横比固定
+---$checksection:丸角縦横比固定
 local fixed_aspect = true
 
 --group:その他,false

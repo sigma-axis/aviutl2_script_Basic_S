@@ -28,10 +28,10 @@ local color_sub = 0x000000
 ---縁取り文字(角) = 6
 local type_char = 0
 
----$check:太字
+---$checksection:太字
 local is_bold = false
 
----$check:斜体
+---$checksection:斜体
 local is_italic = false
 
 --group:書式設定,true
@@ -82,11 +82,11 @@ local rotate = 0
 ---$track:透明度, min = 0, max = 100, step = 0.01
 local alpha = 0
 
----$check:サイズ固定
+---$checksection:サイズ固定
 local fixed_size = false
 
 --group:配置,false
----$check:補間なし
+---$checksection:補間なし
 local no_smooth = false
 
 ---$select:画像ループ

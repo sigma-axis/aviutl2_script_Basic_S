@@ -27,7 +27,7 @@ local crack_Y2 = 100
 ---$track:切り取り幅, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local crop = 0
 
----$check:中心の位置を変更
+---$checksection:中心の位置を変更
 local move_center= false
 
 --group:余白/重複処理,false

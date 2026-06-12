@@ -14,10 +14,10 @@ local width = 256
 ---$track:高さ, min = 1, max = 4000, step = 1, scale = 0.25
 local height = 256
 
----$check:中心の位置を変更
+---$checksection:中心の位置を変更
 local move_center = false
 
----$check:塗りつぶし
+---$checksection:塗りつぶし
 local fill_blank = false
 
 --group:整列,false
@@ -28,14 +28,14 @@ local align_x = 0
 local align_y = 0
 
 --group:縦横無効化,false
----$check:幅指定有効
+---$checksection:幅指定有効
 local x_enabled = true
 
----$check:高さ指定有効
+---$checksection:高さ指定有効
 local y_enabled = true
 
 --group:その他,false
----$check:反転マスク
+---$checksection:反転マスク
 local inverted_mask = false
 
 ---$value:PI

@@ -10,16 +10,16 @@ local index_base = 1
 local index = -1
 
 --group:復元項目,true
----$check:フィルタ効果
+---$checksection:フィルタ効果
 local effect = true
 
----$check:位置の復元
+---$checksection:位置の復元
 local position = false
 
----$check:回転拡大の復元
+---$checksection:回転拡大の復元
 local rotation = false
 
----$check:透明度の復元
+---$checksection:透明度の復元
 local alpha = false
 
 --group:その他,false

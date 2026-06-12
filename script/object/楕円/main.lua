@@ -19,7 +19,7 @@ local color_back = 0xffffff
 ---$track:背景透明度, min = 0, max = 100, step = 0.01
 local alpha_back = 100
 
----$check:真円
+---$checksection:真円
 local circle = false
 
 --group:配置,false

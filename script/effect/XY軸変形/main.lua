@@ -8,7 +8,7 @@ local xX = 100
 local xY = 0
 
 --trackgroup@xX,xY:axis_x
----$check:X長さ変更
+---$checksection:X長さ変更
 local stretch_X = false
 
 ---$track:Y軸移動先X, min = -4000, max = 4000, step = 0.01, scale = 0.25
@@ -18,7 +18,7 @@ local yX = 0
 local yY = -100
 
 --trackgroup@yX,yY:axis_y
----$check:Y長さ変更
+---$checksection:Y長さ変更
 local stretch_Y = false
 
 --group:その他,false

@@ -55,7 +55,7 @@ local comp_B = 3
 local comp_A = 4
 
 --group:その他,false
----$check:乗算済みα
+---$checksection:乗算済みα
 local premult = true
 
 ---$value:PI

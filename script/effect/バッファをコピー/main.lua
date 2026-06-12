@@ -22,7 +22,7 @@ local buff_dst = 0
 ---$string:dst::キャッシュ名
 local cache_dst = "my_cache"
 
----$check:描画しない
+---$checksection:描画しない
 local suppress_draw = true
 
 --group:その他,false

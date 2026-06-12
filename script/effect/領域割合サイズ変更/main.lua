@@ -13,10 +13,10 @@ local L = 0
 ---$track:右%, min = -100, max = 100, step = 0.001
 local R = 0
 
----$check:中心の位置を変更
+---$checksection:中心の位置を変更
 local move_center = false
 
----$check:塗りつぶし
+---$checksection:塗りつぶし
 local fill_blank = false
 
 --group:その他,false

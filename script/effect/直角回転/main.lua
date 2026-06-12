@@ -12,7 +12,7 @@
 ---左上軸反転 = 7
 local rot = 0
 
----$check:中心の位置を変更
+---$checksection:中心の位置を変更
 local move_center = false
 
 local obj, math = obj, math;

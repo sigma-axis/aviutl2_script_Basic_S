@@ -15,10 +15,10 @@ local Z = 128
 
 --trackgroup@X,Y,Z:axis
 --group:描画処理,false
----$check:描画する
+---$checksection:描画する
 local draw = false
 
----$check:グループ制御
+---$checksection:グループ制御
 local grouped = false
 
 --group:その他,false

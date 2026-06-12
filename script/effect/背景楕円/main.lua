@@ -16,10 +16,10 @@ local clip = 0
 ---$track:ライン幅, min = -500, max = 4000, step = 0.01, scale = 0.25
 local line = 4000
 
----$check:包含
+---$checksection:包含
 local inclusive = true
 
----$check:真円
+---$checksection:真円
 local circle = false
 
 --group:色/パターン画像,false

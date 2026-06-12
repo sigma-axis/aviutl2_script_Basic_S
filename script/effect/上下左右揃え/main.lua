@@ -8,14 +8,14 @@ local X = 0
 local Y = 0
 
 --trackgroup@X,Y:pos
----$check:描画位置を固定
+---$checksection:描画位置を固定
 local fix_pos = false
 
 --group:縦横無効化,false
----$check:左右有効
+---$checksection:左右有効
 local x_enabled = true
 
----$check:上下有効
+---$checksection:上下有効
 local y_enabled = true
 
 local obj, basic_s = obj, require("Basic_S");
