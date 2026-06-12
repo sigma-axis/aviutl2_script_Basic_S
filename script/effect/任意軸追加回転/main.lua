@@ -41,7 +41,7 @@ obj.setanchor({
 	X, Y, Z;
 }, 2, "xyz", "line");
 
---#region PI
+--#region PI / normalize parameters.
 
 -- take parameters.
 --[==[
@@ -63,7 +63,10 @@ draw = basic_s.PI.as_bool(PI.draw, draw);
 grouped = basic_s.PI.as_bool(PI.grouped, grouped);
 local fix_axis = basic_s.PI.as_bool(PI.fix_axis, false);
 
---#endregion PI
+-- normalize parameters.
+angle = 2 * math.pi * ((angle / 360) % 1);
+
+--#endregion PI / normalize parameters.
 
 -- pass to core.
 basic_s.effect.rotate_any_axis(angle, X, Y, Z, draw, grouped, not fix_axis);

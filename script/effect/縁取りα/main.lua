@@ -1,7 +1,7 @@
 --information:縁取りα@Basic_S ${PACKAGE_VERSION} by σ軸
 --label:Basic_S\装飾
 --require:2004200
---separator:このスクリプトは非推奨です．
+--separator:このスクリプトは現在は非推奨です．
 --separator:より高速で高機能な「縁取りσ」の利用を推奨します．
 --separator:https://github.com/sigma-axis/aviutl2_Border_S
 ---$track:サイズ, min = -500, max = 500, step = 1

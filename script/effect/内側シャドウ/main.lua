@@ -112,7 +112,7 @@ else obj.copybuffer("tempbuffer", "object") end
 -- color the blurred shape.
 if has_image then
 	local obj_props = basic_s.save_obj_props();
-	if obj.load("image", file_image) > 0 then
+	if obj.load("image", file_image) then
 		obj.pixelshader("recol_img", "tempbuffer", { "tempbuffer", "object" }, {
 			math.floor((w - obj.w) / 2) + img_X + X, math.floor((h - obj.h) / 2) + img_Y + Y;
 			obj.w, obj.h;

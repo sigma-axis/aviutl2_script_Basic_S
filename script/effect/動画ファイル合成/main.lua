@@ -6,7 +6,7 @@
 local file = ""
 
 --group:再生設定,true
----$track:再生開始秒, min = 0, max = 3600, step = 0.001
+---$track:再生開始秒, min = 0, max = 36000, step = 0.001, scale = 0.0083333
 local start = 0
 
 ---$track:再生速度, min = -2000, max = 2000, step = 0.001, scale = 0.4

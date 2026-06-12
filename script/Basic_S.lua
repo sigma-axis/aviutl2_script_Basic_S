@@ -952,11 +952,8 @@ local function composite_core(dest_w, dest_h, dest_name, move_x, move_y, zoom_x,
 		elseif mode_composite == 3 then
 			-- 後方から合成(クリッピング)
 			obj.clearbuffer("object", R - L, B - T);
-		elseif mode_composite == 4 then
-			-- アルファ値を乗算
-			obj.clearbuffer("object", dest_w, dest_h);
 		else
-			-- 色情報を上書き, 輝度をアルファ値として上書き or 輝度をアルファ値として乗算
+			-- アルファ値を乗算, 色情報を上書き, 輝度をアルファ値として上書き or 輝度をアルファ値として乗算
 			obj.copybuffer("object", dest_name);
 		end
 	end
@@ -1127,7 +1124,7 @@ function back_round_rect(pad_L, pad_R, pad_T, pad_B, line, clip, alpha_fore,
 end
 
 ---任意軸追加回転の実体関数．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
----@param angle number 角度，nan, infty 以外．
+---@param angle number 角度，nan, infty 以外．ラジアン単位．
 ---@param X number 回転軸X，0 ベクトル以外．
 ---@param Y number 回転軸Y，0 ベクトル以外．
 ---@param Z number 回転軸Z，0 ベクトル以外．
@@ -1209,6 +1206,7 @@ function rotate_any_axis(angle, X, Y, Z, draw, group_control, is_axis_local)
 
 		-- cap to the maximum size.
 		L, R, T, B = limit_image_extent(L, R, T, B);
+		if L >= R or T >= B then return void_return() end
 
 		-- adjust the destination points.
 		local Cx, Cy = -(L + R) / 2, -(T + B) / 2;

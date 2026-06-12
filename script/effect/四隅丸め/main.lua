@@ -42,7 +42,7 @@ local fixed_aspect = true
 
 --group:その他,false
 ---$track:ライン幅, min = 0, max = 4000, step = 0.01, scale = 0.25
-local line = 0
+local line = 4000
 
 ---$track:内側透明度, min = 0, max = 100, step = 0.01
 local alpha_inner = 100
