@@ -1,7 +1,3 @@
---
--- ${PACKAGE_VERSION}
---
-
 local type, tonumber, tostring, unpack, loadstring, pcall, setfenv, setmetatable, bit = type, tonumber, tostring, unpack, loadstring, pcall, setfenv, setmetatable, require("bit");
 local math_pi, math_tau, math_cos, math_sin, math_atan2, math_log, math_abs, math_min, math_max, math_floor, math_ceil, math_modf, bit_band = math.pi, 2 * math.pi, math.cos, math.sin, math.atan2, math.log, math.abs, math.min, math.max, math.floor, math.ceil, math.modf, bit.band;
 local image_max_w, image_max_h = obj.getinfo("image_max");
