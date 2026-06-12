@@ -1,0 +1,222 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/karoterra/aviutl2-aulua/refs/heads/main/schema/aulua.schema.json
+project:
+  variables:
+    NAME: Basic_S
+    AUTHOR: σ軸
+    LEAST_AVIUTL_VERSION: "2004200"
+    LEAST_AVIUTL_VERSION_STRING: beta42
+
+package:
+  id: Basic_S
+  name: 汎用スクリプト集 Basic_S
+  version: v2.20-r11 (for beta49)
+  information: "{name} {version} by {AUTHOR}"
+  script_sub_dir: ""
+  uninstall_sub_folder_file: false
+  message:
+    text: |
+      # Basic_S AviUtl ExEdit2 汎用スクリプト集
+
+      汎用的な基本効果や基本図形などをまとめた AviUtl ExEdit2 用のスクリプト集です．丸角四角形の生成や斜め軸での回転，回転中心のマウス操作移動や傾斜変形，内側シャドウや内側縁取りなどができます．
+
+      公開ページ:
+      https://github.com/sigma-axis/aviutl2_script_Basic_S
+
+      紹介動画:
+      https://www.nicovideo.jp/watch/sm45523651
+
+      お願い:
+      ニコニコ動画での親作品登録をしていただけると励みになります．
+      作品 ID: sm45523651
+
+  assets:
+    - src: README.md
+      dest: Script/{id}/README.md
+    - src: LICENSE
+      dest: Script/{id}/LICENSE
+  file_name: package.au2pkg.zip
+
+build:
+  out_dir: build
+
+scripts:
+  - name: Basic_S.lua
+    sources:
+      - path: script/preamble.lua
+      - path: script/Basic_S.lua
+
+  - name: "@Basic_S.anm2"
+    sources:
+      - path: script/preamble.lua
+      - label: 四隅丸め
+        path: script/effect/四隅丸め/main.lua
+      - label: 背景角丸矩形
+        path: script/effect/背景角丸矩形/main.lua
+      - label: 背景楕円
+        path: script/effect/背景楕円/main.lua
+      - label: 背景菱形
+        path: script/effect/背景菱形/main.lua
+      - label: 透明度適用
+        path: script/effect/透明度適用/main.lua
+      - label: 透明度二値化
+        path: script/effect/透明度二値化/main.lua
+      - label: 色調補正
+        path: script/effect/色調補正/main.lua
+      - label: 色チャンネル入れ替え
+        path: script/effect/色チャンネル入れ替え/main.lua
+      - label: 色オーバーフロー修正
+        path: script/effect/色オーバーフロー修正/main.lua
+      - label: 回転中心
+        path: script/effect/回転中心/main.lua
+      - label: 回転中心アンカー指定
+        path: script/effect/回転中心アンカー指定/main.lua
+      - label: 上下左右揃え
+        path: script/effect/上下左右揃え/main.lua
+      - label: 直角回転
+        path: script/effect/直角回転/main.lua
+      - label: XYZ追加回転
+        path: script/effect/XYZ追加回転/main.lua
+      - label: 任意軸追加回転
+        path: script/effect/任意軸追加回転/main.lua
+      - label: 傾斜
+        path: script/effect/傾斜/main.lua
+      - label: XY軸変形
+        path: script/effect/XY軸変形/main.lua
+      - label: 領域サイズ変更
+        path: script/effect/領域サイズ変更/main.lua
+      - label: 領域割合サイズ変更
+        path: script/effect/領域割合サイズ変更/main.lua
+      - label: 領域サイズ指定
+        path: script/effect/領域サイズ指定/main.lua
+      - label: カットずらし
+        path: script/effect/カットずらし/main.lua
+      - label: 中抜きクリッピング
+        path: script/effect/中抜きクリッピング/main.lua
+      - label: 画像中間ループ
+        path: script/effect/画像中間ループ/main.lua
+      - label: 小数ぼかし
+        path: script/effect/小数ぼかし/main.lua
+      - label: 縁取りα
+        path: script/effect/縁取りα/main.lua
+      - label: 四角縁取り
+        path: script/effect/四角縁取り/main.lua
+      - label: 内側シャドウ
+        path: script/effect/内側シャドウ/main.lua
+      - label: 画像ファイル合成
+        path: script/effect/画像ファイル合成/main.lua
+      - label: 動画ファイル合成
+        path: script/effect/動画ファイル合成/main.lua
+      - label: テキスト合成
+        path: script/effect/テキスト合成/main.lua
+      - label: 画像バッファ合成
+        path: script/effect/画像バッファ合成/main.lua
+      - label: 別レイヤー同期
+        path: script/effect/別レイヤー同期/main.lua
+      - label: バッファをコピー
+        path: script/effect/バッファをコピー/main.lua
+
+  - name: "@Basic_S.obj2"
+    sources:
+      - path: script/preamble.lua
+      - label: 角丸矩形
+        path: script/object/角丸矩形/main.lua
+      - label: 楕円
+        path: script/object/楕円/main.lua
+      - label: 菱形
+        path: script/object/菱形/main.lua
+      - label: スーパー楕円
+        path: script/object/スーパー楕円/main.lua
+      - label: 別レイヤー
+        path: script/object/別レイヤー/main.lua
+      - label: バッファ読み込み
+        path: script/object/バッファ読み込み/main.lua
+
+  - name: "@Basic_S.tra2"
+    sources:
+      - path: script/preamble.lua
+      - label: 全体で時間制御
+        path: script/track/curve/entire.lua
+      - label: 区間ごとに時間制御
+        path: script/track/curve/section.lua
+      - label: 全体で時間制御(回転)
+        path: script/track/curve/entire_angle.lua
+      - label: 区間ごとに時間制御(回転)
+        path: script/track/curve/section_angle.lua
+      - label: 正弦波
+        path: script/track/basic/sine.lua
+      - label: 2次式
+        path: script/track/basic/quadratic.lua
+      - label: 3次式
+        path: script/track/basic/cubic.lua
+      - label: 4次式
+        path: script/track/basic/quartic.lua
+      - label: N次式
+        path: script/track/basic/power.lua
+      - label: 指数関数
+        path: script/track/basic/exponential.lua
+      - label: 円形
+        path: script/track/basic/circle.lua
+      - label: 等速移動(秒)
+        path: script/track/uniform/second.lua
+      - label: 等速移動(フレーム)
+        path: script/track/uniform/frame.lua
+      - label: コマ落ち反復(秒)
+        path: script/track/discrete_repeat/second.lua
+      - label: コマ落ち反復(フレーム)
+        path: script/track/discrete_repeat/frame.lua
+      - label: コマ落ち反復(Hz)
+        path: script/track/discrete_repeat/hertz.lua
+      - label: コマ落ち反復(BPM)
+        path: script/track/discrete_repeat/bpm.lua
+      - label: コマ落ち反復(BPMグリッド)
+        path: script/track/discrete_repeat/bpmgrid.lua
+      - label: コマ落ちランダム(秒)
+        path: script/track/discrete_random/second.lua
+      - label: コマ落ちランダム(フレーム)
+        path: script/track/discrete_random/frame.lua
+      - label: コマ落ちランダム(Hz)
+        path: script/track/discrete_random/hertz.lua
+      - label: コマ落ちランダム(BPM)
+        path: script/track/discrete_random/bpm.lua
+      - label: コマ落ちランダム(BPMグリッド)
+        path: script/track/discrete_random/bpmgrid.lua
+      - label: 時間制御繰り返し(秒)
+        path: script/track/curve_repeat/second.lua
+      - label: 時間制御繰り返し(フレーム)
+        path: script/track/curve_repeat/frame.lua
+      - label: 時間制御繰り返し(Hz)
+        path: script/track/curve_repeat/hertz.lua
+      - label: 時間制御繰り返し(BPM)
+        path: script/track/curve_repeat/bpm.lua
+      - label: 時間制御繰り返し(BPMグリッド)
+        path: script/track/curve_repeat/bpmgrid.lua
+      - label: 時間制御繰り返し往復(秒)
+        path: script/track/curve_backforth/second.lua
+      - label: 時間制御繰り返し往復(フレーム)
+        path: script/track/curve_backforth/frame.lua
+      - label: 時間制御繰り返し往復(Hz)
+        path: script/track/curve_backforth/hertz.lua
+      - label: 時間制御繰り返し往復(BPM)
+        path: script/track/curve_backforth/bpm.lua
+      - label: 時間制御繰り返し往復(BPMグリッド)
+        path: script/track/curve_backforth/bpmgrid.lua
+      - label: 対数補間
+        path: script/track/special/logarithmic_section.lua
+      - label: 対数補間(全体時間制御)
+        path: script/track/special/logarithmic_entire.lua
+      - label: 逆数補間
+        path: script/track/special/harmonic_section.lua
+      - label: 逆数補間(全体時間制御)
+        path: script/track/special/harmonic_entire.lua
+      - label: バウンス
+        path: script/track/bounce/section.lua
+      - label: バウンス(全体時間制御)
+        path: script/track/bounce/entire.lua
+      - label: バック
+        path: script/track/back/section.lua
+      - label: バック(全体時間制御)
+        path: script/track/back/entire.lua
+      - label: バネ振動
+        path: script/track/elastic/section.lua
+      - label: バネ振動(全体時間制御)
+        path: script/track/elastic/entire.lua
