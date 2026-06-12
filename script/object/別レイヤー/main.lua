@@ -87,6 +87,9 @@ if rotation then
 		180 / math.pi * (rx - Rx),
 		180 / math.pi * (ry - Ry),
 		180 / math.pi * (rz - Rz);
+
+	-- apply the scaling.
+	obj.sx, obj.sy, obj.sz = gv(hdr..".scale");
 end
 if alpha then
 	obj.alpha = gv(hdr..".alpha");

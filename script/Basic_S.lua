@@ -1262,6 +1262,7 @@ function cut_move(X, Y, crack_x, crack_y, crack_dx, crack_dy, crop, move_center,
 	end
 
 	-- find the canvas size.
+	local w, h = obj.w, obj.h;
 	local L, R, T, B do
 		-- determine the lines dividing the image.
 		local c1, c2 = c, c + crop;
@@ -1270,8 +1271,8 @@ function cut_move(X, Y, crack_x, crack_y, crack_dx, crack_dy, crop, move_center,
 		-- check for each corner.
 		for i = 1, 4 do
 			local x, y =
-				obj.w / 2 * ((i % 2 ~= 0) and -1 or 1),
-				obj.h / 2 * ((i > 2) and -1 or 1);
+				w / 2 * ((i % 2 ~= 0) and -1 or 1),
+				h / 2 * ((i > 2) and -1 or 1);
 			local u = x * crack_dy - y * crack_dx;
 			if u <= c1 then
 				L, R, T, B =
@@ -1297,40 +1298,40 @@ function cut_move(X, Y, crack_x, crack_y, crack_dx, crack_dy, crop, move_center,
 
 		-- check for left and right crossing points.
 		if crack_dx ~= 0 then
-			local y = ((-obj.w / 2) * crack_dy - c1) / crack_dx;
-			if -obj.h / 2 <= y and y <= obj.h / 2 then
+			local y = ((-w / 2) * crack_dy - c1) / crack_dx;
+			if -h / 2 <= y and y <= h / 2 then
 				T, B = math_min(T or y, y), math_max(B or y, y);
 			end
-			y = ((obj.w / 2) * crack_dy - c1) / crack_dx;
-			if -obj.h / 2 <= y and y <= obj.h / 2 then
+			y = ((w / 2) * crack_dy - c1) / crack_dx;
+			if -h / 2 <= y and y <= h / 2 then
 				T, B = math_min(T or y, y), math_max(B or y, y);
 			end
-			y = ((-obj.w / 2) * crack_dy - c2) / crack_dx;
-			if -obj.h / 2 <= y and y <= obj.h / 2 then
+			y = ((-w / 2) * crack_dy - c2) / crack_dx;
+			if -h / 2 <= y and y <= h / 2 then
 				T, B = math_min(T or y + Y, y + Y), math_max(B or y + Y, y + Y);
 			end
-			y = ((obj.w / 2) * crack_dy - c2) / crack_dx;
-			if -obj.h / 2 <= y and y <= obj.h / 2 then
+			y = ((w / 2) * crack_dy - c2) / crack_dx;
+			if -h / 2 <= y and y <= h / 2 then
 				T, B = math_min(T or y + Y, y + Y), math_max(B or y + Y, y + Y);
 			end
 		end
 
 		-- check for top and bottom crossing points.
 		if crack_dy ~= 0 then
-			local x = ((-obj.h / 2) * crack_dx + c1) / crack_dy;
-			if -obj.w / 2 <= x and x <= obj.w / 2 then
+			local x = ((-h / 2) * crack_dx + c1) / crack_dy;
+			if -w / 2 <= x and x <= w / 2 then
 				L, R = math_min(L or x, x), math_max(R or x, x);
 			end
-			x = ((obj.h / 2) * crack_dx + c1) / crack_dy;
-			if -obj.w / 2 <= x and x <= obj.w / 2 then
+			x = ((h / 2) * crack_dx + c1) / crack_dy;
+			if -w / 2 <= x and x <= w / 2 then
 				L, R = math_min(L or x, x), math_max(R or x, x);
 			end
-			x = ((-obj.h / 2) * crack_dx + c2) / crack_dy;
-			if -obj.w / 2 <= x and x <= obj.w / 2 then
+			x = ((-h / 2) * crack_dx + c2) / crack_dy;
+			if -w / 2 <= x and x <= w / 2 then
 				L, R = math_min(L or x + X, x + X), math_max(R or x + X, x + X);
 			end
-			x = ((obj.h / 2) * crack_dx + c2) / crack_dy;
-			if -obj.w / 2 <= x and x <= obj.w / 2 then
+			x = ((h / 2) * crack_dx + c2) / crack_dy;
+			if -w / 2 <= x and x <= w / 2 then
 				L, R = math_min(L or x + X, x + X), math_max(R or x + X, x + X);
 			end
 		end
@@ -1342,17 +1343,17 @@ function cut_move(X, Y, crack_x, crack_y, crack_dx, crack_dy, crop, move_center,
 
 	-- canvas size determined.
 	L, R, T, B =
-		math_floor(L + obj.w / 2) - obj.w / 2,
-		math_ceil(R + obj.w / 2) - obj.w / 2,
-		math_floor(T + obj.h / 2) - obj.h / 2,
-		math_ceil(B + obj.h / 2) - obj.h / 2;
+		math_floor(L + w / 2) - w / 2,
+		math_ceil(R + w / 2) - w / 2,
+		math_floor(T + h / 2) - h / 2,
+		math_ceil(B + h / 2) - h / 2;
 
 	-- draw by shader.
 	local cache_name = "cache:basic_s/cut_move/dst";
 	obj.copybuffer(cache_name, "object");
 	obj.clearbuffer("object", R - L, B - T);
 	obj.pixelshader("place@カットずらし@Basic_S", "object", cache_name, {
-		obj.w, obj.h; -L - obj.w / 2, -T - obj.h / 2 ; crack_dy, -crack_dx; X, Y;
+		w, h; -L - w / 2, -T - h / 2 ; crack_dy, -crack_dx; X, Y;
 		c - (L * crack_dy - T * crack_dx); crop; gap; mode;
 	}, "copy", "clip");
 
