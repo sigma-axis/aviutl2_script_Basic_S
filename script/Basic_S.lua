@@ -1070,7 +1070,6 @@ function back_round_rect(pad_L, pad_R, pad_T, pad_B, line, clip, alpha_fore,
 		elseif has_image_back and obj.load("image", image_back) then
 			obj.copybuffer(cache_back_image, "object");
 			image_back_w, image_back_h = obj.w, obj.h;
-			obj.load("image", image_back);
 		else has_image_back = false end
 
 		load_obj_props(obj_props);
