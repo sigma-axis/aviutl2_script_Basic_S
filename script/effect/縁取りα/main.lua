@@ -1,4 +1,6 @@
---information:縁取りα@Basic_S ${PACKAGE_VERSION} by σ軸
+-- 非推奨化に伴い，このファイルは更新凍結 / information も固定．
+
+--information:縁取りα@Basic_S v2.20 (for beta49) by σ軸
 --label:Basic_S\装飾
 --require:2004200
 --separator:このスクリプトは現在は非推奨です．
@@ -49,8 +51,6 @@ local PI = {}
 --[[pixelshader@const_alpha:
 ---$include "const_alpha.hlsl"
 ]]
-
--- 非推奨化に伴い，この部分は更新凍結．
 local obj, math, bit, tonumber, type = obj, math, bit, tonumber, type;
 
 --#region PI / normalize parameters.
