@@ -41,7 +41,8 @@ jobs:
           echo `pwd`/aulua > $GITHUB_PATH
 
       - name: Create package
-        run: aulua pack
+        run: |
+          aulua pack
           cp build/package.au2pkg.zip "aviutl2_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.au2pkg.zip"
 
       - name: Prepare release notes
