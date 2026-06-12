@@ -4,5 +4,6 @@
 --twopoint
 --param:周期(フレーム),30
 --param:周期ずれ%,0
+--param:乱数シード,2525
 local track = require("Basic_S").track;
 return track.discrete_random(track.period.frame(obj.getpoint("param")));

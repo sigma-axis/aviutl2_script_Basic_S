@@ -6,5 +6,6 @@
 --param:基準のN分音符(0:小節),4
 --param:グリッド1拍のN分音符,4
 --param:周期ずれ%,0
+--param:乱数シード,2525
 local track = require("Basic_S").track;
 return track.discrete_random(track.period.bpmgrid(obj.getpoint("param")));

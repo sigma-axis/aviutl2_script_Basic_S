@@ -1887,10 +1887,11 @@ end
 
 ---コマ落ちランダムの実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
 ---@param t number 正規化された時間．0.0 -- 1.0.
+---@param seed number 「乱数シード」の値．
 ---@return number # トラックバーの計算値．
-function track_discrete_random(t)
+function track_discrete_random(t, seed)
 	local v0, v1 = obj.getpoint(0), obj.getpoint(1);
-	return v0 + (v1 - v0) * obj.rand1(2525, math_floor(t) + 1);
+	return v0 + (v1 - v0) * obj.rand1(math.floor(0.5 + seed), math_floor(t) + 1);
 end
 
 ---時間制御繰り返しの実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
