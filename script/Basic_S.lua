@@ -1687,7 +1687,7 @@ function round_rect(width, height, line, color_line, color_back, alpha_back, rad
 	obj.clearbuffer("object", width, height, 0x000000);
 	round_corners_buff(radii, shapes, line, 0, fixed_aspect, "object", width, height);
 	obj.clearbuffer(cache_name, width, height, 0x000000);
-	round_corners_buff(radii, shapes, line, math_max(width, height) + 1, fixed_aspect, cache_name, width, height);
+	round_corners_buff(radii, shapes, line, 1, fixed_aspect, cache_name, width, height);
 	local r_line, g_line, b_line, a_line = rgba_color_opt(color_line);
 	local r_back, g_back, b_back, a_back = rgba_color_opt(color_back);
 	obj.pixelshader("combine@角丸矩形@Basic_S", "object", { "object", cache_name }, {
