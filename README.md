@@ -225,7 +225,7 @@ Although, usage documentations for this script / plugin in languages other than 
 
 ### 任意軸追加回転
 
-![任意軸追加回転の適用例](https://github.com/user-attachments/assets/5af33f4e-71e9-4287-90ba-fa9cc5b5c2f3)
+![任意軸追加回転の適用例](https://github.com/user-attachments/assets/fa4152ff-34ad-4e80-b2f8-510be7078710)
 
 アンカーで指定したラインに沿った軸でオブジェクトを立体回転させます．軸指定がアンカーな点以外は[XYZ追加回転](#xyz追加回転)と同様です．
 
@@ -233,7 +233,7 @@ Although, usage documentations for this script / plugin in languages other than 
 
 ### 傾斜
 
-![傾斜の適用例](https://github.com/user-attachments/assets/c98bda24-1af8-45bf-8ebb-567d508c4e9a)
+![傾斜の適用例](https://github.com/user-attachments/assets/ca0403e3-0727-4a03-8ca0-99cba2c740e4)
 
 アンカーで指定した軸に沿った傾斜変形をします．傾斜量は角度と傾き (角度の $\tan$ 値) で指定できます．
 
@@ -241,7 +241,7 @@ Although, usage documentations for this script / plugin in languages other than 
 
 ### XY軸変形
 
-![XY軸変形の適用例](https://github.com/user-attachments/assets/15fa19d1-6c0a-4a0d-8b40-9c4877924d11)
+![XY軸変形の適用例](https://github.com/user-attachments/assets/5914edb9-1e4d-4e2a-a088-6b7cf7fb7989)
 
 X, Y 軸方向に伸びたアンカーをマウス操作することで変形します．
 
@@ -273,7 +273,7 @@ X, Y 軸方向に伸びたアンカーをマウス操作することで変形し
 
 ### カットずらし
 
-![カットずらしの適用例](https://github.com/user-attachments/assets/33774fd4-6c35-40fe-8b2b-ddfb4f5825ff)
+![カットずらしの適用例](https://github.com/user-attachments/assets/ee468c08-ff2f-4c6a-8dce-d32e6badf762)
 
 アンカーで指定したラインでオブジェクトを切り取って，ずらして配置します．ずらす移動量や方向もアンカーで操作できます．
 
@@ -309,19 +309,13 @@ AviUtl 標準の「ぼかし」にあった，小さい奇数ピクセルでの�
 
 :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/小数ぼかし)
 
-### 縁取りα
-
-標準の「縁取り」に透明度を指定したり，中をくり抜いて縁だけにしたり，内側縁取りもできるようになります．縁部分にパターン画像の指定も可能．
-
-:arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/縁取りα)
-
 ### 四角縁取り
 
 ![四角縁取りと通常の縁取りの比較](https://github.com/user-attachments/assets/b11ad429-a8b2-4d9f-89bb-e71ae4044974)
 
 AviUtl (無印) の「縁取り」と同様，角が四角になる縁取りです．特に長方形に対して縁取りをする場合などは，こちらのほうがいい場面もあると思います．
 
-[縁取りα](#縁取りα)と同様，透明度の指定や内側縁取りなども可能です．
+縁部分の透明度を指定したり，中をくり抜いて縁だけにしたり，内側縁取りなども可能です．パターン画像の指定も可能．
 
 :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/四角縁取り)
 
@@ -363,7 +357,7 @@ AviUtl (無印) にあった「動画ファイル合成」と同等のことが�
 
 別レイヤーの座標や回転角度，拡大率や透明度を読み取って反映します．個別の項目ごとに影響度を % 単位で指定できます．
 
-![別レイヤー同期の適用例](https://github.com/user-attachments/assets/0c015211-d54b-44df-b4d2-88066fab8b41)
+![別レイヤー同期の適用例](https://github.com/user-attachments/assets/ee154b27-54b2-4e3d-958a-4966df2ba30b)
 
 :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/別レイヤー同期)
 
@@ -393,7 +387,7 @@ AviUtl (無印) にあった「動画ファイル合成」と同等のことが�
 
 それぞれ[「全体で時間制御」](#全体で時間制御)[「区間ごとに時間制御」](#区間ごとに時間制御)の回転角度版です．X/Y/Z 軸回転に対して適用すると，固定された軸を中心とした回転として回転角度を補間します．標準の「直線移動(回転)」に時間制御のグラフを適用できるようにしたものです．
 
-![通常の線形補間と回転補間の比較](https://github.com/user-attachments/assets/697e6fdb-57f6-4f5b-9b76-4882779e8712)
+![通常の線形補間と回転補間の比較](https://github.com/user-attachments/assets/f79509e4-2b9a-4e28-bed3-964f9a571edd)
 
 :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/時間制御(回転))
 
@@ -535,7 +529,7 @@ AviUtl (無印) にあった「動画ファイル合成」と同等のことが�
 - **v2.30 (for beta49)** (2026-??-??)
 
   - 「バッファをクリア」を追加．
-  - 「全体で時間制御(回転)」「区間ごとに時間制御(回転)」が最短角度で回らないことがあったのを修正．
+  - 「全体で時間制御(回転)」「区間ごとに時間制御(回転)」が最短経路で回らないことがあったのを修正．
 
 ##  改版履歴
 
