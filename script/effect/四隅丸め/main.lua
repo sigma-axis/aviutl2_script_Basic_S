@@ -73,7 +73,7 @@ local radii, shapes = {
 		fixed_aspect:	boolean|number|nil,
 		shapes:			table|string|nil,
 		line:			number?,
-		alpha_inner:		number?,
+		alpha_inner:	number?,
 	}
 ]==]
 radii = basic_s.PI.corner_radii(PI.radii, radii);

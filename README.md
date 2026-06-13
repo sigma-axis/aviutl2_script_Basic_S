@@ -357,7 +357,7 @@ AviUtl (無印) にあった「動画ファイル合成」と同等のことが�
 
 現在オブジェクトや「仮想バッファ」，一時キャッシュの「キャッシュバッファ」などのバッファを，オブジェクトに合成します．[画像ファイル合成](#画像ファイル合成)のバッファ版です．
 
-<!-- :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/画像バッファ合成) -->
+:arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/画像バッファ合成)
 
 ### 別レイヤー同期
 
