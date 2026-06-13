@@ -1879,36 +1879,36 @@ function track_linear_rotation(i, t)
 end
 
 ---コマ落ち反復の実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
----@param t number 正規化された時間．0.0 -- 1.0.
+---@param c number 周期回数 (小数点以下の数値も含む).
 ---@param R number 「デューティ比%」の値．
 ---@return number # トラックバーの計算値．
-function track_discrete_repeat(t, R)
-	return obj.getpoint((t % 1) < math_min(math_max(R / 100, 0), 1) and 0 or 1);
+function track_discrete_repeat(c, R)
+	return obj.getpoint((c % 1) < math_min(math_max(R / 100, 0), 1) and 0 or 1);
 end
 
 ---コマ落ちランダムの実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
----@param t number 正規化された時間．0.0 -- 1.0.
+---@param c number 周期回数 (小数点以下の数値も含む).
 ---@param seed number 「乱数シード」の値．
 ---@return number # トラックバーの計算値．
-function track_discrete_random(t, seed)
+function track_discrete_random(c, seed)
 	local v0, v1 = obj.getpoint(0), obj.getpoint(1);
-	return v0 + (v1 - v0) * obj.rand1(math.floor(0.5 + seed), math_floor(t) + 1);
+	return v0 + (v1 - v0) * obj.rand1(math.floor(0.5 + seed), math_floor(c) + 1);
 end
 
 ---時間制御繰り返しの実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
----@param t number 正規化された時間．0.0 -- 1.0.
+---@param c number 周期回数 (小数点以下の数値も含む).
 ---@return number # トラックバーの計算値．
-function track_curve_repeat(t)
+function track_curve_repeat(c)
 	local v0, v1 = obj.getpoint(0), obj.getpoint(1);
-	return v0 + (v1 - v0) * obj.getpoint("timecontrol", "value", (t % 1) * obj.getpoint("time", 1));
+	return v0 + (v1 - v0) * obj.getpoint("timecontrol", "value", (c % 1) * obj.getpoint("time", 1));
 end
 
 ---時間制御繰り返し往復の実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
----@param t number 正規化された時間．0.0 -- 1.0.
+---@param c number 周期回数 (小数点以下の数値も含む).
 ---@return number # トラックバーの計算値．
-function track_curve_backforth(t)
+function track_curve_backforth(c)
 	local v0, v1 = obj.getpoint(0), obj.getpoint(1);
-	local x = 2 * (t % 1);
+	local x = 2 * (c % 1);
 	if x >= 1 then v0, v1, x = v1, v0, x - 1 end
 	return v0 + (v1 - v0) * obj.getpoint("timecontrol", "value", x * obj.getpoint("time", 1));
 end

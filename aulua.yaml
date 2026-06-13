@@ -9,7 +9,7 @@ project:
 package:
   id: Basic_S
   name: 汎用スクリプト集 Basic_S
-  version: v2.22 (for beta49)
+  version: v2.30-r1 (for beta49)
   information: "{name} {version} by {AUTHOR}"
   script_sub_dir: ""
   uninstall_sub_folder_file: false
@@ -114,6 +114,8 @@ scripts:
         path: script/effect/別レイヤー同期/main.lua
       - label: バッファをコピー
         path: script/effect/バッファをコピー/main.lua
+      - label: バッファをクリア
+        path: script/effect/バッファをクリア/main.lua
 
   - name: "@Basic_S.obj2"
     sources:
