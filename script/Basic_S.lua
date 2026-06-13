@@ -60,12 +60,11 @@ local function quat_power(x, qr, qi, qj, qk)
 	local l = qi ^ 2 + qj ^ 2 + qk ^ 2;
 	if l <= 0 then return 1, 0, 0, 0 end
 	l = l ^ 0.5;
+	if qr < 0 then qr, qi, qj, qk = -qr, -qi, -qj, -qk end
 	local a = x * math_atan2(l, qr);
 	local c, s = math_cos(a), math_sin(a);
-	qr, qi, qj, qk = c, s * qi / l, s * qj / l, s * qk / l;
-
-	if qr < 0 then qr, qi, qj, qk = -qr, -qi, -qj, -qk end
-	return qr, qi, qj, qk;
+	if c < 0 then c, s = -c, -s end
+	return c, s * qi / l, s * qj / l, s * qk / l;
 end
 
 ---X, Y, Z 軸それぞれの回転の合成を四元数で表現する．回転は Z -> Y -> X の順に適用されるものとする．
