@@ -1540,10 +1540,13 @@ end
 ---@param image_border string パターン画像のファイルパス．
 ---@param image_pos_x integer パターン画像の X 方向位置ずれ．範囲指定なし．
 ---@param image_pos_y integer パターン画像の Y 方向位置ずれ．範囲指定なし．
+---@param image_zoom number パターン画像の拡大率，正の実数．
+---@param image_rot number パターン画像の回転角度，ラジアン単位．
+---@param image_no_smooth boolean パターン画像を補間するかどうか．
 ---@param alpha_border number 縁部分のアルファ値．0.0 -- 1.0.
 ---@param alpha_source number 元画像のアルファ値．0.0 -- 1.0.
-function rect_border(size_x, size_y, blur,
-	color_border, image_border, image_pos_x, image_pos_y,
+function rect_border(size_x, size_y, blur, color_border, image_border,
+	image_pos_x, image_pos_y, image_zoom, image_rot, image_no_smooth,
 	alpha_border, alpha_source)
 
 	-- cap by maximum size.
@@ -1610,11 +1613,15 @@ function rect_border(size_x, size_y, blur,
 	if #image_border >= 4 then
 		local obj_props = save_obj_props();
 		if obj.load("image", image_border) then
+			local X, Y, c, s =
+				W / 2 + image_pos_x, H / 2 + image_pos_y,
+				math_cos(-image_rot) / image_zoom, math_sin(-image_rot) / image_zoom;
 			obj.pixelshader("recolor@四角縁取り@Basic_S", cache_border, { cache_border, "object" }, {
-				math_floor((W - obj.w) / 2) + image_pos_x,
-				math_floor((H - obj.h) / 2) + image_pos_y;
+				c, s;
+				obj.w / 2 - (c * X - s * Y), obj.h / 2 - (s * X + c * Y);
 				obj.w, obj.h;
-			});
+				image_no_smooth and 1 or 0;
+			}, "copy", "loop");
 		end
 		load_obj_props(obj_props);
 	end
