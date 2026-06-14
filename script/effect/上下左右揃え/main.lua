@@ -20,6 +20,7 @@ local y_enabled = true,false
 
 local obj, basic_s = obj, require("Basic_S");
 local cx, cy, cz = obj.getvalue("center");
-if x_enabled then cx = (X / 100) * obj.w / 2 end
-if y_enabled then cy = (Y / 100) * obj.h / 2 end
+if x_enabled then cx = (X / 100) * obj.w / 2 else cx = obj.cx + cx end
+if y_enabled then cy = (Y / 100) * obj.h / 2 else cy = obj.cy + cy end
+cz = obj.cz + cz;
 basic_s.set_rotation_center(cx, cy, cz, fix_pos);
