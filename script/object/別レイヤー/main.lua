@@ -11,16 +11,16 @@ local index = -1
 
 --group:復元項目,true
 ---$checksection:フィルタ効果
-local effect = true
+local effect = true,false
 
 ---$checksection:位置の復元
-local position = false
+local position = false,false
 
 ---$checksection:回転拡大の復元
-local rotation = false
+local rotation = false,false
 
 ---$checksection:透明度の復元
-local alpha = false
+local alpha = false,false
 
 --group:その他,false
 ---$value:PI

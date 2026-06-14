@@ -22,7 +22,7 @@ local shape = 0
 
 --group:丸角設定,false
 ---$checksection:半径均一
-local uniform = true
+local uniform = true,false
 
 ---$track:右上半径, min = 0, max = 2000, step = 0.01, scale = 0.25
 local r_RT = 40
@@ -38,7 +38,7 @@ local r_LB = 40
 local aspect = 0
 
 ---$checksection:縦横比固定
-local fixed_aspect = true
+local fixed_aspect = true,false
 
 --group:その他,false
 ---$track:ライン幅, min = 0, max = 4000, step = 0.01, scale = 0.25

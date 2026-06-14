@@ -6,7 +6,7 @@
 local alpha = 0
 
 ---$checksection:累積分も適用
-local apply_former = false
+local apply_former = false,false
 
 --[[pixelshader@const_alpha:
 ---$include "const_alpha.hlsl"

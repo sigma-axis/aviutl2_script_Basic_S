@@ -21,7 +21,7 @@ local height = 0
 local gap_y = 0
 
 ---$checksection:中心の位置を変更
-local move_center = false
+local move_center = false,false
 
 --group:整列,false
 ---$track:水平揃え, min = -100, max = 100, step = 0.001

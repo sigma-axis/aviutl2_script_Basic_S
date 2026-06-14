@@ -37,7 +37,7 @@ local zoom = 100
 local rotate = 0
 
 ---$checksection:補間なし
-local no_smooth = true
+local no_smooth = true,false
 
 --group:その他,false
 ---$value:PI

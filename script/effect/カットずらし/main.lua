@@ -28,7 +28,7 @@ local crack_Y2 = 100
 local crop = 0
 
 ---$checksection:中心の位置を変更
-local move_center= false
+local move_center= false,false
 
 --group:余白/重複処理,false
 ---$select:余白処理

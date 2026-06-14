@@ -16,10 +16,10 @@ local Z = 128
 --trackgroup@X,Y,Z:axis
 --group:描画処理,false
 ---$checksection:描画する
-local draw = false
+local draw = false,false
 
 ---$checksection:グループ制御
-local grouped = false
+local grouped = false,false
 
 --group:その他,false
 ---$value:PI

@@ -15,10 +15,10 @@ local width = 256
 local height = 256
 
 ---$checksection:中心の位置を変更
-local move_center = false
+local move_center = false,false
 
 ---$checksection:塗りつぶし
-local fill_blank = false
+local fill_blank = false,false
 
 --group:整列,false
 ---$track:水平揃え, min = -100, max = 100, step = 0.001
@@ -29,14 +29,14 @@ local align_y = 0
 
 --group:縦横無効化,false
 ---$checksection:幅指定有効
-local x_enabled = true
+local x_enabled = true,false
 
 ---$checksection:高さ指定有効
-local y_enabled = true
+local y_enabled = true,false
 
 --group:その他,false
 ---$checksection:反転マスク
-local inverted_mask = false
+local inverted_mask = false,false
 
 ---$value:PI
 local PI = {}
