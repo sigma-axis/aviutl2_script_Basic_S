@@ -1034,6 +1034,7 @@ function back_round_rect(pad_L, pad_R, pad_T, pad_B, line, clip, alpha_fore,
 	local do_fill = 2 * line - 1 >= math_min(W, H);
 	if clip == 0 and alpha_line <= 0 and (do_fill or alpha_back <= 0) then
 		-- nothing is drawn but only the canvas extends.
+		apply_alpha(alpha_fore);
 		add_canvas_size(math_max(L, 0), math_max(R, 0), math_max(T, 0), math_max(B, 0), false);
 		return;
 	end
