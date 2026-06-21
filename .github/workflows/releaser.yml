@@ -8,6 +8,7 @@ env:
   REPOSITORY_NAME: Basic_S
 
   TIME_ZONE: Asia/Tokyo
+  TIME_ZONE_PWSH: Tokyo Standard Time
   # Time zone for the timestamp when releasing.
 
 permissions:
