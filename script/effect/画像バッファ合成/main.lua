@@ -30,11 +30,11 @@ local rotate = 0
 local alpha = 0
 
 ---$checksection:サイズ固定
-local fixed_size = false,false
+local fixed_size = false
 
 --group:配置,false
 ---$checksection:補間なし
-local no_smooth = false,false
+local no_smooth = false
 
 ---$select:画像ループ
 ---なし = 0

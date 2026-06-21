@@ -29,10 +29,10 @@ local color_sub = 0x000000
 local type_char = 0
 
 ---$checksection:太字
-local is_bold = false,false
+local is_bold = false
 
 ---$checksection:斜体
-local is_italic = false,false
+local is_italic = false
 
 --group:書式設定,true
 ---$track:字間, min = -500, max = 500, step = 0.01, scale = 0.1
@@ -83,11 +83,11 @@ local rotate = 0
 local alpha = 0
 
 ---$checksection:サイズ固定
-local fixed_size = false,false
+local fixed_size = false
 
 --group:配置,false
 ---$checksection:補間なし
-local no_smooth = false,false
+local no_smooth = false
 
 ---$select:画像ループ
 ---なし = 0

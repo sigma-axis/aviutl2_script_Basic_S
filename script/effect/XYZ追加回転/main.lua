@@ -16,10 +16,10 @@ local intensity = 100
 
 --group:描画処理,false
 ---$checksection:描画する
-local draw = false,false
+local draw = false
 
 ---$checksection:グループ制御
-local grouped = false,false
+local grouped = false
 
 --group:その他,false
 ---$value:PI

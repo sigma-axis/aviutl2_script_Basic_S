@@ -17,10 +17,10 @@ local clip = 0
 local line = 4000
 
 ---$checksection:包含
-local inclusive = true,false
+local inclusive = true
 
 ---$checksection:真円
-local circle = false,false
+local circle = false
 
 --group:色/パターン画像,false
 ---$color:色

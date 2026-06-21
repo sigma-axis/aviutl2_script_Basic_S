@@ -23,7 +23,7 @@ local color_back = 0xffffff
 local alpha_back = 100
 
 ---$checksection:縦横一致
-local symmetric = false,false
+local symmetric = false
 
 --group:配置,false
 ---$track:水平揃え, min = -100, max = 100, step = 0.001

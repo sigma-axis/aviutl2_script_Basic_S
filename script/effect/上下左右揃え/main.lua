@@ -9,14 +9,14 @@ local Y = 0
 
 --trackgroup@X,Y:pos
 ---$checksection:描画位置を固定
-local fix_pos = false,false
+local fix_pos = false
 
 --group:縦横無効化,false
 ---$checksection:左右有効
-local x_enabled = true,false
+local x_enabled = true
 
 ---$checksection:上下有効
-local y_enabled = true,false
+local y_enabled = true
 
 local obj, basic_s = obj, require("Basic_S");
 local cx, cy, cz = obj.getvalue("center");

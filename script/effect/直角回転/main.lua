@@ -13,7 +13,7 @@
 local rot = 0
 
 ---$checksection:中心の位置を変更
-local move_center = false,false
+local move_center = false
 
 local obj, math = obj, math;
 

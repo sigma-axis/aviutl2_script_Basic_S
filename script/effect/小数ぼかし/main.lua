@@ -12,7 +12,7 @@ local aspect = 0
 local luma_weight = 0
 
 ---$checksection:サイズ固定
-local fixed_size = false,false
+local fixed_size = false
 
 --group:その他,false
 ---$value:PI

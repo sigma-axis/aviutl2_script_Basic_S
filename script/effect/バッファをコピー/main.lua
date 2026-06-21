@@ -23,7 +23,7 @@ local buff_dst = 0
 local cache_dst = "my_cache"
 
 ---$checksection:描画しない
-local suppress_draw = true,false
+local suppress_draw = true
 
 --group:その他,false
 ---$value:PI

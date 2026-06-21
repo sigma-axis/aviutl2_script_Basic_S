@@ -14,10 +14,10 @@ local L = 0
 local R = 0
 
 ---$checksection:中心の位置を変更
-local move_center = false,false
+local move_center = false
 
 ---$checksection:塗りつぶし
-local fill_blank = false,false
+local fill_blank = false
 
 --group:その他,false
 ---$value:PI
