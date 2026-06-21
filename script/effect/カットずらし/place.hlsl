@@ -23,6 +23,6 @@ float4 place(float4 pos : SV_Position) : SV_Target
 	}
 
 	return lerp(col1, lerp(col3, col2,
-		gap > 0 ? smoothstep(-0.5, 0.5, (phase - 1) * gap) : 1),
-		gap > 0 ? smoothstep(-0.5, 0.5, phase * gap) : phase);
+		gap > 0 ? saturate(0.5 + (phase - 1) * gap) : 1),
+		gap > 0 ? saturate(0.5 + phase * gap) : phase);
 }
