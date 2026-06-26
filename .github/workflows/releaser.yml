@@ -8,22 +8,19 @@ env:
   REPOSITORY_NAME: Basic_S
 
   TIME_ZONE: Asia/Tokyo
-  TIME_ZONE_PWSH: Tokyo Standard Time
   # Time zone for the timestamp when releasing.
 
 permissions:
   contents: read
 
 jobs:
-  release:
-    name: Create Release
+  build:
+    name: Build with aulua
     if: github.event_name == 'push' && github.ref_type == 'tag'
     runs-on: windows-latest
     defaults:
       run:
         shell: bash
-    permissions:
-      contents: write
 
     steps:
       - uses: actions/checkout@v7
@@ -42,24 +39,44 @@ jobs:
           echo `pwd`/aulua > $GITHUB_PATH
 
       - name: Create package
-        run: |
-          aulua pack
-          cp build/package.au2pkg.zip "aviutl2_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.au2pkg.zip"
+        run: aulua pack
 
-      - name: Prepare release name
-        id: release-name
-        shell: pwsh
+      - name: Upload the build as artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          path: build/package.au2pkg.zip
+          archive: false
+
+  release:
+    name: Create Release
+    if: github.event_name == 'push' && github.ref_type == 'tag'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - name: Download the package as an artifact
+        uses: actions/download-artifact@v8
+        with:
+          path: pack
+          merge-multiple: true # assuming a single artifact.
+          skip-decompress: true
+
+      - name: Prepare package
         run: |
-          $name = "${{ github.ref_name }}"
-          $date = [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId((Get-Date).ToUniversalTime(), '${{ env.TIME_ZONE_PWSH }}')
-          $formatted = $date.ToString('yyyy-MM-dd')
-          echo "name=$name ($formatted)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          cd pack
+          cp package.au2pkg.zip ../aviutl2_script_${{ env.REPOSITORY_NAME }}-${{ github.ref_name }}.au2pkg.zip
+        # rename .zip file for downloading if necessary.
 
       - name: Prepare release notes
         id: release-notes
         run: |
-          # windows runner does not correctly provide the time with this.
-          # echo "name=${{ github.ref_name }} ($(TZ='${{ env.TIME_ZONE }}' date +'%Y-%m-%d'))" >> $GITHUB_OUTPUT
+          echo "name=${{ github.ref_name }} ($(TZ='${{ env.TIME_ZONE }}' date +'%Y-%m-%d'))" >> $GITHUB_OUTPUT
           echo "### 更新内容" >> ReleaseNotes.txt
           phase=0
           IFS=$'\n'
