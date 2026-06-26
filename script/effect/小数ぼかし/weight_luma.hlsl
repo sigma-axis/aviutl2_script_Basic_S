@@ -9,7 +9,7 @@ static const float3x3 mat_rgb2yc = {
 };
 float4 weight_luma(float4 pos : SV_Position) : SV_Target
 {
-	float4 col = src.Load(int3(pos.xy, 0));
+	float4 col = src[pos.xy];
 	col.xyz = mul(mat_rgb2yc, col.rgb);
 	col.x = scale * (exp2(log2_base * (col.a > 0 ? col.x / col.a : 0)) - 1) * col.a;
 	return col;

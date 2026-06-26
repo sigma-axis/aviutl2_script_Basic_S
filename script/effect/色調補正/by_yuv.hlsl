@@ -5,7 +5,7 @@ cbuffer constant0 : register(b0) {
 };
 float4 by_yuv(float4 pos : SV_Position) : SV_Target
 {
-	float4 c = src.Load(int3(pos.xy, 0));
+	float4 c = src[pos.xy];
 	c.rgb = mul(mat, c.rgb) + add_light * c.a;
 	if (sat > 0) {
 		c.a = saturate(c.a);

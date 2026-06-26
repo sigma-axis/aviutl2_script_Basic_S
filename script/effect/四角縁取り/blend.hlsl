@@ -8,6 +8,6 @@ float4 blend(float4 pos : SV_Position) : SV_Target
 {
 	const float4
 		col1 = img1.Load(int3(pos.xy - 0.5 - size, 0)),
-		col2 = img2.Load(int3(pos.xy, 0));
+		col2 = img2[pos.xy];
 	return a1 * col1 + a2 * col2;
 }

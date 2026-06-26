@@ -5,7 +5,7 @@ cbuffer constant0 : register(b0) {
 };
 float4 replace_col(float4 pos : SV_Position) : SV_Target
 {
-	const float4 c0 = dst.Load(int3(pos.xy, 0)), c1 = src.Load(int3(pos.xy, 0));
+	const float4 c0 = dst[pos.xy], c1 = src[pos.xy];
 	const float a0 = max(c0.a, 0);
 	return lerp(c0, c1 * (a0 < c1.a ? a0 / c1.a : 1), intensity);
 }

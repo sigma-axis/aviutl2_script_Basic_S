@@ -26,7 +26,7 @@ float3 from_lms_gamma(float3 c)
 }
 float4 by_oklab(float4 pos : SV_Position) : SV_Target
 {
-	float4 c = src.Load(int3(pos.xy, 0));
+	float4 c = src[pos.xy];
 	c.rgb = to_lms_gamma(c.a > 0 ? c.rgb / c.a : 0);
 	c.rgb = mul(mat, c.rgb) + add_light;
 	c.rgb = c.a * from_lms_gamma(c.rgb);

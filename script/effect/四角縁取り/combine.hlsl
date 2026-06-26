@@ -6,7 +6,7 @@ cbuffer constant0 : register(b0) {
 float4 combine(float4 pos : SV_Position) : SV_Target
 {
 	const float4
-		col_i = src_i.Load(int3(pos.xy, 0)),
-		col_o = src_o.Load(int3(pos.xy, 0)) * a_o;
+		col_i = src_i[pos.xy],
+		col_o = src_o[pos.xy] * a_o;
 	return col_i.a * col_o + a_i * (1 - col_o.a) * col_i;
 }

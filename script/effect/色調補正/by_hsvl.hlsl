@@ -40,7 +40,7 @@ float3 hsvl2rgb(float3 c, uint col_space)
 
 float4 by_hsvl(float4 pos : SV_Position) : SV_Target
 {
-	float4 c = src.Load(int3(pos.xy, 0));
+	float4 c = src[pos.xy];
 	c.xyz = rgb2hsvl(c.a != 0 ? c.rgb / c.a : 0, col_space_f);
 
 	c.xyz *= mul_col;

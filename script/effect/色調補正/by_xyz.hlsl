@@ -15,7 +15,7 @@ float3 from_lin(float3 c)
 }
 float4 by_xyz(float4 pos : SV_Position) : SV_Target
 {
-	float4 c = src.Load(int3(pos.xy, 0));
+	float4 c = src[pos.xy];
 	c.rgb = to_lin(c.a > 0 ? c.rgb / c.a : 0);
 	c.rgb = mul(mat, c.rgb) + add_light;
 	c.rgb = c.a * from_lin(c.rgb);

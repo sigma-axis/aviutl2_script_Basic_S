@@ -23,7 +23,7 @@ float3 by_clip(float4 c, bool modified)
 }
 float4 clip_color(float4 pos : SV_Position) : SV_Target
 {
-	float4 c = src.Load(int3(pos.xy, 0));
+	float4 c = src[pos.xy];
 	c.a = max(c.a, 0);
 	if (maximize > 0) c.a = max(max(c.r, c.g), max(c.b, c.a));
 	if (rescale > 0) c /= max(c.a, 1); else c.a = min(c.a, 1);

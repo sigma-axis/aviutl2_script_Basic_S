@@ -44,7 +44,7 @@ float3 from_lab(float3 c)
 }
 float4 by_cielab(float4 pos : SV_Position) : SV_Target
 {
-	float4 c = src.Load(int3(pos.xy, 0));
+	float4 c = src[pos.xy];
 	c.rgb = to_lab(c.a > 0 ? c.rgb / c.a : 0);
 	c.rgb = mul(mat, c.rgb) + delta[1] * add_light;
 	c.rgb = c.a * from_lab(c.rgb);

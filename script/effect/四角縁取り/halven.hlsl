@@ -20,7 +20,7 @@ float4 halven(float4 pos : SV_Position) : SV_Target
 {
 	const float
 		a = src.Load(int3(floor(pos.xy - offset), 0)).a,
-		A = decode(eff.Load(int3(pos.xy, 0))),
+		A = decode(eff[pos.xy]),
 		alpha = saturate(alpha_src * a
 			+ saturate(rate * ((1 - 2 * invert) * A + invert)));
 	return float4(alpha * color, alpha);
