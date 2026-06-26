@@ -79,17 +79,16 @@ jobs:
           echo "name=${{ github.ref_name }} ($(TZ='${{ env.TIME_ZONE }}' date +'%Y-%m-%d'))" >> $GITHUB_OUTPUT
           echo "### 更新内容" >> ReleaseNotes.txt
           phase=0
-          IFS=$'\n'
-          cat README.md | while read line; do
+          while IFS= read -r line; do
             if [[ $phase == 0 ]]; then
               if [[ $line =~ ^##*[[:space:]]{1,}'改版履歴'[[:space:]]*$ ]]; then phase=1; fi
             elif [[ $phase == 1 ]]; then
               if [[ $line =~ ^-[[:space:]] ]]; then phase=2; fi
             elif [[ $line =~ ^(-|##*)[[:space:]] ]]; then break
             else
-              echo ${line:2} >> ReleaseNotes.txt
+              printf '%s\n' "${line:2}" >> ReleaseNotes.txt
             fi
-          done
+          done < README.md
 
       - name: Release
         uses: softprops/action-gh-release@v3
