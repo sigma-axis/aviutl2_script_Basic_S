@@ -64,7 +64,12 @@ range = tonumber(PI.range) or range;
 aspect = tonumber(PI.aspect) or aspect;
 luma_weight = tonumber(PI.luma_weight) or luma_weight;
 fixed_size = basic_s.PI.as_bool(PI.fixed_size, fixed_size);
-distribution = tonumber(PI.distribution) or distribution;
+if PI.distribution then
+	local name2num = {
+		["矩形分布"] = 0, ["三角分布"] = 1, ["ガウス分布"] = 2
+	};
+	distribution = name2num[PI.distribution] or distribution;
+end
 
 -- normalize parameters.
 range = math.min(math.max(range, 0), 1000);
