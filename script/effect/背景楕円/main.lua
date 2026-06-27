@@ -45,12 +45,23 @@ local alpha_back = 100
 ---$track:前景透明度, min = 0, max = 100, step = 0.01
 local alpha_front = 0
 
+--group:位置設定,false
+---$track:移動X, min = -4000, max = 4000, step = 1, scale = 0.125
+local move_x = 0
+
+---$track:移動Y, min = -4000, max = 4000, step = 1, scale = 0.125
+local move_y = 0
+
+--trackgroup@move_x,move_y:move_pos
 --group:その他,false
 ---$value:PI
 local PI = {}
 
 local obj, math, tonumber, type = obj, math, tonumber, type;
 local basic_s = require("Basic_S");
+
+-- set anchors.
+obj.setanchor("move_x,move_y", 0, "line");
 
 --#region PI / normalize parameters
 
@@ -61,6 +72,8 @@ local basic_s = require("Basic_S");
 		pad_Y:			number?,
 		clip:			string?,
 		line:			number?,
+		inclusive:		boolean|number|nil,
+		circle:			boolean|number|nil,
 		color:			number?,
 		file_image:		string?,
 		line_x:			number?,
@@ -72,8 +85,8 @@ local basic_s = require("Basic_S");
 		back_y:			number?,
 		alpha_back:		number?,
 		alpha_front:	number?,
-		inclusive:		boolean|number|nil,
-		circle:			boolean|number|nil,
+		move_x:			number?,
+		move_y:			number?,
 	}
 ]==]
 local function as_pair(c, v)
@@ -91,6 +104,8 @@ if type(PI.clip) == "string" then
 	clip = ({ ["なし"] = 0, ["あり"] = 1, ["ライン内"] = 2 })[PI.clip] or clip;
 end
 line = tonumber(PI.line) or line;
+inclusive = basic_s.PI.as_bool(PI.inclusive, inclusive);
+circle = basic_s.PI.as_bool(PI.circle, circle);
 color = tonumber(PI.color) or color;
 file_image = type(PI.file_image) == "string" and PI.file_image or file_image;
 local line_x, line_y = tonumber(PI.line_x) or 0, tonumber(PI.line_y) or 0;
@@ -100,8 +115,7 @@ file_back = type(PI.file_back) == "string" and PI.file_back or file_back;
 local back_x, back_y = tonumber(PI.back_x) or 0, tonumber(PI.back_y) or 0;
 alpha_back = tonumber(PI.alpha_back) or alpha_back;
 alpha_front = tonumber(PI.alpha_front) or alpha_front;
-inclusive = basic_s.PI.as_bool(PI.inclusive, inclusive);
-circle = basic_s.PI.as_bool(PI.circle, circle);
+move_x, move_y = tonumber(PI.move_x) or move_x, tonumber(PI.move_y) or move_y;
 
 -- normalize parameters.
 pad_L = math.floor(0.5 + pad_L);
@@ -117,6 +131,10 @@ color_back = math.floor(0.5 + color_back) % 2 ^ 24;
 back_x, back_y = math.floor(0.5 + back_x), math.floor(0.5 + back_y);
 alpha_back = math.min(math.max(1 - alpha_back / 100, 0), 1);
 alpha_front = math.min(math.max(1 - alpha_front / 100, 0), 1);
+move_x, move_y = math.floor(0.5 + move_x), math.floor(0.5 + move_y);
+
+pad_L, pad_R = pad_L - move_x, pad_R + move_x;
+pad_T, pad_B = pad_T - move_y, pad_B + move_y;
 
 --#endregion PI / normalize parameters
 
