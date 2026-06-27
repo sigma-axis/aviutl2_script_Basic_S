@@ -61,7 +61,7 @@ local back_x = 0
 local back_y = 0
 
 --trackgroup@back_x,back_y:back_image_pos
---group:透明度,false
+--group:透明度設定,false
 ---$track:透明度, min = 0, max = 100, step = 0.01
 local alpha = 0
 
