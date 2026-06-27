@@ -1094,6 +1094,8 @@ function back_round_rect(pad_L, pad_R, pad_T, pad_B, line, clip, alpha_fore,
 	-- combine them by shader.
 	obj.clearbuffer("object", L + w + R, T + h + B);
 	if has_image_line or has_image_back then
+		if not has_image_line then obj.clearbuffer(cache_line_image, 1, 1, color_line) end
+		if not has_image_back then obj.clearbuffer(cache_back_image, 1, 1, color_back) end
 		obj.pixelshader("combine_img@背景角丸矩形@Basic_S", "object",
 			{ cache_src, cache_line, cache_back, cache_line_image, cache_back_image }, {
 			L, T; L - pad_L, T - pad_T;
@@ -1105,8 +1107,6 @@ function back_round_rect(pad_L, pad_R, pad_T, pad_B, line, clip, alpha_fore,
 			math_floor(W / 2) + pos_image_back_x, math_floor(H / 2) + pos_image_back_y;
 		});
 	else
-		if not has_image_line then obj.clearbuffer(cache_line_image, 1, 1, color_line) end
-		if not has_image_back then obj.clearbuffer(cache_back_image, 1, 1, color_back) end
 		local r_line, g_line, b_line, a_line = rgba_color_opt(color_line);
 		local r_back, g_back, b_back, a_back = rgba_color_opt(color_back);
 		obj.pixelshader("combine@背景角丸矩形@Basic_S", "object",
