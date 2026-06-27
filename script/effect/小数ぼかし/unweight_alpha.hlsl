@@ -1,13 +1,13 @@
 cbuffer constant0 : register(b0) {
 	float2 size_f, span_i_f, span_f, wt;
 };
+static const int2 size = int2(size_f), span_i = int2(span_i_f);
 int2 sum_steps(int2 i)
 {
 	return i * (i + 1) >> 1;
 }
 float4 unweight_alpha(float4 pos : SV_Position) : SV_Target
 {
-	static const int2 size = int2(size_f), span_i = int2(span_i_f);
 	const int2 p = int2(pos.xy);
 
 	float2 sum = wt;

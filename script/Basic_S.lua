@@ -1,5 +1,5 @@
 local type, tonumber, tostring, unpack, loadstring, pcall, setfenv, setmetatable, bit = type, tonumber, tostring, unpack, loadstring, pcall, setfenv, setmetatable, require("bit");
-local math_pi, math_tau, math_cos, math_sin, math_atan2, math_log, math_abs, math_min, math_max, math_floor, math_ceil, math_modf, bit_band = math.pi, 2 * math.pi, math.cos, math.sin, math.atan2, math.log, math.abs, math.min, math.max, math.floor, math.ceil, math.modf, bit.band;
+local math_pi, math_tau, math_cos, math_sin, math_atan2, math_exp, math_log, math_abs, math_min, math_max, math_floor, math_ceil, math_modf, bit_band = math.pi, 2 * math.pi, math.cos, math.sin, math.atan2, math.exp, math.log, math.abs, math.min, math.max, math.floor, math.ceil, math.modf, bit.band;
 local image_max_w, image_max_h = obj.getinfo("image_max");
 
 if obj.getinfo("version") < tonumber("${LEAST_AVIUTL_VERSION}") then
@@ -1480,7 +1480,8 @@ end
 ---@param span_y number 縦方向のぼかし範囲，0 -- 500.
 ---@param luma_weight number 光の強さ，0 -- 60.
 ---@param fixed_size boolean サイズ固定．
-function prec_blur(span_x, span_y, luma_weight, fixed_size)
+---@param distribution `0`|`1`|`2` ぼかしの分布関数．0 -> 矩形分布，1 -> 三角分布，2 -> ガウス分布．
+function prec_blur(span_x, span_y, luma_weight, fixed_size, distribution)
 	-- cap by maximum size.
 	span_x = math_min(span_x, math_floor((image_max_w - obj.w) / 2));
 	span_y = math_min(span_y, math_floor((image_max_h - obj.h) / 2));
@@ -1499,32 +1500,87 @@ function prec_blur(span_x, span_y, luma_weight, fixed_size)
 	-- apply the blur by shaders.
 	local w, h = obj.w, obj.h;
 	local cache_name = "cache:basic_s/prec_blur/intermed";
-	obj.clearbuffer(cache_name, h + 2 * span_y_i, w + 2 * span_x_i);
-	obj.computeshader("convol@小数ぼかし@Basic_S", cache_name, "object", {
-		h, w + span_x_i;
-		span_x_i, 2 ^ 12 * span_x_f, 2 ^ -12 / span_x,
-	}, 1, math_ceil(h / 64), 1);
-	obj.clearbuffer("object", w + 2 * span_x_i, h + 2 * span_y_i);
-	obj.computeshader("convol@小数ぼかし@Basic_S", "object", cache_name, {
-		w + span_x_i, h + span_y_i;
-		span_y_i, 2 ^ 12 * span_y_f, 2 ^ -12 / span_y,
-	}, 1, math_ceil((w + span_x_i) / 64), 1);
-	obj.computeshader("convol@小数ぼかし@Basic_S", cache_name, "object", {
-		h + span_y_i, w + 2 * span_x_i;
-		span_x_i, 2 ^ 12 * span_x_f, 2 ^ -12 / span_x,
-	}, 1, math_ceil((h + span_y_i) / 64), 1);
-	obj.computeshader("convol@小数ぼかし@Basic_S", "object", cache_name, {
-		w + 2 * span_x_i, h + 2 * span_y_i;
-		span_y_i, 2 ^ 12 * span_y_f, 2 ^ -12 / span_y,
-	}, 1, math_ceil((w + 2 * span_x_i) / 64), 1);
+	if distribution == 0 then
+		-- box kernel.
+		obj.clearbuffer(cache_name, h, w + 2 * span_x_i);
+		if span_x_i > 0 then
+			obj.computeshader("convol_box@小数ぼかし@Basic_S", cache_name, "object", {
+				h, w + 2 * span_x_i;
+				span_x_i, 2 ^ 11 * span_x_f, 2 ^ -11 / (2 * span_x - 1),
+			}, 1, math_ceil(h / 64), 1);
+		else obj.pixelshader("transpose@四角縁取り@Basic_S", cache_name, "object") end
+		obj.clearbuffer("object", w + 2 * span_x_i, h + 2 * span_y_i);
+		if span_y_i > 0 then
+			obj.computeshader("convol_box@小数ぼかし@Basic_S", "object", cache_name, {
+				w + 2 * span_x_i, h + 2 * span_y_i;
+				span_y_i, 2 ^ 11 * span_y_f, 2 ^ -11 / (2 * span_y - 1),
+			}, 1, math_ceil((w + 2 * span_x_i) / 64), 1);
+		else obj.pixelshader("transpose@四角縁取り@Basic_S", "object", cache_name) end
 
-	-- normalize the sum on the edges.
-	if fixed_size then
-		add_canvas_size(-span_x_i, -span_x_i, -span_y_i, -span_y_i);
-		obj.pixelshader("unweight_alpha@小数ぼかし@Basic_S", "object", nil, {
-			w, h; span_x_i, span_y_i; span_x_f, span_y_f;
-			span_x ^ 2, span_y ^ 2;
-		}, "mask");
+		-- normalize the sum on the edges.
+		if fixed_size then
+			add_canvas_size(-span_x_i, -span_x_i, -span_y_i, -span_y_i);
+			obj.pixelshader("unweight_alpha_box@小数ぼかし@Basic_S", "object", nil, {
+				w, h; span_x_i, span_y_i; span_x_f, span_y_f;
+				2 * span_x - 1, 2 * span_y - 1;
+			}, "mask");
+		end
+	elseif distribution == 2 then
+		-- gaussian kernel.
+		-- the triangular distribution of the support [-1, +1] has the variance of 1/6.
+		local inv_vari_x, inv_vari_y =
+			6 * (span_x - 0.5) ^ -2, 6 * (span_y - 0.5) ^ -2;
+
+		obj.clearbuffer(cache_name, h, w + 2 * span_x_i);
+		obj.pixelshader("convol_gauss@小数ぼかし@Basic_S", cache_name, "object", {
+			h, w + 2 * span_x_i;
+			span_x_i, fixed_size and 0 or 1;
+			math_exp(-0.5 * inv_vari_x),
+			math_exp(-1.5 * inv_vari_x),
+			math_exp(-2.0 * inv_vari_x),
+			math_exp(-4.0 * inv_vari_x);
+		}, "copy", "clip");
+		obj.clearbuffer("object", w + 2 * span_x_i, h + 2 * span_y_i);
+		obj.pixelshader("convol_gauss@小数ぼかし@Basic_S", "object", cache_name, {
+			w + 2 * span_x_i, h + 2 * span_y_i;
+			span_y_i, fixed_size and 0 or 1;
+			math_exp(-0.5 * inv_vari_y),
+			math_exp(-1.5 * inv_vari_y),
+			math_exp(-2.0 * inv_vari_y),
+			math_exp(-4.0 * inv_vari_y);
+		}, "copy", "clip");
+
+		-- crop the edges.
+		if fixed_size then add_canvas_size(-span_x_i, -span_x_i, -span_y_i, -span_y_i) end
+	else
+		-- triangular kernel.
+		obj.clearbuffer(cache_name, h + 2 * span_y_i, w + 2 * span_x_i);
+		obj.computeshader("convol@小数ぼかし@Basic_S", cache_name, "object", {
+			h, w + span_x_i;
+			span_x_i, 2 ^ 12 * span_x_f, 2 ^ -12 / span_x,
+		}, 1, math_ceil(h / 64), 1);
+		obj.clearbuffer("object", w + 2 * span_x_i, h + 2 * span_y_i);
+		obj.computeshader("convol@小数ぼかし@Basic_S", "object", cache_name, {
+			w + span_x_i, h + span_y_i;
+			span_y_i, 2 ^ 12 * span_y_f, 2 ^ -12 / span_y,
+		}, 1, math_ceil((w + span_x_i) / 64), 1);
+		obj.computeshader("convol@小数ぼかし@Basic_S", cache_name, "object", {
+			h + span_y_i, w + 2 * span_x_i;
+			span_x_i, 2 ^ 12 * span_x_f, 2 ^ -12 / span_x,
+		}, 1, math_ceil((h + span_y_i) / 64), 1);
+		obj.computeshader("convol@小数ぼかし@Basic_S", "object", cache_name, {
+			w + 2 * span_x_i, h + 2 * span_y_i;
+			span_y_i, 2 ^ 12 * span_y_f, 2 ^ -12 / span_y,
+		}, 1, math_ceil((w + 2 * span_x_i) / 64), 1);
+
+		-- normalize the sum on the edges.
+		if fixed_size then
+			add_canvas_size(-span_x_i, -span_x_i, -span_y_i, -span_y_i);
+			obj.pixelshader("unweight_alpha@小数ぼかし@Basic_S", "object", nil, {
+				w, h; span_x_i, span_y_i; span_x_f, span_y_f;
+				span_x ^ 2, span_y ^ 2;
+			}, "mask");
+		end
 	end
 
 	-- remove the weight of luma.
