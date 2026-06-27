@@ -29,12 +29,26 @@ local color = 0xc0c0c0
 ---$file:パターン画像
 local file_image = ""
 
+---$track:画像X, min = -4000, max = 4000, step = 1, scale = 0.125
+local line_x = 0
+
+---$track:画像Y, min = -4000, max = 4000, step = 1, scale = 0.125
+local line_y = 0
+
+--trackgroup@line_x,line_y:line_image_pos
 ---$color:背景色
 local color_back = 0xc0c0c0
 
 ---$file:背景パターン画像
 local file_back = ""
 
+---$track:back::画像X, min = -4000, max = 4000, step = 1, scale = 0.125
+local back_x = 0
+
+---$track:back::画像Y, min = -4000, max = 4000, step = 1, scale = 0.125
+local back_y = 0
+
+--trackgroup@back_x,back_y:back_image_pos
 --group:透明度,false
 ---$track:透明度, min = 0, max = 100, step = 0.01
 local alpha = 0
@@ -108,11 +122,11 @@ inclusive = basic_s.PI.as_bool(PI.inclusive, inclusive);
 circle = basic_s.PI.as_bool(PI.circle, circle);
 color = tonumber(PI.color) or color;
 file_image = type(PI.file_image) == "string" and PI.file_image or file_image;
-local line_x, line_y = tonumber(PI.line_x) or 0, tonumber(PI.line_y) or 0;
+line_x, line_y = tonumber(PI.line_x) or line_x, tonumber(PI.line_y) or line_y;
 alpha = tonumber(PI.alpha) or alpha;
 color_back = tonumber(PI.color_back) or color_back;
 file_back = type(PI.file_back) == "string" and PI.file_back or file_back;
-local back_x, back_y = tonumber(PI.back_x) or 0, tonumber(PI.back_y) or 0;
+back_x, back_y = tonumber(PI.back_x) or back_x, tonumber(PI.back_y) or back_y;
 alpha_back = tonumber(PI.alpha_back) or alpha_back;
 alpha_front = tonumber(PI.alpha_front) or alpha_front;
 move_x, move_y = tonumber(PI.move_x) or move_x, tonumber(PI.move_y) or move_y;
