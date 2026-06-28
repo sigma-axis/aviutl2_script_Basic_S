@@ -93,6 +93,6 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v3
         with:
-          name: ${{ steps.release-name.outputs.name }}
+          name: ${{ steps.release-notes.outputs.name }}
           files: '*.zip'
           body_path: ReleaseNotes.txt
