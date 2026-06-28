@@ -13,7 +13,7 @@ static const float2 inv_size_src = 1.0 / src_size;
 float4 pick(float2 pos, out float wt)
 {
 	wt = clamp(0.5 + min(pos.x, float(src_size.x) - pos.x), min_pixel_wt, 1);
-	return src.Sample(smp, pos * inv_size_src);
+	return src.SampleLevel(smp, pos * inv_size_src, 0);
 }
 float4 convol_gauss(float4 pos : SV_Position) : SV_Target
 {
@@ -23,11 +23,11 @@ float4 convol_gauss(float4 pos : SV_Position) : SV_Target
 		dwt0 = 1, wt0 = rates[0], dwt01 = rates[1];
 	for (uint x = 1; x <= span_i; x += 2, dwt0 *= rates[3], wt0 *= dwt0, dwt01 *= rates[2]) {
 		const float wt1 = wt0 * dwt01, med = saturate(1 - rcp(1 + dwt01)), x_med = x + med;
-		float wt_add_1, wt_add_2;
+		float wt_add_l, wt_add_r;
 		sum += (wt0 + wt1) * (
-			pick(pos_src - float2(x_med, 0), wt_add_1) +
-			pick(pos_src + float2(x_med, 0), wt_add_2));
-		sum_wt += (wt0 + wt1) * (wt_add_1 + wt_add_2);
+			pick(pos_src - float2(x_med, 0), wt_add_l) +
+			pick(pos_src + float2(x_med, 0), wt_add_r));
+		sum_wt += (wt0 + wt1) * (wt_add_l + wt_add_r);
 	}
 
 	return sum / sum_wt;
