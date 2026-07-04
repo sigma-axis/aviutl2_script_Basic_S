@@ -1222,7 +1222,7 @@ function rotate_any_axis(angle, X, Y, Z, draw, group_control, is_axis_local)
 
 		-- check culling.
 		local draw_flag = true;
-		if obj.getoption("culling") then
+		if obj.getoption("culling") ~= 0 then
 			local a11, a12, a13, a21, a22, a23, a31, a32, a33 =
 				pts[1] - pts[4], pts[7] - pts[4], -pts[4],
 				pts[2] - pts[5], pts[8] - pts[5], -pts[5],
