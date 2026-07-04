@@ -1223,10 +1223,13 @@ function rotate_any_axis(angle, X, Y, Z, draw, group_control, is_axis_local)
 		-- check culling.
 		local draw_flag = true;
 		if obj.getoption("culling") then
-			local _, cross_x, cross_y, cross_z = quat_mult(
-				0, pts[1] - pts[4], pts[2] - pts[5], pts[3] - pts[6],
-				0, pts[7] - pts[4], pts[8] - pts[5], pts[9] - pts[6]); -- normal.
-			draw_flag = cross_x * pts[4] + cross_y * pts[5] + cross_z * (pts[6] + 1024) < 0;
+			local a11, a12, a13, a21, a22, a23, a31, a32, a33 =
+				pts[1] - pts[4], pts[7] - pts[4], -pts[4],
+				pts[2] - pts[5], pts[8] - pts[5], -pts[5],
+				pts[3] - pts[6], pts[9] - pts[6], -1024 - pts[6];
+			local det = a11 * a22 * a33 + a12 * a23 * a31 + a13 * a21 * a32
+				- a11 * a23 * a32 - a12 * a21 * a33 - a13 * a22 * a31;
+			draw_flag = det > 0;
 		end
 
 		-- render.
