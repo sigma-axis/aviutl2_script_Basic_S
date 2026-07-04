@@ -889,9 +889,10 @@ local function composite_core(dest_w, dest_h, dest_name, move_x, move_y, zoom_x,
 				obj.pixelshader("unalpha@画像ファイル合成@Basic_S", "tempbuffer", dest_name);
 			end
 
+			local prev_blend = obj.getoption("blend");
 			obj.setoption("blend", mode_blend);
 			obj.draw(0, 0, 0, 1, intensity);
-			obj.setoption("blend");
+			obj.setoption("blend", prev_blend);
 			obj.copybuffer("object", "tempbuffer");
 
 			if mode_composite > 0 then
@@ -910,9 +911,10 @@ local function composite_core(dest_w, dest_h, dest_name, move_x, move_y, zoom_x,
 				obj.pixelshader("unalpha@画像ファイル合成@Basic_S", "tempbuffer", dest_name);
 			end
 
+			local prev_blend = obj.getoption("blend");
 			obj.setoption("blend", mode_blend);
 			obj.draw(dcx, dcy);
-			obj.setoption("blend");
+			obj.setoption("blend", prev_blend);
 			obj.copybuffer("object", "tempbuffer");
 
 			if mode_composite > 2 then
@@ -944,9 +946,10 @@ local function composite_core(dest_w, dest_h, dest_name, move_x, move_y, zoom_x,
 			-- 後方から合成
 			obj.setoption("drawtarget", "tempbuffer", R - L, B - T);
 			obj.copybuffer("object", dest_name);
+			local prev_blend = obj.getoption("blend");
 			obj.setoption("blend", mode_blend);
 			obj.draw(dcx, dcy);
-			obj.setoption("blend");
+			obj.setoption("blend", prev_blend);
 			obj.copybuffer("object", "tempbuffer");
 		elseif mode_composite == 3 then
 			-- 後方から合成(クリッピング)
@@ -1217,10 +1220,22 @@ function rotate_any_axis(angle, X, Y, Z, draw, group_control, is_axis_local)
 				pts[3 * i - 1] + zz * (Cy - gy);
 		end
 
-		-- draw to tempbuffer.
-		obj.setoption("drawtarget", "tempbuffer", R - L, B - T);
-		obj.drawpoly(unpack(pts));
-		obj.copybuffer("object", "tempbuffer");
+		-- check culling.
+		local draw_flag = true;
+		if obj.getoption("culling") then
+			local _, cross_x, cross_y, cross_z = quat_mult(
+				0, pts[1] - pts[4], pts[2] - pts[5], pts[3] - pts[6],
+				0, pts[7] - pts[4], pts[8] - pts[5], pts[9] - pts[6]); -- normal.
+			draw_flag = cross_x * pts[4] + cross_y * pts[5] + cross_z * (pts[6] + 1024) < 0;
+		end
+
+		-- render.
+		if draw_flag then
+			-- draw to tempbuffer and load it.
+			obj.setoption("drawtarget", "tempbuffer", R - L, B - T);
+			obj.drawpoly(unpack(pts));
+			obj.copybuffer("object", "tempbuffer");
+		else obj.clearbuffer("object", R - L, B - T) end
 
 		-- flatten transforms.
 		obj.oz = obj.oz - gz;
@@ -1480,7 +1495,7 @@ end
 ---@param span_y number 縦方向のぼかし範囲，0 -- 500.
 ---@param luma_weight number 光の強さ，0 -- 60.
 ---@param fixed_size boolean サイズ固定．
----@param distribution `0`|`1`|`2` ぼかしの分布関数．0 -> 矩形分布，1 -> 三角分布，2 -> ガウス分布．
+---@param distribution? `0`|`1`|`2` ぼかしの分布関数．0 -> 矩形分布，1 -> 三角分布，2 -> ガウス分布．
 function prec_blur(span_x, span_y, luma_weight, fixed_size, distribution)
 	-- cap by maximum size.
 	span_x = math_min(span_x, math_floor((image_max_w - obj.w) / 2));

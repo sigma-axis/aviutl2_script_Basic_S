@@ -100,7 +100,7 @@ local has_image = #file_image >= 4;
 -- prepare for blending.
 local cache_name, w, h = "cache:basic_s/inner_shadow/obj", obj.w, obj.h;
 obj.copybuffer(cache_name, "object");
-if blur > 0 then basic_s.effect.prec_blur(blur, blur, 0, false) end
+if blur > 0 then basic_s.effect.prec_blur(blur, blur, 0, false, 1) end
 if X ~= 0 or Y ~= 0 or blur > 0 then
 	obj.setoption("drawtarget", "tempbuffer", w, h);
 	obj.draw(X, Y);
@@ -132,9 +132,10 @@ obj.pixelshader("unalpha@画像ファイル合成@Basic_S", "tempbuffer", cache_
 
 -- draw using the selected blend mode.
 obj.setoption("drawtarget", "tempbuffer");
+local prev_blend = obj.getoption("blend");
 obj.setoption("blend", blend_name);
 obj.draw(0, 0, 0, 1, alpha);
-obj.setoption("blend");
+obj.setoption("blend", prev_blend);
 
 -- carve the image.
 obj.pixelshader("mask@画像ファイル合成@Basic_S", "tempbuffer", cache_name, { 1 }, "mask");

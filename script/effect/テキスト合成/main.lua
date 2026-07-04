@@ -236,6 +236,7 @@ fixed_size = fixed_size or obj.getinfo("filter");
 local w, h = obj.w, obj.h;
 local cache_name = "cache:basic_s/combine/obj#"..obj.effect_id;
 obj.copybuffer(cache_name, "object");
+local prev_font = { obj.getfont() };
 obj.setfont(font_name, font_size, type_char, color_main, color_sub,
 	is_bold, is_italic, space_char, space_line);
 text = basic_s.execute_text_script(text);
@@ -249,6 +250,7 @@ if zoom > 0 and obj.load("text", text, text_speed, obj.time, text_align) then
 	end
 	load_success = obj.w > 0 and obj.h > 0;
 end
+obj.setfont(unpack(prev_font));
 do -- renders properly even if the text is empty.
 	-- reflect properties.
 	local zoom_x, zoom_y, c, s = zoom, zoom, 1, 0;
