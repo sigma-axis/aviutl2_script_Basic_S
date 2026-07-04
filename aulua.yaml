@@ -9,7 +9,7 @@ project:
 package:
   id: Basic_S
   name: 汎用スクリプト集 Basic_S
-  version: v2.41-wip (for beta52)
+  version: v2.41 (for beta52)
   information: "{name} {version} by {AUTHOR}"
   script_sub_dir: ""
   uninstall_sub_folder_file: false
