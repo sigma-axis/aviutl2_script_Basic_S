@@ -1916,35 +1916,31 @@ end
 ---@return number # 周期回数 (小数点以下の数値も含む).
 ---@return any ... `obj.getpoint("param")` の第 5 以降の戻り値．
 function track_period_bpmgrid(p, n, N, d, ...)
-	local fr = obj.getpoint("framerate");
-	local t, T0, T1 = obj.getpoint("time"), obj.getpoint("frame_s") / fr, obj.getpoint("frame_e") / fr;
-	local list = obj.getinfo("bpm_list");
-
-	n, N = math_max(n, 0), math_max(N, 1);
-	local cnt, NN, rate_n, rate_d = 0, nil, 0, 1;
-	if n == 0 then n = 1 else NN = N end
-	if 1 / p < 0 then
-		t, p = t - (T1 - T0) - 1 / fr, -p;
-		for i = #list, 1, -1 do
-			local g = list[i];
-			if g.start < T1 then
-				rate_n, rate_d = g.tempo * n, p * (NN or g.beat);
-				local dt = g.start - T1;
-				if t >= dt then break end
+	local t, F0, F1, fr, list = obj.getpoint("time"), obj.getpoint("frame_s"), obj.getpoint("frame_e"), obj.getpoint("framerate"), obj.getinfo("bpm_list");
+	local nn, NN = n > 0 and n or 1, n > 0 and math_max(N, 1) or nil;
+	local cnt, rate_n, rate_d = 0, list[1].tempo * nn, p * (NN or list[1].beat);
+	if 1 / p > 0 then
+		local T = F0 / fr;
+		for i = 1, #list do
+			local g = list[i]; local dt = g.start - T;
+			if t <= dt then break;
+			elseif dt > 0 then
 				cnt = cnt + dt * rate_n / rate_d;
-				t, T1 = t - dt, g.start;
+				t, T = t - dt, g.start;
 			end
+			rate_n, rate_d = g.tempo * nn, p * (NN or g.beat);
 		end
 	else
-		for i = 1, #list do
-			local g = list[i];
-			if g.start > T0 then
-				local dt = g.start - T0;
-				if t <= dt then break end
+		t, p = t - (F1 - F0 + 1) / fr, -p;
+		local T = F1 / fr;
+		for i = #list, 1, -1 do
+			local g = list[i]; local dt = g.start - T;
+			rate_n, rate_d = g.tempo * nn, p * (NN or g.beat);
+			if t >= dt then break;
+			elseif dt < 0 then
 				cnt = cnt + dt * rate_n / rate_d;
-				t, T0 = t - dt, g.start;
+				t, T = t - dt, g.start;
 			end
-			rate_n, rate_d = g.tempo * n, p * (NN or g.beat);
 		end
 	end
 	cnt = cnt + t * rate_n / rate_d;
