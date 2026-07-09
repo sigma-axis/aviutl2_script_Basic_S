@@ -5,24 +5,24 @@
 
 [Tips.四隅丸め@Basic_S]
 effect.name=オブジェクトの四隅を円などの図形で丸めます．
-縦横比=正で縦長，負で横長．
+縦横比=正で縦長 / 負で横長
 縦横比固定=角半径に対してサイズが小さいときの自動調整で，丸角の縦横比を固定します．
 内側透明度=ライン幅が小さいときの内部の透明度
 PI=PI = {\n  radii: table|number|nil,\n  fixed_aspect: boolean|number|nil,\n  shapes: table|string|nil,\n  line: number?,\n  alpha_inner: number?,\n}
 
 [Tips.背景角丸矩形@Basic_S]
 effect.name=オブジェクトの背景に角丸矩形を配置します．
-クリッピング=背景の図形からはみ出した部分の表示方法を設定します．
+クリッピング=背景の図形からはみ出した部分の表示方法
 背景色=ライン幅が小さいときの内部色
 背景色=ライン幅が小さいときの内部のパターン画像
 背景透明度=ライン幅が小さいときの内部の透明度
-丸角縦横比=正で縦長，負で横長．
+丸角縦横比=正で縦長 / 負で横長
 丸角縦横比固定=角半径に対してサイズが小さいときの自動調整で，丸角の縦横比を固定します．
 PI=PI = {\n  pad_X: table|number|nil,\n  pad_Y: table|number|nil,\n  clip: string?,\n  line: number?,\n  color: number?,\n  file_image: string?,\n  line_x: number?,\n  line_y: number?,\n  alpha: number?,\n  color_back: number?,\n  file_back: string?,\n  back_x: number?,\n  back_y: number?,\n  alpha_back: number?,\n  alpha_front: number?,\n  move_x: number?,\n  move_y: number?,\n  radii: table|number|nil,\n  fixed_aspect: boolean|number|nil,\n  shapes: table|string|nil,\n}
 
 [Tips.背景楕円@Basic_S]
 effect.name=オブジェクトの背景に楕円を配置します．
-クリッピング=背景の図形からはみ出した部分の表示方法を設定します．
+クリッピング=背景の図形からはみ出した部分の表示方法
 包含=元オブジェクトが背景の図形の内部に収まるように調整します．
 真円=幅と高さを一致させます．高さの設定が無視されます．
 背景色=ライン幅が小さいときの内部色
@@ -32,7 +32,7 @@ PI=PI = {\n  pad_X: number?,\n  pad_Y: number?,\n  clip: string?,\n  line: numbe
 
 [Tips.背景菱形@Basic_S]
 effect.name=オブジェクトの背景に菱形を配置します．
-クリッピング=背景の図形からはみ出した部分の表示方法を設定します．
+クリッピング=背景の図形からはみ出した部分の表示方法
 包含=元オブジェクトが背景の図形の内部に収まるように調整します．
 正方形=幅と高さを一致させます．高さの設定が無視されます．
 背景色=ライン幅が小さいときの内部色
@@ -76,8 +76,8 @@ PI=PI = {\n  X, Y, Z: number?,\n}
 
 [Tips.上下左右揃え@Basic_S]
 effect.name=オブジェクトの回転中心を，上下左右の端や中央に合わせます．
-左右%=-100: 左揃え, 0: 中央揃え, +100: 右揃え
-上下%=-100: 上揃え, 0: 中央揃え, +100: 下揃え
+左右%=-100: 左揃え / 0: 中央揃え / +100: 右揃え
+上下%=-100: 上揃え / 0: 中央揃え / +100: 下揃え
 描画位置を固定=描画座標も連動して移動します．
 
 [Tips.直角回転@Basic_S]
@@ -103,8 +103,8 @@ PI=PI = {\n  angle: number?,\n  slope: number?,\n  X1: number?,\n  Y1: number?,\
 
 [Tips.XY軸変形@Basic_S]
 effect.name=X, Y 軸方向に伸びたアンカーをマウス操作することで変形します．
-X長さ変更=X 軸方向の拡大縮小します．
-Y長さ変更=Y 軸方向の拡大縮小します．
+X長さ変更=X 軸方向に拡大縮小します．
+Y長さ変更=Y 軸方向に拡大縮小します．
 PI=PI = {\n  xX: number?,\n  xY: number?,\n  stretch_X: boolean|number|nil,\n  yX: number?,\n  yY: number?,\n  stretch_Y: boolean|number|nil,\n}
 
 [Tips.領域サイズ変更@Basic_S]
@@ -117,10 +117,10 @@ PI=PI = {\n  T: number?,\n  B: number?,\n  L: number?,\n  R: number?,\n  move_ce
 
 [Tips.領域サイズ指定@Basic_S]
 effect.name=領域拡張やクリッピングを，指定したサイズになるように適用します．
-幅=X 基準で，水平揃えで指定した範囲に領域拡張やクリッピングします．
-高さ=Y 基準で，垂直揃えで指定した範囲に領域拡張やクリッピングします．
-水平揃え=-100: 右揃え, 0: 中央揃え, +100: 左揃え
-垂直揃え=-100: 下揃え, 0: 中央揃え, +100: 上揃え
+幅=「X」基準で「水平揃え」で指定した範囲になるように，領域拡張やクリッピングします．
+高さ=「Y」基準で「垂直揃え」で指定した範囲になるように，領域拡張やクリッピングします．
+水平揃え=-100: 右揃え / 0: 中央揃え / +100: 左揃え
+垂直揃え=-100: 下揃え / 0: 中央揃え / +100: 上揃え
 PI=PI = {\n  X: number?,\n  Y: number?,\n  width: number?,\n  align_x: number?,\n  x_enabled: boolean|number|nil,\n  height: number?,\n  align_y: number?,\n  y_enabled: boolean|number|nil,\n  move_center: boolean|number|nil,\n  fill_blank: boolean|number|nil,\n  inverted_mask: boolean|number|nil,\n}
 
 [Tips.カットずらし@Basic_S]
@@ -132,30 +132,30 @@ PI=PI = {\n  X: number?,\n  Y: number?,\n  crack_X1: number?,\n  crack_Y1: numbe
 
 [Tips.中抜きクリッピング@Basic_S]
 effect.name=オブジェクトの端ではなく中間部分で領域拡張やクリッピングします．
-幅=X 基準で，水平揃えで指定した範囲をクリッピングや領域拡張します．
-高さ=Y 基準で，垂直揃えで指定した範囲をクリッピングや領域拡張します．
-水平揃え=-100: 右揃え, 0: 中央揃え, +100: 左揃え
-垂直揃え=-100: 下揃え, 0: 中央揃え, +100: 上揃え
+幅=「X」基準で「水平揃え」で指定した範囲をクリッピングや領域拡張します．
+高さ=「Y」基準で「垂直揃え」で指定した範囲をクリッピングや領域拡張します．
+水平揃え=-100: 右揃え / 0: 中央揃え / +100: 左揃え
+垂直揃え=-100: 下揃え / 0: 中央揃え / +100: 上揃え
 PI=PI = {\n  X: number?,\n  Y: number?,\n  width: number?,\n  align_x: number?,\n  gap_x: number?,\n  height: number?,\n  align_y: number?,\n  gap_y: number?,\n  mode_padding: string?,\n  mode_overlap: string?,\n  move_center: boolean|number|nil,\n}
 
 [Tips.画像中間ループ@Basic_S]
 effect.name=上下左右から指定した距離だけ内側の部分のみに画像ループを適用します．
 幅=「幅指定」で単位が変わります．
 高さ=「高さ指定」で単位が変わります．
-水平揃え=-100: 右揃え, 0: 中央揃え, +100: 左揃え
-垂直揃え=-100: 下揃え, 0: 中央揃え, +100: 上揃え
-ループ水平揃え=-100: 右揃え, 0: 中央揃え, +100: 左揃え
-ループ垂直揃え=-100: 下揃え, 0: 中央揃え, +100: 上揃え
+水平揃え=-100: 右揃え / 0: 中央揃え / +100: 左揃え
+垂直揃え=-100: 下揃え / 0: 中央揃え / +100: 上揃え
+ループ水平揃え=-100: 右揃え / 0: 中央揃え / +100: 左揃え
+ループ垂直揃え=-100: 下揃え / 0: 中央揃え / +100: 上揃え
 PI=PI = {\n  width: number?,\n  height: number?,\n  margin_u: number?,\n  margin_d: number?,\n  margin_l: number?,\n  margin_r: number?,\n  offset_x: number?,\n  offset_y: number?,\n  align_x: number?,\n  align_y: number?,\n  pivot_x: number?,\n  pivot_y: number?,\n  unit_x: string?,\n  unit_y: string?,\n  loop_x: string?,\n  loop_y: string?,\n}
 
 [Tips.小数ぼかし@Basic_S]
 effect.name=小数点以下のピクセル数の精度で画像をぼかします．
-縦横比=正で横長，負で縦長．
+縦横比=正で横長 / 負で縦長
 PI=PI = {\n  range: number?,\n  aspect: number?,\n  luma_weight: number?,\n  fixed_size: boolean|number|nil,\n  distribution: number?,\n}
 
 [Tips.四角縁取り@Basic_S]
 effect.name=角が四角になる縁取りです．
-縦横比=正で縦長，負で横長．
+縦横比=正で縦長 / 負で横長
 PI=PI = {\n  size: number?,\n  aspect: number?,\n  blur: number?,\n  alpha: number?,\n  color: number?,\n  file_image: string?,\n  X: number?,\n  Y: number?,\n  zoom: number?,\n  rotate: number?,\n  no_smooth: boolean|number|nil,\n  alpha_front: number?,\n}
 
 [Tips.内側シャドウ@Basic_S]
@@ -164,24 +164,24 @@ PI=PI = {\n  X: number?,\n  Y: number?,\n  alpha: number?,\n  blur: number?,\n  
 
 [Tips.画像ファイル合成@Basic_S]
 effect.name=現在のオブジェクトに画像ファイルを様々な方法で合成します．動画ファイルは読み込めません．
-追加のフィルタ効果=ロードした画像を合成前に，フィルタ効果を適用できます．
+追加のフィルタ効果=合成前に，ロードした画像にフィルタ効果を適用できます．
 PI=PI = {\n  file: string?,\n  X: number?,\n  Y: number?,\n  zoom: number?,\n  rotate: number?,\n  alpha: number?,\n  no_smooth: boolean|number|nil,\n  fixed_size: boolean|number|nil,\n  mode_tile: string?,\n  mode_draw: string?,\n  blend: string?,\n  extra_filter: string?,\n}
 
 [Tips.動画ファイル合成@Basic_S]
 effect.name=現在のオブジェクトに動画ファイルを様々な方法で合成します．画像ファイルは読み込めません．
 再生速度=再生位置は，経過時間×再生速度という単純な計算式のため，途中で再生速度を変えるとジャンプが発生することがあります．
-追加のフィルタ効果=ロードした画像を合成前に，フィルタ効果を適用できます．
+追加のフィルタ効果=合成前に，ロードした画像にフィルタ効果を適用できます．
 PI=PI = {\n  file: string?,\n  start: number?,\n  rate: number?,\n  loop: boolean|number|nil,\n  X: number?,\n  Y: number?,\n  zoom: number?,\n  rotate: number?,\n  alpha: number?,\n  no_smooth: boolean|number|nil,\n  fixed_size: boolean|number|nil,\n  mode_tile: string?,\n  mode_draw: string?,\n  blend: string?,\n  extra_filter: string?,\n}
 
 [Tips.テキスト合成@Basic_S]
 effect.name=オブジェクトにテキストを重ね打ちするなど，様々な方法で合成します．
-追加のフィルタ効果=ロードした画像を合成前に，フィルタ効果を適用できます．
+追加のフィルタ効果=合成前に，ロードした画像にフィルタ効果を適用できます．
 PI=PI = {\n  text: string?,\n  font_size: number?,\n  font_name: string?,\n  color_main: number?,\n  color_sub: number?,\n  type_char: string?,\n  is_bold: boolean|number|nil,\n  is_italic: boolean|number|nil,\n  space_char: number?,\n  space_line: number?,\n  text_speed: number?,\n  text_align: string?,\n  X: number?,\n  Y: number?,\n  zoom: number?,\n  rotate: number?,\n  alpha: number?,\n  fixed_size: boolean|number|nil,\n  no_smooth: boolean|number|nil,\n  mode_tile: string?,\n  mode_draw: string?,\n  blend: string?,\n  extra_filter: string?,\n}
 
 [Tips.画像バッファ合成@Basic_S]
 effect.name=現在オブジェクトや「仮想バッファ」，一時キャッシュの「キャッシュバッファ」などのバッファを，オブジェクトに合成します．
-キャッシュ名=一時キャッシュ指定時のみ有効．"cache:---" の "---" 部分．
-追加のフィルタ効果=ロードした画像を合成前に，フィルタ効果を適用できます．
+キャッシュ名="cache:---" の "---" 部分．一時キャッシュ指定時のみ有効．
+追加のフィルタ効果=合成前に，ロードした画像にフィルタ効果を適用できます．
 PI=PI = {\n  buffer: string?,\n  cache_name: string?,\n  X: number?,\n  Y: number?,\n  zoom: number?,\n  rotate: number?,\n  alpha: number?,\n  no_smooth: boolean|number|nil,\n  fixed_size: boolean|number|nil,\n  mode_tile: string?,\n  mode_draw: string?,\n  blend: string?,\n  extra_filter: string?,\n}
 
 [Tips.別レイヤー同期@Basic_S]
@@ -191,21 +191,21 @@ PI=PI = {\n  index_base: string?,\n  index: number?,\n  sync_ox: number?,\n  syn
 [Tips.バッファをコピー@Basic_S]
 effect.name=現在オブジェクトや「仮想バッファ」，一時キャッシュの「キャッシュバッファ」などのバッファ間でコピーを実行します．
 コピー先=フレームバッファの場合は，コピー元がシーンのサイズと一致している必要があります．
-キャッシュ名=一時キャッシュ指定時のみ有効．"cache:---" の "---" 部分．
+キャッシュ名="cache:---" の "---" 部分．一時キャッシュ指定時のみ有効．
 PI=PI = {\n  buff_src: string?,\n  cache_src: string?,\n  buff_dst: string?,\n  cache_dst: string?,\n  suppress_draw: boolean|number|nil,\n}
 
 [Tips.バッファをクリア@Basic_S]
 effect.name=現在オブジェクトや「仮想バッファ」，一時キャッシュの「キャッシュバッファ」などのバッファを初期化して，完全透明ピクセルに置き換えたり，単一色で塗りつぶします．
-キャッシュ名=一時キャッシュ指定時のみ有効．"cache:---" の "---" 部分．
+キャッシュ名="cache:---" の "---" 部分．一時キャッシュ指定時のみ有効．
 PI=PI = {\n  buffer: string?,\n  cache_name: string?,\n  color: number|false|nil,\n}
 
 [Tips.角丸矩形@Basic_S]
 effect.name=長方形や丸角四角形を生成します．縦横をピクセル単位で指定でき，上下左右揃えの指定もできます．
 背景色=ライン幅が小さいときの内部色
 背景透明度=ライン幅が小さいときの内部の透明度
-水平揃え=-100: 右揃え, 0: 中央揃え, +100: 左揃え
-垂直揃え=-100: 下揃え, 0: 中央揃え, +100: 上揃え
-丸角縦横比=正で縦長，負で横長．
+水平揃え=-100: 右揃え / 0: 中央揃え / +100: 左揃え
+垂直揃え=-100: 下揃え / 0: 中央揃え / +100: 上揃え
+丸角縦横比=正で縦長 / 負で横長
 丸角縦横比固定=角半径に対してサイズが小さいときの自動調整で，丸角の縦横比を固定します．
 PI=PI = {\n  width: number?,\n  height: number?,\n  line: number?,\n  color: number?,\n  color_back: number?,\n  alpha_back: number?,\n  radii: table|number|nil,\n  shapes: table|string|nil,\n  align_x: number?,\n  align_y: number?,\n  fixed_aspect: boolean|number|nil,\n}
 
@@ -214,8 +214,8 @@ effect.name=標準図形の「円」を，縦横をピクセル単位で指定�
 背景色=ライン幅が小さいときの内部色
 背景透明度=ライン幅が小さいときの内部の透明度
 真円=幅と高さを一致させます．高さの設定が無視されます．
-水平揃え=-100: 右揃え, 0: 中央揃え, +100: 左揃え
-垂直揃え=-100: 下揃え, 0: 中央揃え, +100: 上揃え
+水平揃え=-100: 右揃え / 0: 中央揃え / +100: 左揃え
+垂直揃え=-100: 下揃え / 0: 中央揃え / +100: 上揃え
 PI= PI = {\n  width: number?,\n  height: number?,\n  line: number?,\n  color: number?,\n  color_back: number?,\n  alpha_back: number?,\n  circle: boolean|number|nil,\n  align_x: number?,\n  align_y: number?,\n}
 
 [Tips.菱形@Basic_S]
@@ -223,8 +223,8 @@ effect.name=菱形を生成します．縦横をピクセル単位で指定で�
 背景色=ライン幅が小さいときの内部色
 背景透明度=ライン幅が小さいときの内部の透明度
 正方形=幅と高さを一致させます．高さの設定が無視されます．
-水平揃え=-100: 右揃え, 0: 中央揃え, +100: 左揃え
-垂直揃え=-100: 下揃え, 0: 中央揃え, +100: 上揃え
+水平揃え=-100: 右揃え / 0: 中央揃え / +100: 左揃え
+垂直揃え=-100: 下揃え / 0: 中央揃え / +100: 上揃え
 PI=PI = {\n  width: number?,\n  height: number?,\n  line: number?,\n  color: number?,\n  color_back: number?,\n  alpha_back: number?,\n  square: boolean|number|nil,\n  align_x: number?,\n  align_y: number?,\n}
 
 [Tips.スーパー楕円@Basic_S]
@@ -232,8 +232,8 @@ effect.name=スーパー楕円を生成します．アステロイドや菱形�
 背景色=ライン幅が小さいときの内部色
 背景透明度=ライン幅が小さいときの内部の透明度
 縦横一致=幅と高さを一致させます．高さの設定が無視されます．
-水平揃え=-100: 右揃え, 0: 中央揃え, +100: 左揃え
-垂直揃え=-100: 下揃え, 0: 中央揃え, +100: 上揃え
+水平揃え=-100: 右揃え / 0: 中央揃え / +100: 左揃え
+垂直揃え=-100: 下揃え / 0: 中央揃え / +100: 上揃え
 PI=PI = {\n  exponent: number?,\n  width: number?,\n  height: number?,\n  line: number?,\n  color: number?,\n  color_back: number?,\n  alpha_back: number?,\n  symmetric: boolean|number|nil,\n  align_x: number?,\n  align_y: number?,\n}
 
 [Tips.別レイヤー@Basic_S]
@@ -242,5 +242,5 @@ PI=PI = {\n  index_base: string?,\n  index: number?,\n  effect: boolean|number|n
 
 [Tips.バッファ読み込み@Basic_S]
 effect.name=「仮想バッファ出力」や各種スクリプトの一時描画先などとして保存されている「仮想バッファ」や，一時保存先の「キャッシュバッファ」などを読み込みます．
-キャッシュ名=一時キャッシュ指定時のみ有効．"cache:---" の "---" 部分．
+キャッシュ名="cache:---" の "---" 部分．一時キャッシュ指定時のみ有効．
 PI=PI = {\n  buffer_type: string?,\n  cache_name: string?,\n}
