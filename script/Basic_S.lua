@@ -1628,7 +1628,7 @@ function rect_border(size_x, size_y, blur, color_border, image_border,
 	size_x = math_min(size_x, math_floor((image_max_w - obj.w) / 2));
 	size_y = math_min(size_y, math_floor((image_max_h - obj.h) / 2));
 
-	local outer = size_x > 0;
+	local outer = size_x > 0 or size_y > 0;
 	local col_r, col_g, col_b = rgba_color_opt(color_border);
 	local size_x_i, size_y_i = math_ceil(math_abs(size_x)) - 1, math_ceil(math_abs(size_y)) - 1;
 	local size_x_f, size_y_f = math_abs(size_x) - size_x_i, math_abs(size_y) - size_y_i;
