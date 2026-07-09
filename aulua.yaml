@@ -34,6 +34,8 @@ package:
       dest: Script/{id}/README.md
     - src: LICENSE
       dest: Script/{id}/LICENSE
+    - src: Tooltip.aul2
+      dest: Language/Default.{id}.aul2
   file_name: package.au2pkg.zip
 
 build:
