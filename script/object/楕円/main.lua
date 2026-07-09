@@ -43,34 +43,34 @@ local basic_s = require("Basic_S");
 	PI = {
 		width:		number?,
 		height:		number?,
-		align_x:	number?,
-		align_y:	number?,
 		line:		number?,
 		color:		number?,
 		color_back:	number?,
 		alpha_back:	number?,
 		circle:		boolean|number|nil,
+		align_x:	number?,
+		align_y:	number?,
 	}
 ]==]
 width = tonumber(PI.width) or width;
 height = tonumber(PI.height) or height;
-align_x = tonumber(PI.align_x) or align_x;
-align_y = tonumber(PI.align_y) or align_y;
 line = tonumber(PI.line) or line;
 color = tonumber(PI.color) or color;
 color_back = tonumber(PI.color_back) or color_back;
 alpha_back = tonumber(PI.alpha_back) or alpha_back;
 circle = basic_s.PI.as_bool(PI.circle, circle);
+align_x = tonumber(PI.align_x) or align_x;
+align_y = tonumber(PI.align_y) or align_y;
 
 -- normalize parameters.
 width = math.max(math.floor(0.5 + width), 0);
 height = math.max(math.floor(0.5 + height), 0);
-align_x = math.min(math.max(align_x / 100, -1), 1);
-align_y = math.min(math.max(align_y / 100, -1), 1);
 line = math.max(line, 0);
 color = math.floor(0.5 + color) % 2 ^ 24;
 color_back = math.floor(0.5 + color_back) % 2 ^ 24;
 alpha_back = math.min(math.max(1 - alpha_back / 100, 0), 1);
+align_x = math.min(math.max(align_x / 100, -1), 1);
+align_y = math.min(math.max(align_y / 100, -1), 1);
 
 if circle then height = width end
 

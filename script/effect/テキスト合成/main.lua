@@ -41,7 +41,7 @@ local space_char = 0
 ---$track:行間, min = -500, max = 500, step = 0.01, scale = 0.1
 local space_line = 0
 
----$track:表示速度, min = 0, max = 100, step = 0.01
+---$track:表示速度, min = 0, max = 100, step = 0.01, zero_label=---
 local text_speed = 0
 
 ---$select:文字揃え

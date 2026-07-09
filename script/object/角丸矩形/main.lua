@@ -88,38 +88,38 @@ local radii, shapes = {
 	PI = {
 		width:			number?,
 		height:			number?,
-		align_x:		number?,
-		align_y:		number?,
 		line:			number?,
 		color:			number?,
 		color_back:		number?,
 		alpha_back:		number?,
 		radii:			table|number|nil,
-		fixed_aspect:	boolean|number|nil,
 		shapes:			table|string|nil,
+		align_x:		number?,
+		align_y:		number?,
+		fixed_aspect:	boolean|number|nil,
 	}
 ]==]
 width = tonumber(PI.width) or width;
 height = tonumber(PI.height) or height;
-align_x = tonumber(PI.align_x) or align_x;
-align_y = tonumber(PI.align_y) or align_y;
 line = tonumber(PI.line) or line;
 color = tonumber(PI.color) or color;
 color_back = tonumber(PI.color_back) or color_back;
 alpha_back = tonumber(PI.alpha_back) or alpha_back;
 radii = basic_s.PI.corner_radii(PI.radii, radii);
-fixed_aspect = basic_s.PI.as_bool(PI.fixed_aspect, fixed_aspect);
 shapes = basic_s.PI.corner_shape(PI.shapes, shapes);
+align_x = tonumber(PI.align_x) or align_x;
+align_y = tonumber(PI.align_y) or align_y;
+fixed_aspect = basic_s.PI.as_bool(PI.fixed_aspect, fixed_aspect);
 
 -- normalize parameters.
 width = math.max(math.floor(0.5 + width), 0);
 height = math.max(math.floor(0.5 + height), 0);
-align_x = math.min(math.max(align_x / 100, -1), 1);
-align_y = math.min(math.max(align_y / 100, -1), 1);
 line = math.max(line, 0);
 color = math.floor(0.5 + color) % 2 ^ 24;
 color_back = math.floor(0.5 + color_back) % 2 ^ 24;
 alpha_back = math.min(math.max(1 - alpha_back / 100, 0), 1);
+align_x = math.min(math.max(align_x / 100, -1), 1);
+align_y = math.min(math.max(align_y / 100, -1), 1);
 
 --#endregion PI / normalize parameters.
 

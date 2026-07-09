@@ -48,9 +48,9 @@ fill_blank = basic_s.PI.as_bool(PI.fill_blank, fill_blank);
 
 -- normalize parameters.
 T = math.floor(0.5 + T);
-B = math.floor(0.5 + B);
+B = math.ceil(-0.5 + B);
 L = math.floor(0.5 + L);
-R = math.floor(0.5 + R);
+R = math.ceil(-0.5 + R);
 
 --#endregion PI / normalize parameters.
 
