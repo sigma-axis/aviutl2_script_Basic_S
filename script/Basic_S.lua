@@ -3,7 +3,7 @@ local math_pi, math_tau, math_cos, math_sin, math_atan2, math_exp, math_log, mat
 local image_max_w, image_max_h = obj.getinfo("image_max");
 
 if obj.getinfo("version") < tonumber("${LEAST_AVIUTL_VERSION}") then
-	error([[AviUtl ExEdit ${LEAST_AVIUTL_VERSION_STRING} 以降が必要です！]], 2);
+	error([[AviUtl ExEdit2 version ${LEAST_AVIUTL_VERSION_STRING} 以降が必要です！]], 2);
 end
 
 --#region quaternion / rotation operations.
