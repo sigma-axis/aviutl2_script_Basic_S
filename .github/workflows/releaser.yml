@@ -38,6 +38,11 @@ jobs:
           unzip aulua/$archive -d aulua
           echo `pwd`/aulua > $GITHUB_PATH
 
+      - name: Set package version
+        shell: powershell
+        run: |
+          [Regex]::new('\${ver}').Replace((Get-Content .\Tooltip.aul2 -Raw), '${{ github.ref_name }}', 2).TrimEnd() | Set-Content .\Tooltip.aul2
+
       - name: Create package
         run: aulua pack
 
