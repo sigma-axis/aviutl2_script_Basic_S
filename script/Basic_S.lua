@@ -1826,6 +1826,7 @@ local
 	track_period_frame, -- 周期系(フレーム)
 	track_period_hertz, -- 周期系(Hz)
 	track_period_bpm, -- 周期系(BPM)
+	track_period_count, -- 周期系(回数)
 	track_period_bpmgrid, -- 周期系(BPMグリッド)
 	track_ease_inout_core, -- 基本緩急系
 	track_linear_rotation, -- 回転
@@ -1945,6 +1946,17 @@ function track_period_bpmgrid(p, n, N, d, ...)
 	end
 	cnt = cnt + t * rate_n / rate_d;
 	return cnt / 60 + d / 100, ...;
+end
+---トラックバーの周期系スクリプトで，回数単位で設定した周期を計算する．
+---@param N number 「周期(回数)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
+---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
+---@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
+---@return number # 周期回数 (小数点以下の数値も含む).
+---@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
+function track_period_count(N, d, ...)
+	local t, T = obj.getpoint("time"), obj.getpoint("time", 1) + 1 / obj.getpoint("framerate");
+	if 1 / N < 0 then t = t - T end
+	return (t / T) * N + d / 100, ...;
 end
 
 ---基本緩急 (正弦波など) の共通形式．
@@ -2172,6 +2184,7 @@ return {
 			hertz = track_period_hertz,
 			bpm = track_period_bpm,
 			bpmgrid = track_period_bpmgrid,
+			count = track_period_count,
 		},
 
 		curve = {
