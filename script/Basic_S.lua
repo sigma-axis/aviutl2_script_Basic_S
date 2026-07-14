@@ -1847,7 +1847,7 @@ local
 function track_curve_entire()
 	local n, i, t = obj.getpoint("num"), math_modf(obj.getpoint("timecontrol", "index"));
 	if i >= n - 1 then i, t = n - 2, 1;
-	elseif i < 0 then i, t = 0, 0 end
+	elseif i < 0 or t < 0 then i, t = 0, 0 end
 	return i, t;
 end
 
