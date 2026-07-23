@@ -185,6 +185,12 @@ effect.name=オブジェクトにテキストを重ね打ちするなど，様�
 追加のフィルタ効果=合成前に，ロードした画像にフィルタ効果を適用できます．
 PI=PI = {\n  text: string?,\n  font_size: number?,\n  font_name: string?,\n  color_main: number?,\n  color_sub: number?,\n  type_char: string?,\n  is_bold: boolean|number|nil,\n  is_italic: boolean|number|nil,\n  space_char: number?,\n  space_line: number?,\n  text_speed: number?,\n  text_align: string?,\n  X: number?,\n  Y: number?,\n  zoom: number?,\n  rotate: number?,\n  alpha: number?,\n  fixed_size: boolean|number|nil,\n  no_smooth: boolean|number|nil,\n  mode_tile: string?,\n  mode_draw: string?,\n  blend: string?,\n  extra_filter: string?,\n}
 
+[Tips.図形合成@Basic_S]
+effect.name=オブジェクトに図形や SVG ファイルを様々な方法で合成します．
+図形の種類=ボタンクリックで SVG ファイルも選択できます．
+追加のフィルタ効果=合成前に，ロードした画像にフィルタ効果を適用できます．
+PI=PI = {\n  figure: string?,\n  size: number?,\n  line: number?,\n  color: number?,\n  round: boolean|number|nil,\n  X: number?,\n  Y: number?,\n  zoom: number?,\n  rotate: number?,\n  alpha: number?,\n  no_smooth: boolean|number|nil,\n  fixed_size: boolean|number|nil,\n  mode_tile: string?,\n  mode_draw: string?,\n  blend: string?,\n  extra_filter: string?,\n}
+
 [Tips.画像バッファ合成@Basic_S]
 effect.name=現在オブジェクトや「仮想バッファ」，一時キャッシュの「キャッシュバッファ」などのバッファを，オブジェクトに合成します．
 キャッシュ名="cache:---" の "---" 部分．一時キャッシュ指定時のみ有効．
