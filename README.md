@@ -351,7 +351,7 @@ AviUtl (無印) にあった「動画ファイル合成」と同等のことが�
 
 オブジェクトに図形を合成します．図形を上から重ねたり背面に配置したりできます．SVG ファイルも利用できます．[画像ファイル合成](#画像ファイル合成)の図形版です．
 
-<!-- :arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/図形合成) -->
+:arrow_right: [\[詳細\]](https://github.com/sigma-axis/aviutl2_script_Basic_S/wiki/図形合成)
 
 ### 画像バッファ合成
 
