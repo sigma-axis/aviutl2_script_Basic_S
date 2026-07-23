@@ -9,7 +9,7 @@ project:
 package:
   id: Basic_S
   name: 汎用スクリプト集 Basic_S
-  version: v2.61
+  version: v2.70-wip
   information: "{name} {version} by {AUTHOR}"
   script_sub_dir: ""
   uninstall_sub_folder_file: false
@@ -110,6 +110,8 @@ scripts:
         path: script/effect/動画ファイル合成/main.lua
       - label: テキスト合成
         path: script/effect/テキスト合成/main.lua
+      - label: 図形合成
+        path: script/effect/図形合成/main.lua
       - label: 画像バッファ合成
         path: script/effect/画像バッファ合成/main.lua
       - label: 別レイヤー同期
