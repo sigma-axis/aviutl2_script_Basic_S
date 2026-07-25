@@ -188,6 +188,7 @@ PI=PI = {\n  text: string?,\n  font_size: number?,\n  font_name: string?,\n  col
 [Tips.図形合成@Basic_S]
 effect.name=オブジェクトに図形や SVG ファイルを様々な方法で合成します．
 図形の種類=ボタンクリックで SVG ファイルも選択できます．
+縦横比=正で縦長 / 負で横長
 追加のフィルタ効果=合成前に，ロードした画像にフィルタ効果を適用できます．
 PI=PI = {\n  figure: string?,\n  size: number?,\n  line: number?,\n  color: number?,\n  round: boolean|number|nil,\n  X: number?,\n  Y: number?,\n  zoom: number?,\n  rotate: number?,\n  alpha: number?,\n  no_smooth: boolean|number|nil,\n  fixed_size: boolean|number|nil,\n  mode_tile: string?,\n  mode_draw: string?,\n  blend: string?,\n  extra_filter: string?,\n}
 

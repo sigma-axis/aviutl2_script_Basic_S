@@ -8,6 +8,9 @@ local figure = "円"
 ---$track:サイズ, min = 0, max = 4000, step = 1, scale = 0.125
 local size = 100
 
+---$track:縦横比, min = -100, max = 100, step = 0.001
+local aspect = 0
+
 ---$track:ライン幅, min = 0, max = 4000, step = 1, scale = 0.125
 local line = 4000
 
@@ -103,6 +106,7 @@ obj.setanchor("X,Y", 0, "line");
 	PI = {
 		figure:			string?,
 		size:			number?,
+		aspect:			number?,
 		line:			number?,
 		color:			number?,
 		round:			boolean|number|nil,
@@ -121,6 +125,7 @@ obj.setanchor("X,Y", 0, "line");
 ]==]
 if type(PI.figure) == "string" then figure = PI.figure end
 size = tonumber(PI.size) or size;
+aspect = tonumber(PI.aspect) or aspect;
 line = tonumber(PI.line) or line;
 color = tonumber(PI.color) or color;
 round = basic_s.PI.as_bool(PI.round, round);
@@ -141,6 +146,7 @@ end
 
 -- normalize parameters.
 size = math.min(math.max(math.floor(0.5 + size), 0), 4000);
+aspect = math.min(math.max(aspect / 100, -1), 1);
 line = math.min(math.max(math.floor(0.5 + line), 0), 4000);
 color = math.floor(0.5 + color) % 2 ^ 24;
 zoom = math.min(math.max(zoom / 100, 0), 50);
@@ -155,7 +161,7 @@ local w, h, obj_props = obj.w, obj.h, basic_s.save_obj_props();
 local cache_name_obj = "cache:basic_s/combine/obj#"..obj.effect_id;
 obj.copybuffer(cache_name_obj, "object");
 local load_success, dcx, dcy = false, 0, 0;
-if obj.load("figure", figure, color, size, line, round) then
+if obj.load("figure", figure, color, size, line, round, aspect) then
 	-- reset the object properties.
 	if extra_filter == 1 then obj.effect();
 	elseif extra_filter == 2 and extra_script:find("%S") then
