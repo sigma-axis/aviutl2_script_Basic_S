@@ -205,7 +205,8 @@ PI=PI = {\n  index_base: string?,\n  index: number?,\n  sync_ox: number?,\n  syn
 [Tips.バッファをコピー@Basic_S]
 effect.name=現在オブジェクトや「仮想バッファ」，一時キャッシュの「キャッシュバッファ」などのバッファ間でコピーを実行します．
 コピー先=フレームバッファの場合は，コピー元がシーンのサイズと一致している必要があります．
-キャッシュ名="cache:---" の "---" 部分．一時キャッシュ指定時のみ有効．
+src::キャッシュ名="cache:---" の "---" 部分．一時キャッシュ指定時のみ有効．
+dst::キャッシュ名="cache:---" の "---" 部分．一時キャッシュ指定時のみ有効．
 PI=PI = {\n  buff_src: string?,\n  cache_src: string?,\n  buff_dst: string?,\n  cache_dst: string?,\n  suppress_draw: boolean|number|nil,\n}
 
 [Tips.バッファをクリア@Basic_S]
