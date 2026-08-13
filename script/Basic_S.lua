@@ -1883,7 +1883,7 @@ end
 function track_period_frame(F, d, ...)
 	local fr = obj.getpoint("framerate");
 	local f = fr * obj.getpoint("time");
-	if 1 / F < 0 then f = f - fr * obj.getpoint("time", 1) - 1 end
+	if 1 / F < 0 then f, F = f - fr * obj.getpoint("time", 1) - 1, -F end
 	if F == 0 then F = 1 end
 	return f / F + d / 100, ...;
 end
@@ -1895,7 +1895,7 @@ end
 ---@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
 function track_period_hertz(N, d, ...)
 	local t = obj.getpoint("time");
-	if 1 / N < 0 then t = t - obj.getpoint("time", 1) - 1 / obj.getpoint("framerate") end
+	if 1 / N < 0 then t, N = t - obj.getpoint("time", 1) - 1 / obj.getpoint("framerate"), -N end
 	return t * N + d / 100, ...;
 end
 ---トラックバーの周期系スクリプトで，BPM 単位で設定した周期を計算する．
@@ -1906,7 +1906,7 @@ end
 ---@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
 function track_period_bpm(N, d, ...)
 	local t = obj.getpoint("time");
-	if 1 / N < 0 then t = t - obj.getpoint("time", 1) - 1 / obj.getpoint("framerate") end
+	if 1 / N < 0 then t, N = t - obj.getpoint("time", 1) - 1 / obj.getpoint("framerate"), -N end
 	return t * N / 60 + d / 100, ...;
 end
 ---トラックバーの周期系スクリプトで，単位をリスト選択で設定している場合の周期を計算する．
@@ -1979,7 +1979,7 @@ end
 ---@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
 function track_period_count(N, d, ...)
 	local t, T = obj.getpoint("time"), obj.getpoint("time", 1) + 1 / obj.getpoint("framerate");
-	if 1 / N < 0 then t = t - T end
+	if 1 / N < 0 then t, N = t - T, -N end
 	return (t / T) * N + d / 100, ...;
 end
 
