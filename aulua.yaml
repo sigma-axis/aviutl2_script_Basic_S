@@ -180,6 +180,10 @@ scripts:
         path: script/track/discrete_repeat/bpm.lua
       - label: コマ落ち反復(回数)
         path: script/track/discrete_repeat/count.lua
+      - label: コマ落ちランダム
+        path: script/track/discrete_random/main.lua
+      - label: コマ落ちランダム(BPMグリッド)
+        path: script/track/discrete_random/bpmgrid.lua
       - label: コマ落ちランダム(秒)
         path: script/track/discrete_random/second.lua
       - label: コマ落ちランダム(フレーム)
@@ -188,8 +192,6 @@ scripts:
         path: script/track/discrete_random/hertz.lua
       - label: コマ落ちランダム(BPM)
         path: script/track/discrete_random/bpm.lua
-      - label: コマ落ちランダム(BPMグリッド)
-        path: script/track/discrete_random/bpmgrid.lua
       - label: コマ落ちランダム(回数)
         path: script/track/discrete_random/count.lua
       - label: 時間制御繰り返し(秒)
