@@ -30,6 +30,9 @@ local align_x = 0
 ---$track:垂直揃え, min = -100, max = 100, step = 0.001
 local align_y = 0
 
+---$checksection:回転中心を基準
+local center_based = false
+
 --group:余白/重複処理,false
 ---$select:余白処理
 ---空白 = 0
@@ -53,8 +56,13 @@ local obj, math, tonumber = obj, math, tonumber;
 local basic_s = require("Basic_S");
 
 -- set anchors
-if not move_center then
-	obj.setanchor("X,Y", 0, "line");
+if not move_center and obj.getoption("gui") then
+	local cx, cy = 0, 0;
+	if center_based then
+		cx, cy = obj.getvalue("center");
+		cx, cy = cx + obj.cx, cy + obj.cy;
+	end
+	obj.setanchor("X,Y", 0, "line", "offset", cx, cy);
 end
 
 --#region PI / normalize parameters.
@@ -73,6 +81,7 @@ end
 		mode_padding:	string?,
 		mode_overlap:	string?,
 		move_center:	boolean|number|nil,
+		center_based:	boolean|number|nil,
 	}
 ]==]
 X = tonumber(PI.X) or X;
@@ -86,8 +95,14 @@ gap_y = tonumber(PI.gap_y) or gap_y;
 mode_padding = basic_s.PI.cut_move_interpolate(PI.mode_padding, mode_padding);
 mode_overlap = basic_s.PI.cut_move_interpolate(PI.mode_overlap, mode_overlap);
 move_center = basic_s.PI.as_bool(PI.move_center, move_center);
+center_based = basic_s.PI.as_bool(PI.center_based, center_based);
 
 -- normalize parameters.
+if center_based then
+	local cx, cy, _ = obj.getvalue("center");
+	cx, cy = cx + obj.cx, cy + obj.cy;
+	X, Y = X + cx, Y + cy;
+end
 width = math.floor(0.5 + width);
 align_x = math.min(math.max(align_x / 100, -1), 1);
 gap_x = math.floor(0.5 + gap_x);

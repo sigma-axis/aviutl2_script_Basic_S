@@ -29,17 +29,10 @@ local obj, tonumber = obj, tonumber;
 local basic_s = require("Basic_S");
 
 -- set anchors.
-obj.setanchor("X,Y,Z", 0, "xyz");
 local cx, cy, cz = obj.getvalue("center");
 cx, cy, cz = obj.cx + cx, obj.cy + cy, obj.cz + cz;
-obj.setanchor({
-	cx, cy, cz;
-	cx + X, cy + Y, cz + Z;
-}, 2, "xyz", "line", "color", 0xc0ff80);
-obj.setanchor({
-	cx + X, cy + Y, cz + Z;
-	X, Y, Z;
-}, 2, "xyz", "line");
+obj.setanchor("X,Y,Z", 0, "xyz", "offset.xyz", cx, cy, cz, "line");
+obj.setanchor({ 0, 0, 0; X, Y, Z }, 2, "xyz", "offset.xyz", cx, cy, cz, "line", "color", 0xc0ff80);
 
 --#region PI / normalize parameters.
 

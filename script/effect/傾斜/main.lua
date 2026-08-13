@@ -22,6 +22,10 @@ local X2 = 100
 local Y2 = 0
 
 --trackgroup@X2,Y2:baseline2
+--group
+---$checksection:回転中心を基準
+local center_based = false
+
 --group:その他,false
 ---$value:PI
 local PI = {}
@@ -33,21 +37,29 @@ local baseline = {}
 local obj, math, tonumber = obj, math, tonumber;
 
 -- set anchors.
-obj.setanchor("X1,Y1", 0, "line", "rgba", 0x208020c0);
-obj.setanchor("X2,Y2", 0, "line", "rgba", 0xf05050c0);
-obj.setanchor({ X1, Y1, X2, Y2 }, 2, "line");
+if obj.getoption("gui") then
+	local cx, cy = 0, 0;
+	if center_based then
+		cx, cy = obj.getvalue("center");
+		cx, cy = cx + obj.cx, cy + obj.cy;
+	end
+	obj.setanchor("X1,Y1", 0, "line", "rgba", 0x208020c0, "offset", cx, cy);
+	obj.setanchor("X2,Y2", 0, "line", "rgba", 0xf05050c0, "offset", cx, cy);
+	obj.setanchor({ X1, Y1, X2, Y2 }, 2, "line", "offset", cx, cy);
+end
 
 --#region PI / normalize parameters.
 
 -- take parameters.
 --[==[
 	PI = {
-		angle:	number?,
-		slope:	number?,
-		X1:		number?,
-		Y1:		number?,
-		X2:		number?,
-		Y2:		number?,
+		angle:			number?,
+		slope:			number?,
+		X1:				number?,
+		Y1:				number?,
+		X2:				number?,
+		Y2:				number?,
+		center_based:	boolean|number|nil,
 	}
 ]==]
 angle = tonumber(PI.angle) or angle;
@@ -56,8 +68,15 @@ X1 = tonumber(baseline[1]) or tonumber(PI.X1) or X1;
 Y1 = tonumber(baseline[2]) or tonumber(PI.Y1) or Y1;
 X2 = tonumber(baseline[3]) or tonumber(PI.X2) or X2;
 Y2 = tonumber(baseline[4]) or tonumber(PI.Y2) or Y2;
+center_based = require("Basic_S").PI.as_bool(PI.center_based, center_based);
 
 -- normalize parameters.
+if center_based then
+	local cx, cy, _ = obj.getvalue("center");
+	cx, cy = cx + obj.cx, cy + obj.cy;
+	X1, Y1 = X1 + cx, Y1 + cy;
+	X2, Y2 = X2 + cx, Y2 + cy;
+end
 angle = math.pi / 180 * math.min(math.max(angle, -80), 80);
 slope = math.min(math.max(slope / 100, -5), 5);
 local dx, dy = X2 - X1, Y2 - Y1;

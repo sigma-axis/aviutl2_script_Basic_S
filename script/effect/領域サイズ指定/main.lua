@@ -27,6 +27,9 @@ local align_x = 0
 ---$track:垂直揃え, min = -100, max = 100, step = 0.001
 local align_y = 0
 
+---$checksection:回転中心を基準
+local center_based = false
+
 --group:縦横無効化,false
 ---$checksection:幅指定有効
 local x_enabled = true
@@ -48,7 +51,14 @@ local obj, math, tonumber = obj, math, tonumber;
 local basic_s = require("Basic_S");
 
 -- set anchors.
-if not move_center then obj.setanchor("X,Y", 0, "line") end
+if not move_center and obj.getoption("gui") then
+	local cx, cy = 0, 0;
+	if center_based then
+		cx, cy = obj.getvalue("center");
+		cx, cy = cx + obj.cx, cy + obj.cy;
+	end
+	obj.setanchor("X,Y", 0, "line", "offset", cx, cy);
+end
 
 --#region PI / normalize parameters.
 
@@ -64,6 +74,7 @@ if not move_center then obj.setanchor("X,Y", 0, "line") end
 		align_y:		number?,
 		y_enabled:		boolean|number|nil,
 		move_center:	boolean|number|nil,
+		center_based:	boolean|number|nil,
 		fill_blank:		boolean|number|nil,
 		inverted_mask:	boolean|number|nil,
 	}
@@ -77,10 +88,16 @@ height = tonumber(PI.height) or height;
 align_y = tonumber(PI.align_y) or align_y;
 y_enabled = basic_s.PI.as_bool(PI.y_enabled, y_enabled);
 move_center = basic_s.PI.as_bool(PI.move_center, move_center);
+center_based = basic_s.PI.as_bool(PI.center_based, center_based);
 fill_blank = basic_s.PI.as_bool(PI.fill_blank, fill_blank);
 inverted_mask = basic_s.PI.as_bool(PI.inverted_mask, inverted_mask);
 
 -- normalize parameters.
+if center_based then
+	local cx, cy, _ = obj.getvalue("center");
+	cx, cy = cx + obj.cx, cy + obj.cy;
+	X, Y = X + cx, Y + cy;
+end
 width = math.max(math.floor(0.5 + width), 1);
 height = math.max(math.floor(0.5 + height), 1);
 align_x = math.min(math.max(align_x / 100, -1), 1);

@@ -21,6 +21,9 @@ local yY = -100
 ---$checksection:Y長さ変更
 local stretch_Y = false
 
+---$checksection:中心の位置を変更
+local move_center = true
+
 --group:その他,false
 ---$value:PI
 local PI = {}
@@ -36,22 +39,30 @@ local obj, math, tonumber = obj, math, tonumber;
 local basic_s = require("Basic_S");
 
 -- set anchors.
-obj.setanchor("xX,xY", 0, "line", "rgba", 0xf05050c0);
-obj.setanchor("yX,yY", 0, "line", "rgba", 0x208020c0);
-obj.setanchor({ xX, xY }, 1, "star", "color", 0xf05050);
-obj.setanchor({ yX, yY }, 1, "star", "color", 0x208020);
+if obj.getoption("gui") then
+	local cx, cy = 0, 0;
+	if not move_center then
+		cx, cy = obj.getvalue("center");
+		cx, cy = cx + obj.cx, cy + obj.cy;
+	end
+	obj.setanchor("xX,xY", 0, "line", "rgba", 0xf05050c0, "offset", cx, cy);
+	obj.setanchor("yX,yY", 0, "line", "rgba", 0x208020c0, "offset", cx, cy);
+	obj.setanchor({ 0, 0, xX, xY }, 2, "line", "color", 0xf05050, "offset", cx, cy);
+	obj.setanchor({ 0, 0, yX, yY }, 2, "line", "color", 0x208020, "offset", cx, cy);
+end
 
 --#region PI / normalize parameters.
 
 -- take parameters.
 --[==[
 	PI = {
-		xX:			number?,
-		xY:			number?,
-		stretch_X:	boolean|number|nil,
-		yX:			number?,
-		yY:			number?,
-		stretch_Y:	boolean|number|nil,
+		xX:				number?,
+		xY:				number?,
+		stretch_X:		boolean|number|nil,
+		yX:				number?,
+		yY:				number?,
+		stretch_Y:		boolean|number|nil,
+		move_center:	boolean|number|nil,
 	}
 ]==]
 xX = tonumber(axis_X[1]) or tonumber(PI.xX) or xX;
@@ -60,18 +71,20 @@ stretch_X = basic_s.PI.as_bool(PI.stretch_X, stretch_X);
 yX = tonumber(axis_Y[1]) or tonumber(PI.yX) or yX;
 yY = tonumber(axis_Y[2]) or tonumber(PI.yY) or yY;
 stretch_Y = basic_s.PI.as_bool(PI.stretch_Y, stretch_Y);
+move_center = basic_s.PI.as_bool(PI.move_center, move_center);
 
 -- normalize parameters.
+local w, h = obj.w, obj.h;
 if not stretch_X then
 	local l = (xX ^ 2 + xY ^ 2) ^ 0.5;
 	if l <= 0 then xX, xY, l = 1, 0, 1 end
-	l = l ^ -1 * obj.w / 2;
+	l = l ^ -1 * w / 2;
 	xX, xY = l * xX, l * xY;
 end
 if not stretch_Y then
 	local l = (yX ^ 2 + yY ^ 2) ^ 0.5;
 	if l <= 0 then yX, yY, l = 0, 1, 1 end
-	l = l ^ -1 * obj.h / 2;
+	l = l ^ -1 * h / 2;
 	yX, yY = l * yX, l * yY;
 end
 
@@ -85,3 +98,13 @@ obj.drawpoly(
 	-xX + yX, -xY + yY, 0,  xX + yX,  xY + yY, 0,
 	 xX - yX,  xY - yY, 0, -xX - yX, -xY - yY, 0);
 obj.copybuffer("object", "tempbuffer");
+
+-- adjust the center.
+if not move_center then
+	local cx, cy, _ = obj.getvalue("center");
+	cx, cy = cx + obj.cx, cy + obj.cy;
+	local Cx, Cy =
+		xX * 2 * cx / w - yX * 2 * cy / h,
+		xY * 2 * cx / w - yY * 2 * cy / h;
+	obj.cx, obj.cy = obj.cx + Cx - cx, obj.cy + Cy - cy;
+end
