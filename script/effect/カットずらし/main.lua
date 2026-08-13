@@ -69,7 +69,8 @@ if not move_center and obj.getoption("gui") then
 		cx, cy = obj.getvalue("center");
 		cx, cy = cx + obj.cx, cy + obj.cy;
 	end
-	obj.setanchor("X,Y", 0, "arm", "offset", cx, cy);
+	obj.setanchor("X,Y", 0, "line", "offset", cx + (crack_X1 + crack_X2) / 2, cy + (crack_Y1 + crack_Y2) / 2);
+	obj.setanchor({ 0, 0, X, Y }, 2, "line", "offset", cx + (crack_X1 + crack_X2) / 2, cy + (crack_Y1 + crack_Y2) / 2);
 	obj.setanchor("crack_X1,crack_Y1", 0, "line", "rgba", 0x208020c0, "offset", cx, cy);
 	obj.setanchor("crack_X2,crack_Y2", 0, "line", "rgba", 0xf05050c0, "offset", cx, cy);
 	obj.setanchor({ crack_X1, crack_Y1, crack_X2, crack_Y2 }, 2, "line", "color", 0x4040ff, "offset", cx, cy);
@@ -119,7 +120,6 @@ center_based = basic_s.PI.as_bool(PI.center_based, center_based);
 if center_based then
 	local cx, cy, _ = obj.getvalue("center");
 	cx, cy = cx + obj.cx, cy + obj.cy;
-	X, Y = X + cx, Y + cy;
 	crack_X1, crack_Y1 = crack_X1 + cx, crack_Y1 + cy;
 	crack_X2, crack_Y2 = crack_X2 + cx, crack_Y2 + cy;
 end
