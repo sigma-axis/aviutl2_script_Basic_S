@@ -1,3 +1,5 @@
+-- 非推奨化に伴い，このファイルは更新凍結 / information も固定．
+
 --information:コマ落ちランダム(フレーム)@Basic_S v2.71 by σ軸
 --label:Basic_S\非推奨
 --require:2005400

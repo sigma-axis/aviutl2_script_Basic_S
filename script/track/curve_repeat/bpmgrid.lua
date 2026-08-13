@@ -6,6 +6,7 @@
 --param:基準のN分音符(0:小節),4
 --param:グリッド1拍のN分音符,4
 --param:周期ずれ%,0
+--param:モード/select/通常=0/往復=1,0
 --timecontrol
 local track = require("Basic_S").track;
 return track.curve_repeat(track.period.bpmgrid(obj.getpoint("param")));

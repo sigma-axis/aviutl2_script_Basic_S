@@ -1,6 +1,8 @@
---information:時間制御繰り返し往復(Hz)@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
---label:Basic_S\繰り返し
---require:${LEAST_AVIUTL_VERSION}
+-- 非推奨化に伴い，このファイルは更新凍結 / information も固定．
+
+--information:時間制御繰り返し往復(Hz)@Basic_S v2.71 by σ軸
+--label:Basic_S\非推奨
+--require:2005400
 --twopoint
 --param:周期(Hz),2
 --param:周期ずれ%,0

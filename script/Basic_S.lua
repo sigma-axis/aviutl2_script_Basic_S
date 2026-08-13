@@ -2037,10 +2037,16 @@ end
 
 ---時間制御繰り返しの実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
 ---@param c number 周期回数 (小数点以下の数値も含む).
+---@param mode integer 「モード」の値．指定は: `--param:モード/select/通常=0/往復=1,0`.
 ---@return number # トラックバーの計算値．
-function track_curve_repeat(c)
+function track_curve_repeat(c, mode)
 	local v0, v1 = obj.getpoint(0), obj.getpoint(1);
-	return v0 + (v1 - v0) * obj.getpoint("timecontrol", "value", (c % 1) * obj.getpoint("time", 1));
+	local x = c % 1;
+	if mode == 1 then -- 往復
+		x = 2 * x;
+		if x >= 1 then v0, v1, x = v1, v0, x - 1 end
+	end
+	return v0 + (v1 - v0) * obj.getpoint("timecontrol", "value", x * obj.getpoint("time", 1));
 end
 
 ---時間制御繰り返し往復の実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
