@@ -1827,6 +1827,7 @@ local
 	track_period_hertz, -- 周期系(Hz)
 	track_period_bpm, -- 周期系(BPM)
 	track_period_count, -- 周期系(回数)
+	track_period_select, -- 周期系(単位をリスト選択)
 	track_period_bpmgrid, -- 周期系(BPMグリッド)
 	track_ease_inout_core, -- 基本緩急系
 	track_linear_rotation, -- 回転
@@ -1907,6 +1908,29 @@ function track_period_bpm(N, d, ...)
 	local t = obj.getpoint("time");
 	if 1 / N < 0 then t = t - obj.getpoint("time", 1) - 1 / obj.getpoint("framerate") end
 	return t * N / 60 + d / 100, ...;
+end
+---トラックバーの周期系スクリプトで，単位をリスト選択で設定している場合の周期を計算する．
+---@param unit integer 「周期の単位」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．指定は: `--param:周期の単位/select/秒=0/フレーム=1/Hz=2/回数=3/BPM=4,0`.
+---@param N number 「周期」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
+---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 3 戻り値．
+---@param from_tail 0|1 「終点を基準」のパラメタ．`obj.getpoint("param")` の第 4 戻り値．
+---@param ... any `obj.getpoint("param")` の第 5 以降の戻り値．この関数の戻り値として追加される．
+---@return number # 周期回数 (小数点以下の数値も含む).
+---@return any ... `obj.getpoint("param")` の第 5 以降の戻り値．
+function track_period_select(unit, N, d, from_tail, ...)
+	N = math.abs(N);
+	if from_tail ~= 0 then N = -N end
+	if unit == 0 then -- 秒
+		return track_period_sec(N, d, ...);
+	elseif unit == 1 then -- フレーム
+		return track_period_frame(N, d, ...);
+	elseif unit == 2 then -- Hz
+		return track_period_hertz(N, d, ...);
+	elseif unit == 3 then -- 回数
+		return track_period_count(N, d, ...);
+	else -- BPM
+		return track_period_bpm(N, d, ...);
+	end
 end
 ---トラックバーの周期系スクリプトで，BPMグリッドに準じた周期を計算する．
 ---@param p number 「周期(音符数)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
@@ -2185,6 +2209,7 @@ return {
 			bpm = track_period_bpm,
 			bpmgrid = track_period_bpmgrid,
 			count = track_period_count,
+			select = track_period_select,
 		},
 
 		curve = {

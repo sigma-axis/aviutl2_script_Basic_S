@@ -1,7 +1,7 @@
 -- 非推奨化に伴い，このファイルは更新凍結 / information も固定．
 
 --information:縁取りα@Basic_S v2.20 (for beta49) by σ軸
---label:Basic_S\装飾
+--label:Basic_S\非推奨
 --require:2004200
 --separator:このスクリプトは現在は非推奨です．
 --separator:より高速で高機能な「縁取りσ」の利用を推奨します．

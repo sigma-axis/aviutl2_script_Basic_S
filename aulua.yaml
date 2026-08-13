@@ -166,6 +166,10 @@ scripts:
         path: script/track/uniform/second.lua
       - label: 等速移動(フレーム)
         path: script/track/uniform/frame.lua
+      - label: コマ落ち反復
+        path: script/track/discrete_repeat/main.lua
+      - label: コマ落ち反復(BPMグリッド)
+        path: script/track/discrete_repeat/bpmgrid.lua
       - label: コマ落ち反復(秒)
         path: script/track/discrete_repeat/second.lua
       - label: コマ落ち反復(フレーム)
@@ -174,8 +178,6 @@ scripts:
         path: script/track/discrete_repeat/hertz.lua
       - label: コマ落ち反復(BPM)
         path: script/track/discrete_repeat/bpm.lua
-      - label: コマ落ち反復(BPMグリッド)
-        path: script/track/discrete_repeat/bpmgrid.lua
       - label: コマ落ち反復(回数)
         path: script/track/discrete_repeat/count.lua
       - label: コマ落ちランダム(秒)
