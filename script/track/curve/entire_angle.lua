@@ -4,4 +4,5 @@
 --param:1周角度,360
 --timecontrol
 local track = require("Basic_S").track;
-return track.linear_rotation(track.curve.entire());
+local i, t = track.curve.entire();
+return track.linear_rotation(i, t, obj.getpoint("param"));

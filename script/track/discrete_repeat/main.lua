@@ -2,8 +2,9 @@
 --label:Basic_S\コマ落ち
 --require:${LEAST_AVIUTL_VERSION}
 --twopoint
---param:周期の単位/select/秒=0/フレーム=1/Hz=2/回数=3/BPM=4,0
+--param:周期の単位/select/秒=0/フレーム=1/Hz=2/回数=3/BPM=4/BPMグリッド(拍数線)=5/BPMグリッド(小節線)=6,0
 --param:周期,0.5
+--param:周期(分母),1
 --param:周期ずれ%,0
 --param:終点を基準/check,0
 --param:デューティ比%,50

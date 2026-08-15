@@ -1822,6 +1822,10 @@ end
 local
 	track_curve_entire, -- 全体で時間制御
 	track_curve_section, -- 区間ごとに時間制御
+	track_linear_rotation, -- 回転
+	track_curve_discrete, -- コマ落ち時間制御
+	track_period_unit, -- 周期系(BPMグリッド以外)
+	track_period_unit_bpmgrid, -- 周期系(BPMグリッド)
 	track_period_sec, -- 周期系(秒)
 	track_period_frame, -- 周期系(フレーム)
 	track_period_hertz, -- 周期系(Hz)
@@ -1830,7 +1834,6 @@ local
 	track_period_select, -- 周期系(単位をリスト選択)
 	track_period_bpmgrid, -- 周期系(BPMグリッド)
 	track_ease_inout_core, -- 基本緩急系
-	track_linear_rotation, -- 回転
 	track_discrete_repeat, -- コマ落ち反復
 	track_discrete_random, -- コマ落ちランダム
 	track_curve_repeat, -- 時間制御繰り返し
@@ -1862,146 +1865,17 @@ function track_curve_section()
 	return i, t;
 end
 
----トラックバーの周期系スクリプトで，秒単位で設定した周期を計算する．
----@param T number 「周期(秒)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
----@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
----@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
----@return number # 周期回数 (小数点以下の数値も含む).
----@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
-function track_period_sec(T, d, ...)
-	local t = obj.getpoint("time");
-	if 1 / T < 0 then t, T = t - obj.getpoint("time", 1) - 1 / obj.getpoint("framerate"), -T end
-	if T == 0 then T = 1 end
-	return t / T + d / 100, ...;
-end
----トラックバーの周期系スクリプトで，フレーム単位で設定した周期を計算する．
----@param F number 「周期(フレーム)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
----@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
----@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
----@return number # 周期回数 (小数点以下の数値も含む).
----@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
-function track_period_frame(F, d, ...)
-	local fr = obj.getpoint("framerate");
-	local f = fr * obj.getpoint("time");
-	if 1 / F < 0 then f, F = f - fr * obj.getpoint("time", 1) - 1, -F end
-	if F == 0 then F = 1 end
-	return f / F + d / 100, ...;
-end
----トラックバーの周期系スクリプトで，Hz 単位で設定した周期を計算する．
----@param N number 「周期(Hz)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
----@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
----@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
----@return number # 周期回数 (小数点以下の数値も含む).
----@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
-function track_period_hertz(N, d, ...)
-	local t = obj.getpoint("time");
-	if 1 / N < 0 then t, N = t - obj.getpoint("time", 1) - 1 / obj.getpoint("framerate"), -N end
-	return t * N + d / 100, ...;
-end
----トラックバーの周期系スクリプトで，BPM 単位で設定した周期を計算する．
----@param N number 「周期(BPM)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
----@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
----@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
----@return number # 周期回数 (小数点以下の数値も含む).
----@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
-function track_period_bpm(N, d, ...)
-	local t = obj.getpoint("time");
-	if 1 / N < 0 then t, N = t - obj.getpoint("time", 1) - 1 / obj.getpoint("framerate"), -N end
-	return t * N / 60 + d / 100, ...;
-end
----トラックバーの周期系スクリプトで，単位をリスト選択で設定している場合の周期を計算する．
----@param unit integer 「周期の単位」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．指定は: `--param:周期の単位/select/秒=0/フレーム=1/Hz=2/回数=3/BPM=4,0`.
----@param N number 「周期」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
----@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 3 戻り値．
----@param from_tail 0|1 「終点を基準」のパラメタ．`obj.getpoint("param")` の第 4 戻り値．
----@param ... any `obj.getpoint("param")` の第 5 以降の戻り値．この関数の戻り値として追加される．
----@return number # 周期回数 (小数点以下の数値も含む).
----@return any ... `obj.getpoint("param")` の第 5 以降の戻り値．
-function track_period_select(unit, N, d, from_tail, ...)
-	N = math.abs(N);
-	if from_tail ~= 0 then N = -N end
-	if unit == 0 then -- 秒
-		return track_period_sec(N, d, ...);
-	elseif unit == 1 then -- フレーム
-		return track_period_frame(N, d, ...);
-	elseif unit == 2 then -- Hz
-		return track_period_hertz(N, d, ...);
-	elseif unit == 3 then -- 回数
-		return track_period_count(N, d, ...);
-	else -- BPM
-		return track_period_bpm(N, d, ...);
-	end
-end
----トラックバーの周期系スクリプトで，BPMグリッドに準じた周期を計算する．
----@param p number 「周期(音符数)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
----@param n number 「基準のN分音符(0:小節)」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
----@param N number 「グリッド1拍のN分音符」のパラメタ．`obj.getpoint("param")` の第 3 戻り値．
----@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 4 戻り値．
----@param ... any `obj.getpoint("param")` の第 5 以降の戻り値．この関数の戻り値として追加される．
----@return number # 周期回数 (小数点以下の数値も含む).
----@return any ... `obj.getpoint("param")` の第 5 以降の戻り値．
-function track_period_bpmgrid(p, n, N, d, ...)
-	local t, F0, F1, fr, list = obj.getpoint("time"), obj.getpoint("frame_s"), obj.getpoint("frame_e"), obj.getpoint("framerate"), obj.getinfo("bpm_list");
-	local nn, NN = n > 0 and n or 1, n > 0 and math_max(N, 1) or nil;
-	local cnt, rate_n, rate_d = 0, list[1].tempo * nn, p * (NN or list[1].beat);
-	if 1 / p > 0 then
-		local T = F0 / fr;
-		for i = 1, #list do
-			local g = list[i]; local dt = g.start - T;
-			if t <= dt then break;
-			elseif dt > 0 then
-				cnt = cnt + dt * rate_n / rate_d;
-				t, T = t - dt, g.start;
-			end
-			rate_n, rate_d = g.tempo * nn, p * (NN or g.beat);
-		end
-	else
-		t, p = t - (F1 - F0 + 1) / fr, -p;
-		local T = F1 / fr;
-		for i = #list, 1, -1 do
-			local g = list[i]; local dt = g.start - T;
-			rate_n, rate_d = g.tempo * nn, p * (NN or g.beat);
-			if t >= dt then break;
-			elseif dt < 0 then
-				cnt = cnt + dt * rate_n / rate_d;
-				t, T = t - dt, g.start;
-			end
-		end
-	end
-	cnt = cnt + t * rate_n / rate_d;
-	return cnt / 60 + d / 100, ...;
-end
----トラックバーの周期系スクリプトで，回数単位で設定した周期を計算する．
----@param N number 「周期(回数)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
----@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
----@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
----@return number # 周期回数 (小数点以下の数値も含む).
----@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
-function track_period_count(N, d, ...)
-	local t, T = obj.getpoint("time"), obj.getpoint("time", 1) + 1 / obj.getpoint("framerate");
-	if 1 / N < 0 then t, N = t - T, -N end
-	return (t / T) * N + d / 100, ...;
-end
-
----基本緩急 (正弦波など) の共通形式．
----@return number time, number value1, number value2 正規化した時間, `time` が 0 のときの値, `time` が 1 のときの値．これらを元に ease-in として計算する．
-function track_ease_inout_core()
-	local i, t = math_modf(obj.getpoint("index"));
-	return reduce_inout_ease(t, obj.getpoint(i), obj.getpoint(i + 1), obj.getpoint("accelerate"), obj.getpoint("decelerate"));
-end
-
 ---回転系の共通形式．関連トラックを考慮して 3 次元回転を線形補間する．
----@param i number トラックバーのインデックス.
----@param t number 正規化された時間.
+---@param i number 区間のインデックス．
+---@param t number 正規化された時間．
+---@param cycle number 「1周角度」の値．
 ---@return number # トラックバーの計算値．
-function track_linear_rotation(i, t)
+function track_linear_rotation(i, t, cycle)
 	local k, l = obj.getpoint("link");
 	if l ~= 3 then
 		local v0, v1 = obj.getpoint(i), obj.getpoint(i + 1);
 		return v0 + (v1 - v0) * t;
 	end
-
-	local cycle = obj.getpoint("param");
 
 	-- get angles of two sides of the section.
 	local rx1, ry1, rz1, rx2, ry2, rz2 =
@@ -2018,6 +1892,284 @@ function track_linear_rotation(i, t)
 	return cycle / math_tau * a;
 end
 
+---トラックバーの周期系スクリプトの計算補助．周回数の計算と，周期の特定位置に対応する時間を逆計算する．「BPMグリッド」系統以外に対応．
+---@param sample_pos number? 周期の特定位置を指定．通常は 0.0 -- 1.0 で，周期の始点・終点に対応，対応する時間位置を逆計算する．`nil` で省略可能．
+---@param U_num number 周期を秒単位で表したときの分子．
+---@param U_den number 周期を秒単位で表したときの分母．
+---@param ofs_cyc number 周期ずれの値．通常は 0.0 -- 1.0. 増加すると周回点の到達が早くなる．
+---@param from_tail boolean 終点を基準にするかどうか．
+---@return number cycles 計算した周回数．
+---@return number time `sample_pos` に対応した周期位置の時間，トラックバー始点基準で秒単位．`sample_pos` 省略時は -1.
+function track_period_unit(sample_pos, U_num, U_den, ofs_cyc, from_tail)
+--	print(sample_pos, U_num, U_den, ofs_cyc, from_tail)
+
+	local fr = obj.getpoint("framerate");
+	local F = from_tail and fr * obj.getpoint("time", obj.getpoint("num") - 1) + 1 or 0;
+	local f = fr * obj.getpoint("time") - F;
+	local c = U_num == 0 and f or f * U_den / (fr * U_num) + ofs_cyc;
+	local sample_f = -1;
+	if sample_pos then
+		sample_f = U_den == 0 and 0 or U_num == 0 and f or
+			(math_floor(c) + sample_pos - ofs_cyc) * (fr * U_num) / U_den + F;
+		sample_f = sample_f / fr;
+	end
+	return c, sample_f;
+end
+
+---トラックバーの周期系スクリプトで，「BPMグリッド」での計算補助．周回数の計算と，周期の特定位置に対応する時間を逆計算する．
+---@param sample_pos number? 周期の特定位置を指定．通常は 0.0 -- 1.0 で，周期の始点・終点に対応，対応する時間位置を逆計算する．`nil` で省略可能．
+---@param U_num number 周期を秒単位で表したときの分子．
+---@param U_den number 周期を秒単位で表したときの分母．
+---@param by_meas boolean (拍数線ではなく) 小節線を1単位とするかどうか．
+---@param ofs_cyc number 周期ずれの値．通常は 0.0 -- 1.0. 増加すると周回点の到達が早くなる．
+---@param from_tail boolean 終点を基準にするかどうか．
+---@return number cycles 計算した周回数．
+---@return number time `sample_pos` に対応した周期位置の時間，トラックバー始点基準で秒単位．`sample_pos` 省略時は -1.
+function track_period_unit_bpmgrid(sample_pos, U_num, U_den, by_meas, ofs_cyc, from_tail)
+	local t, F0, F1, fr, list = obj.getpoint("time"), obj.getpoint("frame_s"), obj.getpoint("frame_e"), obj.getpoint("framerate"), obj.getinfo("bpm_list");
+	local T = from_tail and (F1 - F0 + 1) / fr or 0;
+	t = t - T;
+	local c, n, d = 0, list[1].tempo * U_den, U_num * (by_meas and list[1].beat or 1);
+	if not from_tail then
+		local T0 = F0 / fr;
+		for i = 1, #list do
+			local g = list[i]; local dt = g.start - T0;
+			if t <= dt then break;
+			elseif dt > 0 then
+				c = c + dt * n / d;
+				t, T0 = t - dt, g.start;
+			end
+			n, d = g.tempo * U_den, U_num * (by_meas and g.beat or 1);
+		end
+	else
+		local T1 = (F1 + 1) / fr;
+		for i = #list, 1, -1 do
+			local g = list[i]; local dt = g.start - T1;
+			n, d = g.tempo * U_den, U_num * (by_meas and g.beat or 1);
+			if t >= dt then break;
+			elseif dt < 0 then
+				c = c + dt * n / d;
+				t, T1 = t - dt, g.start;
+			end
+		end
+	end
+	c = (c + t * n / d) / 60 + ofs_cyc;
+
+	local sc = -1;
+	if sample_pos then
+		sc = math_floor(c) + sample_pos - ofs_cyc;
+		if sc >= 0 then
+			local T0 = (from_tail and (F1 + 1) or F0) / fr;
+			n, d = list[1].tempo * U_den, U_num * (by_meas and list[1].beat or 1);
+			for i = 1, #list do
+				local g = list[i]; local dt = g.start - T0;
+				if sc * d <= dt * n then break;
+				elseif dt > 0 then
+					sc, T0 = sc - dt * n / d, g.start;
+				end
+				n, d = g.tempo * U_den, U_num * (by_meas and g.beat or 1);
+			end
+			t = T0;
+		else
+			local T1 = (from_tail and (F1 + 1) or F0) / fr;
+			for i = #list, 1, -1 do
+				local g = list[i]; local dt = g.start - T1;
+				n, d = g.tempo * U_den, U_num * (by_meas and g.beat or 1);
+				if sc * d >= dt * n then break;
+				elseif dt < 0 then
+					sc, T1 = sc - dt * n / d, g.start;
+				end
+			end
+			t = T1;
+		end
+		sc = sc * d / n + t - F0 / fr;
+	end
+
+	return c, sc;
+end
+
+do
+	local function get_point_index(t)
+		local num = obj.getpoint("num") - 1;
+		local l, r = 0, num - 1;
+		while l < r - 1 do
+			local i = math_floor(l + r) / 2;
+			if obj.getpoint("time", i) <= t then l = i;
+			else r = i end
+		end
+		local L, R = obj.getpoint("time", l), obj.getpoint("time", l + 1);
+		return l, (t - L) / (R - L);
+	end
+
+	---コマ落ち時間制御の実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
+	---@param unit integer 「周期の単位」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．指定は: `--param:周期の単位/select/秒=0/フレーム=1/Hz=2/回数=3/BPM=4/BPMグリッド(拍数線)=5/BPMグリッド(小節線)=6,0`.
+	---@param N number 「周期」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
+	---@param D number 「周期(分母)」のパラメタ．`obj.getpoint("param")` の第 3 戻り値．
+	---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 4 戻り値．
+	---@param from_tail 0|1 「終点を基準」のパラメタ．`obj.getpoint("param")` の第 5 戻り値．
+	---@param mode integer 「モード」の値．`obj.getpoint("param")` の第 6 戻り値．指定は: `--param:モード/select/区間ごとに時間制御=0/全体で時間制御=1/区間ごとに時間制御(回転)=2/全体で時間制御(回転)=3,0`.
+	---@param cycle number 「1周角度」の値．`obj.getpoint("param")` の第 7 戻り値．
+	---@param sample_pos number 「サンプル位置%」の値．`obj.getpoint("param")` の第 8 戻り値．
+	---@return number # トラックバーの計算値．
+	function track_curve_discrete(unit, N, D, d, from_tail, mode, cycle, sample_pos)
+		N, D = math_abs(N), math_abs(D);
+		local T = obj.getpoint("time", obj.getpoint("num") - 1) + 1 / obj.getpoint("framerate");
+		local U_num, U_den, by_meas = N, D, nil; -- 秒
+		if unit == 1 then U_den = obj.getpoint("framerate") * D; -- フレーム
+		elseif unit == 2 then U_num, U_den = D, N; -- Hz
+		elseif unit == 3 then U_num, U_den = T * D, N; -- 回数
+		elseif unit == 4 then U_num, U_den = 60 * D, N; -- BPM
+		elseif unit == 5 then by_meas = false; -- BPMグリッド(拍数線)
+		elseif unit == 6 then by_meas = true; -- BPMグリッド(小節線)
+		end
+		local _, t;
+		if by_meas == nil then
+			_, t = track_period_unit(
+				sample_pos / 100, U_num, U_den,
+				d / 100, from_tail ~= 0);
+		else
+			_, t = track_period_unit_bpmgrid(
+				sample_pos / 100, U_num, U_den, by_meas,
+				d / 100, from_tail ~= 0);
+		end
+		local piecewise, rotation = (mode % 2) == 0, mode >= 2;
+		local i, f;
+		if piecewise then
+			local u; i, u = get_point_index(t);
+			f = obj.getpoint("timecontrol", "value", math_min(math_max(u, 0), 1) * T);
+		else
+			local u = obj.getpoint("timecontrol", "value", t);
+			i, f = get_point_index(math_min(math_max(u, 0), 1) * T);
+		end
+		if rotation then
+			return track_linear_rotation(i, f, cycle);
+		else
+			local v0, v1 = obj.getpoint(i), obj.getpoint(i + 1);
+			return (1 - f) * v0 + f * v1;
+		end
+	end
+end
+
+---トラックバーの周期系スクリプトで，単位をリスト選択で設定している場合の周期を計算する．
+---@param unit integer 「周期の単位」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．指定は: `--param:周期の単位/select/秒=0/フレーム=1/Hz=2/回数=3/BPM=4/BPMグリッド(拍数線)=5/BPMグリッド(小節線)=6,0`.
+---@param N number 「周期」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
+---@param D number 「周期(分母)」のパラメタ．`obj.getpoint("param")` の第 3 戻り値．
+---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 4 戻り値．
+---@param from_tail 0|1 「終点を基準」のパラメタ．`obj.getpoint("param")` の第 5 戻り値．
+---@param ... any `obj.getpoint("param")` の第 6 以降の戻り値．この関数の戻り値として追加される．
+---@return number # 周期回数 (小数点以下の数値も含む).
+---@return any ... `obj.getpoint("param")` の第 5 以降の戻り値．
+function track_period_select(unit, N, D, d, from_tail, ...)
+	N, D = math_abs(N), math_abs(D);
+	local T = obj.getpoint("time", obj.getpoint("num") - 1) + 1 / obj.getpoint("framerate");
+	local U_num, U_den, by_meas = N, D, nil; -- 秒
+	if unit == 1 then U_den = obj.getpoint("framerate") * D; -- フレーム
+	elseif unit == 2 then U_num, U_den = D, N; -- Hz
+	elseif unit == 3 then U_num, U_den = T * D, N; -- 回数
+	elseif unit == 4 then U_num, U_den = 60 * D, N; -- BPM
+	elseif unit == 5 then by_meas = false; -- BPMグリッド(拍数線)
+	elseif unit == 6 then by_meas = true; -- BPMグリッド(小節線)
+	end
+
+	local c, _;
+	if by_meas == nil then
+		c, _ = track_period_unit(
+			nil, U_num, U_den, d / 100, from_tail ~= 0);
+	else
+		c, _ = track_period_unit_bpmgrid(
+			nil, U_num, U_den, by_meas, d / 100, from_tail ~= 0);
+	end
+
+	return c, ...;
+end
+
+--#region deprecated
+
+---トラックバーの周期系スクリプトで，秒単位で設定した周期を計算する．
+---@param T number 「周期(秒)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
+---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
+---@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
+---@return number # 周期回数 (小数点以下の数値も含む).
+---@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
+---@deprecated `track.period.unit` のラッパー．
+function track_period_sec(T, d, ...)
+	local from_tail = false;
+	if 1 / T < 0 then from_tail, T = true, -T end
+	return (track_period_unit(nil, T, 1, d / 100, from_tail)), ...;
+end
+---トラックバーの周期系スクリプトで，フレーム単位で設定した周期を計算する．
+---@param F number 「周期(フレーム)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
+---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
+---@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
+---@return number # 周期回数 (小数点以下の数値も含む).
+---@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
+---@deprecated `track.period.unit` のラッパー．
+function track_period_frame(F, d, ...)
+	local from_tail = false;
+	if 1 / F < 0 then from_tail, F = true, -F end
+	return (track_period_unit(nil, F, obj.getpoint("framerate"), d / 100, from_tail)), ...;
+end
+---トラックバーの周期系スクリプトで，Hz 単位で設定した周期を計算する．
+---@param N number 「周期(Hz)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
+---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
+---@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
+---@return number # 周期回数 (小数点以下の数値も含む).
+---@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
+---@deprecated `track.period.unit` のラッパー．
+function track_period_hertz(N, d, ...)
+	local from_tail = false;
+	if 1 / N < 0 then from_tail, N = true, -N end
+	return (track_period_unit(nil, 1, N, d / 100, from_tail)), ...;
+end
+---トラックバーの周期系スクリプトで，BPM 単位で設定した周期を計算する．
+---@param N number 「周期(BPM)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
+---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
+---@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
+---@return number # 周期回数 (小数点以下の数値も含む).
+---@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
+---@deprecated `track.period.unit` のラッパー．
+function track_period_bpm(N, d, ...)
+	local from_tail = false;
+	if 1 / N < 0 then from_tail, N = true, -N end
+	return (track_period_unit(nil, 60, N, d / 100, from_tail)), ...;
+end
+---トラックバーの周期系スクリプトで，回数単位で設定した周期を計算する．
+---@param N number 「周期(回数)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
+---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
+---@param ... any `obj.getpoint("param")` の第 3 以降の戻り値．この関数の戻り値として追加される．
+---@return number # 周期回数 (小数点以下の数値も含む).
+---@return any ... `obj.getpoint("param")` の第 3 以降の戻り値．
+---@deprecated `track.period.unit` のラッパー．
+function track_period_count(N, d, ...)
+	local from_tail = false;
+	if 1 / N < 0 then from_tail, N = true, -N end
+	return (track_period_unit(nil, obj.getpoint("time", obj.getpoint("num") - 1) + 1 / obj.getpoint("framerate"), N, d / 100, from_tail)), ...;
+end
+---トラックバーの周期系スクリプトで，BPMグリッドに準じた周期を計算する．
+---@param p number 「周期(音符数)」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．
+---@param n number 「基準のN分音符(0:小節)」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
+---@param N number 「グリッド1拍のN分音符」のパラメタ．`obj.getpoint("param")` の第 3 戻り値．
+---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 4 戻り値．
+---@param ... any `obj.getpoint("param")` の第 5 以降の戻り値．この関数の戻り値として追加される．
+---@return number # 周期回数 (小数点以下の数値も含む).
+---@return any ... `obj.getpoint("param")` の第 5 以降の戻り値．
+---@deprecated `track.period.unit_bpmgrid` のラッパー．
+function track_period_bpmgrid(p, n, N, d, ...)
+	local from_tail, by_meas = false, false;
+	if 1 / p < 0 then from_tail, p = true, -p end
+	if n == 0 then n, N, by_meas = 1, 1, true end
+	return (track_period_unit_bpmgrid(nil, p * N, n, by_meas, d / 100, from_tail)), ...;
+end
+
+--#endregion deprecated
+
+---基本緩急 (正弦波など) の共通形式．
+---@return number time, number value1, number value2 正規化した時間, `time` が 0 のときの値, `time` が 1 のときの値．これらを元に ease-in として計算する．
+function track_ease_inout_core()
+	local i, t = math_modf(obj.getpoint("index"));
+	return reduce_inout_ease(t, obj.getpoint(i), obj.getpoint(i + 1), obj.getpoint("accelerate"), obj.getpoint("decelerate"));
+end
+
 ---コマ落ち反復の実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
 ---@param c number 周期回数 (小数点以下の数値も含む).
 ---@param R number 「デューティ比%」の値．
@@ -2032,16 +2184,17 @@ end
 ---@return number # トラックバーの計算値．
 function track_discrete_random(c, seed)
 	local v0, v1 = obj.getpoint(0), obj.getpoint(1);
-	return v0 + (v1 - v0) * obj.rand1(math.floor(0.5 + seed), math_floor(c) + 1);
+	return v0 + (v1 - v0) * obj.rand1(math_floor(0.5 + seed), math_floor(c) + 1);
 end
 
 ---時間制御繰り返しの実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
 ---@param c number 周期回数 (小数点以下の数値も含む).
----@param mode integer 「モード」の値．指定は: `--param:モード/select/通常=0/往復=1,0`.
+---@param mode integer? 「モード」の値．指定は: `--param:モード/select/通常=0/往復=1,0`. 省略時は `0` 扱い．
 ---@return number # トラックバーの計算値．
 function track_curve_repeat(c, mode)
 	local v0, v1 = obj.getpoint(0), obj.getpoint(1);
 	local x = c % 1;
+	mode = mode or 0;
 	if mode == 1 then -- 往復
 		x = 2 * x;
 		if x >= 1 then v0, v1, x = v1, v0, x - 1 end
@@ -2052,12 +2205,8 @@ end
 ---時間制御繰り返し往復の実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
 ---@param c number 周期回数 (小数点以下の数値も含む).
 ---@return number # トラックバーの計算値．
-function track_curve_backforth(c)
-	local v0, v1 = obj.getpoint(0), obj.getpoint(1);
-	local x = 2 * (c % 1);
-	if x >= 1 then v0, v1, x = v1, v0, x - 1 end
-	return v0 + (v1 - v0) * obj.getpoint("timecontrol", "value", x * obj.getpoint("time", 1));
-end
+---@deprecated `track_curve_repeat` のラッパー．
+function track_curve_backforth(c) return track_curve_repeat(c, 1) end
 
 ---対数補間の実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
 ---@param t number 正規化された時間．0.0 -- 1.0.
@@ -2213,14 +2362,17 @@ return {
 			frame = track_period_frame,
 			hertz = track_period_hertz,
 			bpm = track_period_bpm,
-			bpmgrid = track_period_bpmgrid,
 			count = track_period_count,
 			select = track_period_select,
+			bpmgrid = track_period_bpmgrid,
+			unit = track_period_unit,
+			unit_bpmgrid = track_period_unit_bpmgrid,
 		},
 
 		curve = {
 			entire = track_curve_entire,
 			section = track_curve_section,
+			discrete = track_curve_discrete,
 		},
 
 		["基本緩急"] = track_ease_inout_core, ease_inout_core = track_ease_inout_core,
