@@ -1,4 +1,5 @@
 --information:角丸矩形@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:長方形や丸角四角形を生成します．縦横をピクセル単位で指定でき，上下左右揃えの指定もできます．
 --label:Basic_S\図形
 --require:${LEAST_AVIUTL_VERSION}
 ---$track:幅, min = 0, max = 4000, step = 1, scale = 0.25
@@ -13,9 +14,11 @@ local line = 4000
 ---$color:色
 local color = 0xffffff
 
+---$tips:ライン幅が小さいときの内部色
 ---$color:背景色
 local color_back = 0xffffff
 
+---$tips:ライン幅が小さいときの内部の透明度
 ---$track:背景透明度, min = 0, max = 100, step = 0.01
 local alpha_back = 100
 
@@ -38,9 +41,11 @@ local radius = 40
 local shape = 0
 
 --group:配置,false
+---$tips:-100: 右揃え / 0: 中央揃え / +100: 左揃え
 ---$track:水平揃え, min = -100, max = 100, step = 0.001
 local align_x = 0
 
+---$tips:-100: 下揃え / 0: 中央揃え / +100: 上揃え
 ---$track:垂直揃え, min = -100, max = 100, step = 0.001
 local align_y = 0
 
@@ -57,13 +62,29 @@ local r_RB = 40
 ---$track:左下半径, min = 0, max = 2000, step = 0.01, scale = 0.25
 local r_LB = 40
 
+---$tips:正で縦長 / 負で横長
 ---$track:丸角縦横比, min = -100, max = 100, step = 0.001
 local aspect = 0
 
+---$tips:角半径に対してサイズが小さいときの自動調整で，丸角の縦横比を固定します．
 ---$checksection:丸角縦横比固定
 local fixed_aspect = true
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  width: number?,
+---     :  height: number?,
+---     :  line: number?,
+---     :  color: number?,
+---     :  color_back: number?,
+---     :  alpha_back: number?,
+---     :  radii: table|number|nil,
+---     :  shapes: table|string|nil,
+---     :  align_x: number?,
+---     :  align_y: number?,
+---     :  fixed_aspect: boolean|number|nil,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -84,21 +105,6 @@ local radii, shapes = {
 
 --#region PI / normalize parameters.
 
---[==[
-	PI = {
-		width:			number?,
-		height:			number?,
-		line:			number?,
-		color:			number?,
-		color_back:		number?,
-		alpha_back:		number?,
-		radii:			table|number|nil,
-		shapes:			table|string|nil,
-		align_x:		number?,
-		align_y:		number?,
-		fixed_aspect:	boolean|number|nil,
-	}
-]==]
 width = tonumber(PI.width) or width;
 height = tonumber(PI.height) or height;
 line = tonumber(PI.line) or line;

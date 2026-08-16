@@ -1,9 +1,12 @@
 --information:画像中間ループ@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:上下左右から指定した距離だけ内側の部分のみに画像ループを適用します．
 --label:Basic_S\配置
 --require:${LEAST_AVIUTL_VERSION}
+---$tips:「幅指定」で単位が変わります．
 ---$track:幅, min = 0, max = 4000, step = 1, scale = 0.25
 local width = 1
 
+---$tips:「高さ指定」で単位が変わります．
 ---$track:高さ, min = 0, max = 4000, step = 1, scale = 0.25
 local height = 1
 
@@ -29,15 +32,19 @@ local offset_y = 0
 
 --trackgroup@offset_x,offset_y:offset
 --group:整列,false
+---$tips:-100: 右揃え / 0: 中央揃え / +100: 左揃え
 ---$track:水平揃え, min = -100, max = 100, step = 0.001
 local align_x = 0
 
+---$tips:-100: 下揃え / 0: 中央揃え / +100: 上揃え
 ---$track:垂直揃え, min = -100, max = 100, step = 0.001
 local align_y = 0
 
+---$tips:-100: 右揃え / 0: 中央揃え / +100: 左揃え
 ---$track:ループ水平揃え, min = -100, max = 100, step = 0.001
 local pivot_x = 0
 
+---$tips:-100: 下揃え / 0: 中央揃え / +100: 上揃え
 ---$track:ループ垂直揃え, min = -100, max = 100, step = 0.001
 local pivot_y = 0
 
@@ -85,6 +92,25 @@ local loop_x = 0
 local loop_y = 0
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  width: number?,
+---     :  height: number?,
+---     :  margin_u: number?,
+---     :  margin_d: number?,
+---     :  margin_l: number?,
+---     :  margin_r: number?,
+---     :  offset_x: number?,
+---     :  offset_y: number?,
+---     :  align_x: number?,
+---     :  align_y: number?,
+---     :  pivot_x: number?,
+---     :  pivot_y: number?,
+---     :  unit_x: string?,
+---     :  unit_y: string?,
+---     :  loop_x: string?,
+---     :  loop_y: string?,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -102,26 +128,6 @@ end
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		width:		number?,
-		height:		number?,
-		margin_u:	number?,
-		margin_d:	number?,
-		margin_l:	number?,
-		margin_r:	number?,
-		offset_x:	number?,
-		offset_y:	number?,
-		align_x:	number?,
-		align_y:	number?,
-		pivot_x:	number?,
-		pivot_y:	number?,
-		unit_x:		string?,
-		unit_y:		string?,
-		loop_x:		string?,
-		loop_y:		string?,
-	}
-]==]
 width = tonumber(PI.width) or width;
 height = tonumber(PI.height) or height;
 margin_u = tonumber(PI.margin_u) or margin_u;

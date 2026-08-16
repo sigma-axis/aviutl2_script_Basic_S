@@ -1,4 +1,5 @@
 --information:スーパー楕円@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:スーパー楕円を生成します．アステロイドや菱形などもこの特殊形です．
 --label:Basic_S\図形
 --require:${LEAST_AVIUTL_VERSION}
 ---$track:膨らみ, min = -300, max = 300, step = 0.001
@@ -16,23 +17,41 @@ local line = 4000
 ---$color:色
 local color = 0xffffff
 
+---$tips:ライン幅が小さいときの内部色
 ---$color:背景色
 local color_back = 0xffffff
 
+---$tips:ライン幅が小さいときの内部の透明度
 ---$track:背景透明度, min = 0, max = 100, step = 0.01
 local alpha_back = 100
 
+---$tips:幅と高さを一致させます．高さの設定が無視されます．
 ---$checksection:縦横一致
 local symmetric = false
 
 --group:配置,false
+---$tips:-100: 右揃え / 0: 中央揃え / +100: 左揃え
 ---$track:水平揃え, min = -100, max = 100, step = 0.001
 local align_x = 0
 
+---$tips:-100: 下揃え / 0: 中央揃え / +100: 上揃え
 ---$track:垂直揃え, min = -100, max = 100, step = 0.001
 local align_y = 0
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  exponent: number?,
+---     :  width: number?,
+---     :  height: number?,
+---     :  line: number?,
+---     :  color: number?,
+---     :  color_back: number?,
+---     :  alpha_back: number?,
+---     :  symmetric: boolean|number|nil,
+---     :  align_x: number?,
+---     :  align_y: number?,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -57,20 +76,6 @@ local basic_s = require("Basic_S");
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		exponent:	number?,
-		width:		number?,
-		height:		number?,
-		line:		number?,
-		color:		number?,
-		color_back:	number?,
-		alpha_back:	number?,
-		symmetric:	boolean|number|nil,
-		align_x:	number?,
-		align_y:	number?,
-	}
-]==]
 exponent = tonumber(PI.exponent) or exponent;
 width = tonumber(PI.width) or width;
 height = tonumber(PI.height) or height;

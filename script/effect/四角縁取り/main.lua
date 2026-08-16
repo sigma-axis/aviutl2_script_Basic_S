@@ -1,9 +1,11 @@
 --information:四角縁取り@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:角が四角になる縁取りです．
 --label:Basic_S\装飾
 --require:${LEAST_AVIUTL_VERSION}
 ---$track:サイズ, min = -500, max = 500, step = 0.01
 local size = 5
 
+---$tips:正で縦長 / 負で横長
 ---$track:縦横比, min = -100, max = 100, step = 0.001
 local aspect = 0
 
@@ -40,6 +42,20 @@ local rotate = 0
 local no_smooth = true
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  size: number?,
+---     :  aspect: number?,
+---     :  blur: number?,
+---     :  alpha: number?,
+---     :  color: number?,
+---     :  file_image: string?,
+---     :  X, Y: number?,
+---     :  zoom: number?,
+---     :  rotate: number?,
+---     :  no_smooth: boolean|number|nil,
+---     :  alpha_front: number?,
+---     :}
 ---$value:PI
 local PI = {}
 --[[pixelshader@promote:
@@ -73,22 +89,6 @@ end
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		size:			number?,
-		aspect:			number?,
-		blur:			number?,
-		alpha:			number?,
-		color:			number?,
-		file_image:		string?,
-		X:				number?,
-		Y:				number?,
-		zoom:			number?,
-		rotate:			number?,
-		no_smooth:		boolean|number|nil,
-		alpha_front:	number?,
-	}
-]==]
 size = tonumber(PI.size) or size;
 aspect = tonumber(PI.aspect) or aspect;
 blur = tonumber(PI.blur) or blur;

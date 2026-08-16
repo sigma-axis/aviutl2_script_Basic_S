@@ -1,10 +1,13 @@
 --information:内側シャドウ@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:オブジェクト自身に外側から影が落ちているような効果を描画します．
 --label:Basic_S\装飾
 --filter
 --require:${LEAST_AVIUTL_VERSION}
+---$nolang: name
 ---$track:X, min = -1000, max = 1000, step = 0.01, scale = 0.2
 local X = -40
 
+---$nolang: name
 ---$track:Y, min = -1000, max = 1000, step = 0.01, scale = 0.2
 local Y = 24
 
@@ -46,6 +49,17 @@ local img_Y = 0
 
 --trackgroup@img_X,img_Y:img_pos
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  X, Y: number?,
+---     :  alpha: number?,
+---     :  blur: number?,
+---     :  color: number?,
+---     :  file_image: string?,
+---     :  img_X: number?,
+---     :  img_Y: number?,
+---     :  blend: string?,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -64,19 +78,6 @@ if #file_image >= 4 then obj.setanchor("img_X,img_Y", 0, "line") end
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		X:			number?,
-		Y:			number?,
-		alpha:		number?,
-		blur:		number?,
-		color:		number?,
-		file_image:	string?,
-		img_X:		number?,
-		img_Y:		number?,
-		blend:		string?,
-	}
-]==]
 X = tonumber(PI.X) or X;
 Y = tonumber(PI.Y) or Y;
 alpha = tonumber(PI.alpha) or alpha;

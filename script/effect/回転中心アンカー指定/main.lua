@@ -1,12 +1,16 @@
 --information:回転中心アンカー指定@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:オブジェクトの回転中心を，アンカーによるマウス操作で指定できます．ここで変更した回転中心は，後続のフィルタ効果にのみ影響します．
 --label:Basic_S\配置
 --require:${LEAST_AVIUTL_VERSION}
+---$nolang: name
 ---$track:X, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local X = 0
 
+---$nolang: name
 ---$track:Y, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local Y = 0
 
+---$nolang: name
 ---$track:Z, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local Z = 0
 
@@ -15,6 +19,11 @@ local Z = 0
 local relative = false
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  X, Y, Z: number?,
+---     :  relative: boolean|number|nil,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -34,12 +43,6 @@ end
 --#region PI / normalize parameters
 
 -- take parameters.
---[==[
-	PI = {
-		X, Y, Z:	number?,
-		relative:	boolean|number|nil,
-	}
-]==]
 X = tonumber(PI.X) or X;
 Y = tonumber(PI.Y) or Y;
 Z = tonumber(PI.Z) or Z;

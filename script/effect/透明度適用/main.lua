@@ -1,4 +1,5 @@
 --information:透明度適用@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:オブジェクトの各ピクセルを指定した分だけ半透明化します．出力フィルタ以外にも影響します．
 --label:Basic_S\加工
 --filter
 --require:${LEAST_AVIUTL_VERSION}

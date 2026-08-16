@@ -1,4 +1,5 @@
 --information:背景角丸矩形@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:オブジェクトの背景に角丸矩形を配置します．
 --label:Basic_S\装飾
 --require:${LEAST_AVIUTL_VERSION}
 ---$track:余白X, min = -1000, max = 1000, step = 1, scale = 0.5
@@ -7,6 +8,7 @@ local pad_X = 10
 ---$track:余白Y, min = -1000, max = 1000, step = 1, scale = 0.5
 local pad_Y = 10
 
+---$tips:背景の図形からはみ出した部分の表示方法
 ---$select:クリッピング
 ---なし = 0
 ---あり = 1
@@ -48,9 +50,11 @@ local line_x = 0
 local line_y = 0
 
 --trackgroup@line_x,line_y:line_image_pos
+---$tips:ライン幅が小さいときの内部色
 ---$color:背景色
 local color_back = 0xc0c0c0
 
+---$tips:ライン幅が小さいときの内部のパターン画像
 ---$file:背景パターン画像
 local file_back = ""
 
@@ -65,6 +69,7 @@ local back_y = 0
 ---$track:透明度, min = 0, max = 100, step = 0.01
 local alpha = 0
 
+---$tips:ライン幅が小さいときの内部の透明度
 ---$track:背景透明度, min = 0, max = 100, step = 0.01
 local alpha_back = 100
 
@@ -92,13 +97,38 @@ local r_RB = 40
 ---$track:左下半径, min = 0, max = 2000, step = 0.01, scale = 0.25
 local r_LB = 40
 
+---$tips:正で縦長 / 負で横長
 ---$track:丸角縦横比, min = -100, max = 100, step = 0.001
 local aspect = 0
 
+---$tips:角半径に対してサイズが小さいときの自動調整で，丸角の縦横比を固定します．
 ---$checksection:丸角縦横比固定
 local fixed_aspect = true
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  pad_X: table|number|nil,
+---     :  pad_Y: table|number|nil,
+---     :  clip: string?,
+---     :  line: number?,
+---     :  color: number?,
+---     :  file_image: string?,
+---     :  line_x: number?,
+---     :  line_y: number?,
+---     :  alpha: number?,
+---     :  color_back: number?,
+---     :  file_back: string?,
+---     :  back_x: number?,
+---     :  back_y: number?,
+---     :  alpha_back: number?,
+---     :  alpha_front: number?,
+---     :  move_x: number?,
+---     :  move_y: number?,
+---     :  radii: table|number|nil,
+---     :  fixed_aspect: boolean|number|nil,
+---     :  shapes: table|string|nil,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -125,30 +155,6 @@ local radii, shapes = {
 
 --#region PI / normalize parameters
 
---[==[
-	PI = {
-		pad_X:			table|number|nil,
-		pad_Y:			table|number|nil,
-		clip:			string?,
-		line:			number?,
-		color:			number?,
-		file_image:		string?,
-		line_x:			number?,
-		line_y:			number?,
-		alpha:			number?,
-		color_back:		number?,
-		file_back:		string?,
-		back_x:			number?,
-		back_y:			number?,
-		alpha_back:		number?,
-		alpha_front:	number?,
-		move_x:			number?,
-		move_y:			number?,
-		radii:			table|number|nil,
-		fixed_aspect:	boolean|number|nil,
-		shapes:			table|string|nil,
-	}
-]==]
 local function as_pair(c, v)
 	if type(c) == "number" then return c, c;
 	elseif type(c) == "table" then

@@ -1,12 +1,16 @@
 --information:XYZ追加回転@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:常に画面を基準とした X, Y, Z 軸の回転をします．
 --label:Basic_S\配置
 --require:${LEAST_AVIUTL_VERSION}
+---$nolang: name
 ---$track:X, min = -1440, max = 1440, step = 0.01, scale = 0.25
 local X = 0
 
+---$nolang: name
 ---$track:Y, min = -1440, max = 1440, step = 0.01, scale = 0.25
 local Y = 0
 
+---$nolang: name
 ---$track:Z, min = -1440, max = 1440, step = 0.01, scale = 0.25
 local Z = 0
 
@@ -15,13 +19,22 @@ local Z = 0
 local intensity = 100
 
 --group:描画処理,false
+---$tips:回転結果を射影して画像化します．
 ---$checksection:描画する
 local draw = false
 
+---$tips:描画するが ON の場合のみ有効．グループ制御下でのカメラ位置に合わせます．
 ---$checksection:グループ制御
 local grouped = false
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  X, Y, Z: number?,
+---     :  intensity: number?,
+---     :  draw: boolean|number|nil,
+---     :  grouped: boolean|number|nil,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -31,16 +44,6 @@ local basic_s = require("Basic_S");
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		X:			number?,
-		Y:			number?,
-		Z:			number?,
-		intensity:	number?,
-		draw:		boolean|number|nil,
-		grouped:	boolean|number|nil,
-	}
-]==]
 X = tonumber(PI.X) or X;
 Y = tonumber(PI.Y) or Y;
 Z = tonumber(PI.Z) or Z;

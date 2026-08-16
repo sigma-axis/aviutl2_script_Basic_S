@@ -1,4 +1,5 @@
 --information:バッファをクリア@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:現在オブジェクトや「仮想バッファ」，一時キャッシュの「キャッシュバッファ」などのバッファを初期化して，完全透明ピクセルに置き換えたり，単一色で塗りつぶします．
 --label:Basic_S
 --filter
 --require:${LEAST_AVIUTL_VERSION}
@@ -9,6 +10,7 @@
 ---このオブジェクト = 3
 local buffer = 3
 
+---$tips:"cache:---" の "---" 部分．一時キャッシュ指定時のみ有効．
 ---$string:キャッシュ名
 local cache_name = "my_cache"
 
@@ -16,6 +18,12 @@ local cache_name = "my_cache"
 local color = nil
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  buffer: string?,
+---     :  cache_name: string?,
+---     :  color: number|false|nil,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -24,13 +32,6 @@ local obj, tonumber, type = obj, tonumber, type;
 --#region PI normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		buffer:		string?,
-		cache_name:	string?,
-		color:		number|false|nil,
-	}
-]==]
 if type(PI.buff_src) == "string" then
 	local name2num = { ["仮想バッファ"] = 0, ["一時キャッシュ"] = 1, ["フレームバッファ"] = 2, ["このオブジェクト"] = 3, };
 	buffer = name2num[PI.buffer] or buffer;

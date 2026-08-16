@@ -1,4 +1,5 @@
 --information:画像バッファ合成@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:現在オブジェクトや「仮想バッファ」，一時キャッシュの「キャッシュバッファ」などのバッファを，オブジェクトに合成します．
 --label:Basic_S\加工
 --filter
 --require:${LEAST_AVIUTL_VERSION}
@@ -9,13 +10,16 @@
 ---このオブジェクト = 3
 local buffer = 0
 
+---$tips:"cache:---" の "---" 部分．一時キャッシュ指定時のみ有効．
 ---$string:キャッシュ名
 local cache_name = "my_cache"
 
 --group:描画,true
+---$nolang: name
 ---$track:X, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local X = 0
 
+---$nolang: name
 ---$track:Y, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local Y = 0
 
@@ -72,6 +76,7 @@ local mode_draw = 0
 local blend = 0
 
 --group:追加効果,false
+---$tips:合成前に，ロードした画像にフィルタ効果を適用できます．
 ---$select:追加のフィルタ効果
 ---なし = 0
 ---後続フィルタ = 1
@@ -82,6 +87,21 @@ local extra_filter = 0
 local extra_script = ""
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  buffer: string?,
+---     :  cache_name: string?,
+---     :  X, Y: number?,
+---     :  zoom: number?,
+---     :  rotate: number?,
+---     :  alpha: number?,
+---     :  no_smooth: boolean|number|nil,
+---     :  fixed_size: boolean|number|nil,
+---     :  mode_tile: string?,
+---     :  mode_draw: string?,
+---     :  blend: string?,
+---     :  extra_filter: string?,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -94,23 +114,6 @@ obj.setanchor("X,Y", 0, "line");
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		buffer:			string?,
-		cache_name:		string?,
-		X:				number?,
-		Y:				number?,
-		zoom:			number?,
-		rotate:			number?,
-		alpha:			number?,
-		no_smooth:		boolean|number|nil,
-		fixed_size:		boolean|number|nil,
-		mode_tile:		string?,
-		mode_draw:		string?,
-		blend:			string?,
-		extra_filter:	string?,
-	}
-]==]
 if type(PI.buffer) == "string" then
 	local name2num = {
 		["仮想バッファ"] = 0, ["一時キャッシュ"] = 1, ["フレームバッファ"] = 2, ["このオブジェクト"] = 3

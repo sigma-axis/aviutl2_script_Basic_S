@@ -1,4 +1,5 @@
 --information:色オーバーフロー修正@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:色成分を 0% ～ 100% の範囲内に (必要なら) 矯正します．
 --label:Basic_S\色調整
 --filter
 --require:${LEAST_AVIUTL_VERSION}
@@ -16,6 +17,11 @@ local c_mode = 0
 local a_mode = 2
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  c_mode: string?,
+---     :  a_mode: string?,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -27,12 +33,6 @@ local obj, math, type = obj, math, type;
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		c_mode:	string?,
-		a_mode:	string?,
-	}
-]==]
 if type(PI.c_mode) == "string" then
 	local name2num = { ["足切り頭打ち"] = 0, ["色差縮小(標準)"] = 1, ["色差縮小(改)"] = 2, };
 	c_mode = name2num[PI.c_mode] or c_mode;

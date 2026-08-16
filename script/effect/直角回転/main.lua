@@ -1,4 +1,5 @@
 --information:直角回転@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:90°単位に画像を回転します．上下や左右に反転，斜め軸の反転などもできます．
 --label:Basic_S\配置
 --require:${LEAST_AVIUTL_VERSION}
 ---$select:方向

@@ -1,9 +1,12 @@
 --information:傾斜@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:アンカーで指定した軸に沿った傾斜変形をします．
 --label:Basic_S\変形
 --require:${LEAST_AVIUTL_VERSION}
+---$tips:tan 値が傾き%と加算されて適用されます．
 ---$track:角度, min = -80, max = 80, step = 0.001, scale = 0.9
 local angle = 0
 
+---$tips:角度の tan 値と加算されて適用されます．
 ---$track:傾き%, min = -500, max = 500, step = 0.001, scale = 0.4
 local slope = 0
 
@@ -27,6 +30,14 @@ local Y2 = 0
 local center_based = false
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  angle: number?,
+---     :  slope: number?,
+---     :  X1, Y1: number?,
+---     :  X2, Y2: number?,
+---     :  center_based: boolean|number|nil,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -51,17 +62,6 @@ end
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		angle:			number?,
-		slope:			number?,
-		X1:				number?,
-		Y1:				number?,
-		X2:				number?,
-		Y2:				number?,
-		center_based:	boolean|number|nil,
-	}
-]==]
 angle = tonumber(PI.angle) or angle;
 slope = tonumber(PI.slope) or slope;
 X1 = tonumber(baseline[1]) or tonumber(PI.X1) or X1;

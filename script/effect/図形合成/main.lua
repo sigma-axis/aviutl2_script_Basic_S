@@ -1,13 +1,16 @@
 --information:図形合成@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:オブジェクトに図形や SVG ファイルを様々な方法で合成します．
 --label:Basic_S\加工
 --filter
 --require:${LEAST_AVIUTL_VERSION}
+---$tips:ボタンクリックで SVG ファイルも選択できます．
 ---$figure:図形の種類
 local figure = "円"
 
 ---$track:サイズ, min = 0, max = 4000, step = 1, scale = 0.125
 local size = 100
 
+---$tips:正で縦長 / 負で横長
 ---$track:縦横比, min = -100, max = 100, step = 0.001
 local aspect = 0
 
@@ -21,9 +24,11 @@ local color = 0xffffff
 local round = false
 
 --group:描画,true
+---$nolang: name
 ---$track:X, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local X = 0
 
+---$nolang: name
 ---$track:Y, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local Y = 0
 
@@ -80,6 +85,7 @@ local mode_draw = 0
 local blend = 0
 
 --group:追加効果,false
+---$tips:合成前に，ロードした画像にフィルタ効果を適用できます．
 ---$select:追加のフィルタ効果
 ---なし = 0
 ---後続フィルタ = 1
@@ -90,6 +96,25 @@ local extra_filter = 0
 local extra_script = ""
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  figure: string?,
+---     :  size: number?,
+---     :  aspect: number?,
+---     :  line: number?,
+---     :  color: number?,
+---     :  round: boolean|number|nil,
+---     :  X, Y: number?,
+---     :  zoom: number?,
+---     :  rotate: number?,
+---     :  alpha: number?,
+---     :  no_smooth: boolean|number|nil,
+---     :  fixed_size: boolean|number|nil,
+---     :  mode_tile: string?,
+---     :  mode_draw: string?,
+---     :  blend: string?,
+---     :  extra_filter: string?,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -102,27 +127,6 @@ obj.setanchor("X,Y", 0, "line");
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		figure:			string?,
-		size:			number?,
-		aspect:			number?,
-		line:			number?,
-		color:			number?,
-		round:			boolean|number|nil,
-		X:				number?,
-		Y:				number?,
-		zoom:			number?,
-		rotate:			number?,
-		alpha:			number?,
-		no_smooth:		boolean|number|nil,
-		fixed_size:		boolean|number|nil,
-		mode_tile:		string?,
-		mode_draw:		string?,
-		blend:			string?,
-		extra_filter:	string?,
-	}
-]==]
 if type(PI.figure) == "string" then figure = PI.figure end
 size = tonumber(PI.size) or size;
 aspect = tonumber(PI.aspect) or aspect;

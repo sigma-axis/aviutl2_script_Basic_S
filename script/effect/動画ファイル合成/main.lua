@@ -1,4 +1,5 @@
 --information:動画ファイル合成@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:現在のオブジェクトに動画ファイルを様々な方法で合成します．画像ファイルは読み込めません．
 --label:Basic_S\加工
 --filter
 --require:${LEAST_AVIUTL_VERSION}
@@ -9,15 +10,19 @@ local file = ""
 ---$track:再生開始秒, min = 0, max = 36000, step = 0.001, scale = 0.0083333
 local start = 0
 
+---$tips:再生位置は，経過時間×再生速度という単純な計算式のため，途中で再生速度を変えるとジャンプが発生することがあります．
 ---$track:再生速度, min = -2000, max = 2000, step = 0.001, scale = 0.4
 local rate = 100
 
 ---$check:ループ再生
 local loop = false
+
 --group:描画,true
+---$nolang: name
 ---$track:X, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local X = 0
 
+---$nolang: name
 ---$track:Y, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local Y = 0
 
@@ -74,6 +79,7 @@ local mode_draw = 0
 local blend = 0
 
 --group:追加効果,false
+---$tips:合成前に，ロードした画像にフィルタ効果を適用できます．
 ---$select:追加のフィルタ効果
 ---なし = 0
 ---後続フィルタ = 1
@@ -84,6 +90,23 @@ local extra_filter = 0
 local extra_script = ""
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  file: string?,
+---     :  start: number?,
+---     :  rate: number?,
+---     :  loop: boolean|number|nil,
+---     :  X, Y: number?,
+---     :  zoom: number?,
+---     :  rotate: number?,
+---     :  alpha: number?,
+---     :  no_smooth: boolean|number|nil,
+---     :  fixed_size: boolean|number|nil,
+---     :  mode_tile: string?,
+---     :  mode_draw: string?,
+---     :  blend: string?,
+---     :  extra_filter: string?,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -98,25 +121,6 @@ end
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		file:			string?,
-		start:			number?,
-		rate:			number?,
-		loop:			boolean|number|nil,
-		X:				number?,
-		Y:				number?,
-		zoom:			number?,
-		rotate:			number?,
-		alpha:			number?,
-		no_smooth:		boolean|number|nil,
-		fixed_size:		boolean|number|nil,
-		mode_tile:		string?,
-		mode_draw:		string?,
-		blend:			string?,
-		extra_filter:	string?,
-	}
-]==]
 file = type(PI.file) == "string" and PI.file or file;
 start = tonumber(PI.start) or start;
 rate = tonumber(PI.rate) or rate;

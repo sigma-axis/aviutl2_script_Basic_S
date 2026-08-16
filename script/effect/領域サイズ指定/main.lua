@@ -1,16 +1,21 @@
 --information:領域サイズ指定@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:領域拡張やクリッピングを，指定したサイズになるように適用します．
 --label:Basic_S\クリッピング
 --require:${LEAST_AVIUTL_VERSION}
+---$nolang: name
 ---$track:X, min = -4000, max = 4000, step = 0.1, scale = 0.25
 local X = 0
 
+---$nolang: name
 ---$track:Y, min = -4000, max = 4000, step = 0.1, scale = 0.25
 local Y = 0
 
 --trackgroup@X,Y:pos
+---$tips:「X」基準で「水平揃え」で指定した範囲になるように，領域拡張やクリッピングします．
 ---$track:幅, min = 1, max = 4000, step = 1, scale = 0.25
 local width = 256
 
+---$tips:「Y」基準で「垂直揃え」で指定した範囲になるように，領域拡張やクリッピングします．
 ---$track:高さ, min = 1, max = 4000, step = 1, scale = 0.25
 local height = 256
 
@@ -21,9 +26,11 @@ local move_center = false
 local fill_blank = false
 
 --group:整列,false
+---$tips:-100: 右揃え / 0: 中央揃え / +100: 左揃え
 ---$track:水平揃え, min = -100, max = 100, step = 0.001
 local align_x = 0
 
+---$tips:-100: 下揃え / 0: 中央揃え / +100: 上揃え
 ---$track:垂直揃え, min = -100, max = 100, step = 0.001
 local align_y = 0
 
@@ -41,6 +48,20 @@ local y_enabled = true
 ---$checksection:反転マスク
 local inverted_mask = false
 
+---$nolang: name
+---$tips:PI = {
+---     :  X, Y: number?,
+---     :  width: number?,
+---     :  align_x: number?,
+---     :  x_enabled: boolean|number|nil,
+---     :  height: number?,
+---     :  align_y: number?,
+---     :  y_enabled: boolean|number|nil,
+---     :  move_center: boolean|number|nil,
+---     :  center_based: boolean|number|nil,
+---     :  fill_blank: boolean|number|nil,
+---     :  inverted_mask: boolean|number|nil,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -63,22 +84,6 @@ end
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		X:				number?,
-		Y:				number?,
-		width:			number?,
-		align_x:		number?,
-		x_enabled:		boolean|number|nil,
-		height:			number?,
-		align_y:		number?,
-		y_enabled:		boolean|number|nil,
-		move_center:	boolean|number|nil,
-		center_based:	boolean|number|nil,
-		fill_blank:		boolean|number|nil,
-		inverted_mask:	boolean|number|nil,
-	}
-]==]
 X = tonumber(PI.X) or X;
 Y = tonumber(PI.Y) or Y;
 width = tonumber(PI.width) or width;

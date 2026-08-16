@@ -1,4 +1,5 @@
 --information:四隅丸め@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:オブジェクトの四隅を円などの図形で丸めます．
 --label:Basic_S\クリッピング
 --filter
 --require:${LEAST_AVIUTL_VERSION}
@@ -34,9 +35,11 @@ local r_RB = 40
 ---$track:左下半径, min = 0, max = 2000, step = 0.01, scale = 0.25
 local r_LB = 40
 
+---$tips:正で縦長 / 負で横長
 ---$track:縦横比, min = -100, max = 100, step = 0.001
 local aspect = 0
 
+---$tips:角半径に対してサイズが小さいときの自動調整で，丸角の縦横比を固定します．
 ---$checksection:縦横比固定
 local fixed_aspect = true
 
@@ -44,9 +47,18 @@ local fixed_aspect = true
 ---$track:ライン幅, min = 0, max = 4000, step = 0.01, scale = 0.25
 local line = 4000
 
+---$tips:ライン幅が小さいときの内部の透明度
 ---$track:内側透明度, min = 0, max = 100, step = 0.01
 local alpha_inner = 100
 
+---$nolang: name
+---$tips:PI = {
+---     :  radii: table|number|nil,
+---     :  fixed_aspect: boolean|number|nil,
+---     :  shapes: table|string|nil,
+---     :  line: number?,
+---     :  alpha_inner: number?,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -67,15 +79,6 @@ local radii, shapes = {
 
 --#region PI / normalize parameters
 
---[==[
-	PI = {
-		radii:			table|number|nil,
-		fixed_aspect:	boolean|number|nil,
-		shapes:			table|string|nil,
-		line:			number?,
-		alpha_inner:	number?,
-	}
-]==]
 radii = basic_s.PI.corner_radii(PI.radii, radii);
 fixed_aspect = basic_s.PI.as_bool(PI.fixed_aspect, fixed_aspect);
 shapes = basic_s.PI.corner_shape(PI.shapes, shapes);

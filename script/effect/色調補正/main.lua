@@ -1,27 +1,36 @@
 --information:色調補正@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:色空間を選べる色調補正です．
 --label:Basic_S\色調整
 --filter
 --require:${LEAST_AVIUTL_VERSION}
+---$tips:輝度に定数を加算します．
 ---$track:明るさ, min = 0, max = 200, step = 0.01
 local add_light = 100
 
+---$tips:輝度と彩度を乗算します．灰色が原点．
 ---$track:コントラスト, min = 0, max = 200, step = 0.01
 local contrast = 100
 
 ---$track:色相, min = -1440, max = 1440, step = 0.01, scale = 0.25
 local angle = 0
 
+---$tips:輝度に乗算します．黒が原点．
 ---$track:輝度, min = 0, max = 200, step = 0.01
 local mul_light = 100
 
 ---$checksection:輝度反転
 local rev_light = false
 
+---$tips:彩度に乗算します．無彩色が原点．
 ---$track:彩度, min = 0, max = 200, step = 0.01
 local mul_sat = 100
+
+---$tips:色成分を 0% ～ 100% の範囲内に (必要なら) 矯正します．
 ---$checksection:飽和する
 local saturate = false
 
+---$nolang: option:XYZ(sRGB), option:CIELAB, option:OKLCH, option:YUV(BT.601), option:YUV(BT.709), option:YUV(BT.2020)
+---$tips:※ XYZ(sRGB) は独自性が強いので非推奨．
 ---$select:色空間
 ---XYZ(sRGB) = 0
 ---CIELAB = 1
@@ -36,6 +45,17 @@ local saturate = false
 local space = 6
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  add_light: number?,
+---     :  contrast: number?,
+---     :  angle: number?,
+---     :  mul_light: number?,
+---     :  rev_light: boolean|number|nil,
+---     :  mul_sat: number?,
+---     :  saturate: boolean|number|nil,
+---     :  space: string?,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -60,18 +80,6 @@ local basic_s = require("Basic_S");
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		add_light:	number?,
-		contrast:	number?,
-		angle:		number?,
-		mul_light:	number?,
-		rev_light:	boolean|number|nil,
-		mul_sat:	number?,
-		saturate:	boolean|number|nil,
-		space:		string?,
-	}
-]==]
 add_light = tonumber(PI.add_light) or add_light;
 contrast = tonumber(PI.contrast) or contrast;
 angle = tonumber(PI.angle) or angle;

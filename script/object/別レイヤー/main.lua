@@ -1,4 +1,5 @@
 --information:別レイヤー@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:別レイヤーと同じ画像を読み込みます．座標や拡大率などの情報もある程度は復元できます．
 --label:Basic_S
 --require:${LEAST_AVIUTL_VERSION}
 ---$select:レイヤー位置
@@ -23,6 +24,15 @@ local rotation = false
 local alpha = false
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  index_base: string?,
+---     :  index: number?,
+---     :  effect: boolean|number|nil,
+---     :  position: boolean|number|nil,
+---     :  rotation: boolean|number|nil,
+---     :  alpha: boolean|number|nil,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -32,16 +42,6 @@ local basic_s = require("Basic_S");
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		index_base:	string?,
-		index:		number?,
-		effect:		boolean|number|nil,
-		position:	boolean|number|nil,
-		rotation:	boolean|number|nil,
-		alpha:		boolean|number|nil,
-	}
-]==]
 if PI.index_base then
 	local name2num = {
 		["絶対指定"] = 0, ["相対指定"] = 1,

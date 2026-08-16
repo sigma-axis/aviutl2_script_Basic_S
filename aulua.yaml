@@ -3,8 +3,8 @@ project:
   variables:
     NAME: Basic_S
     AUTHOR: σ軸
-    LEAST_AVIUTL_VERSION: "2010301"
-    LEAST_AVIUTL_VERSION_STRING: "2.1.3a"
+    LEAST_AVIUTL_VERSION: "2010500"
+    LEAST_AVIUTL_VERSION_STRING: "2.1.5"
 
 package:
   id: Basic_S
@@ -34,8 +34,6 @@ package:
       dest: Script/{id}/README.md
     - src: LICENSE
       dest: Script/{id}/LICENSE
-    - src: Tooltip.aul2
-      dest: Language/Default.{id}.aul2
   file_name: package.au2pkg.zip
 
 build:
@@ -242,3 +240,9 @@ scripts:
         path: script/track/elastic/section.lua
       - label: バネ振動(全体時間制御)
         path: script/track/elastic/entire.lua
+
+language:
+  files:
+    - path: build/Default.Basic_S.aul2
+      text: false
+      tooltip: true

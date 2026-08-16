@@ -1,4 +1,5 @@
 --information:バッファをコピー@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:現在オブジェクトや「仮想バッファ」，一時キャッシュの「キャッシュバッファ」などのバッファ間でコピーを実行します．
 --label:Basic_S
 --filter
 --require:${LEAST_AVIUTL_VERSION}
@@ -9,9 +10,11 @@
 ---このオブジェクト = 3
 local buff_src = 3
 
+---$tips:"cache:---" の "---" 部分．一時キャッシュ指定時のみ有効．
 ---$string:src::キャッシュ名
 local cache_src = "my_cache"
 
+---$tips:フレームバッファの場合は，コピー元がシーンのサイズと一致している必要があります．
 ---$select:コピー先
 ---仮想バッファ = 0
 ---一時キャッシュ = 1
@@ -19,6 +22,7 @@ local cache_src = "my_cache"
 ---このオブジェクト = 3
 local buff_dst = 0
 
+---$tips:"cache:---" の "---" 部分．一時キャッシュ指定時のみ有効．
 ---$string:dst::キャッシュ名
 local cache_dst = "my_cache"
 
@@ -26,6 +30,14 @@ local cache_dst = "my_cache"
 local suppress_draw = true
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     : buff_src: string?,
+---     : cache_src: string?,
+---     : buff_dst: string?,
+---     : cache_dst: string?,
+---     : suppress_draw: boolean|number|nil,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -35,15 +47,6 @@ local basic_s = require("Basic_S");
 --#region PI
 
 -- take parameters.
---[==[
-	PI = {
-		buff_src:		string?,
-		cache_src:		string?,
-		buff_dst:		string?,
-		cache_dst:		string?,
-		suppress_draw:	boolean|number|nil,
-	}
-]==]
 do  local name2num = { ["仮想バッファ"] = 0, ["一時キャッシュ"] = 1, ["フレームバッファ"] = 2, ["このオブジェクト"] = 3, };
 	if type(PI.buff_src) == "string" then buff_src = name2num[PI.buff_src] or buff_src end
 	if type(PI.buff_dst) == "string" then buff_dst = name2num[PI.buff_dst] or buff_dst end

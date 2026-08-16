@@ -1,13 +1,17 @@
 --information:上下左右揃え@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:オブジェクトの回転中心を，上下左右の端や中央に合わせます．
 --label:Basic_S\配置
 --require:${LEAST_AVIUTL_VERSION}
+---$tips:-100: 左揃え / 0: 中央揃え / +100: 右揃え
 ---$track:左右%, min= -100, max = 100, step = 0.001
 local X = 0
 
+---$tips:-100: 上揃え / 0: 中央揃え / +100: 下揃え
 ---$track:上下%, min= -100, max = 100, step = 0.001
 local Y = 0
 
 --trackgroup@X,Y:pos
+---$tips:描画座標も連動して移動します．
 ---$checksection:描画位置を固定
 local fix_pos = false
 

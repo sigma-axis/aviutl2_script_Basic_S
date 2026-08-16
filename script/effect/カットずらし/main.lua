@@ -1,4 +1,5 @@
 --information:カットずらし@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:アンカーで指定したラインでオブジェクトを切り取って，ずらして配置します．
 --label:Basic_S\クリッピング
 --require:${LEAST_AVIUTL_VERSION}
 ---$track:ずれX, min = -4000, max = 4000, step = 1, scale = 0.25
@@ -24,6 +25,7 @@ local crack_Y2 = 100
 
 --trackgroup@crack_X2,crack_Y2:crack2
 --group
+---$tips:余白/重複処理の範囲を調整します．
 ---$track:切り取り幅, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local crop = 0
 
@@ -34,6 +36,7 @@ local move_center= false
 local center_based = false
 
 --group:余白/重複処理,false
+---$tips:ずらしてできた余白部分の埋め方を指定します．
 ---$select:余白処理
 ---空白 = 0
 ---半透明 = 1
@@ -41,6 +44,7 @@ local center_based = false
 ---引き伸ばし = 3
 local mode_padding = 0
 
+---$tips:ずらしてできた重複部分の埋め方を指定します．
 ---$select:重複処理
 ---空白 = 0
 ---半透明 = 1
@@ -49,6 +53,21 @@ local mode_padding = 0
 local mode_overlap = 0
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  X, Y: number?,
+---     :  crack_X1: number?,
+---     :  crack_Y1: number?,
+---     :  crack_X2: number?,
+---     :  crack_Y2: number?,
+---     :  crop: number?,
+---     :  mode_padding: string?,
+---     :  mode_overlap: string?,
+---     :  move_center: boolean|number|nil,
+---     :  center_based: boolean|number|nil,
+---     :
+---     :  crack: table?,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -79,23 +98,6 @@ end
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		X:				number?,
-		Y:				number?,
-		crack_X1:		number?,
-		crack_Y1:		number?,
-		crack_X2:		number?,
-		crack_Y2:		number?,
-		crop:			number?,
-		mode_padding:	string?,
-		mode_overlap:	string?,
-		move_center:	boolean|number|nil,
-		center_based:	boolean|number|nil,
-
-		crack:			table?,
-	}
-]==]
 X = tonumber(PI.X) or X;
 Y = tonumber(PI.Y) or Y;
 if type(PI.crack) == "table" then

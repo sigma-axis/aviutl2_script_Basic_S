@@ -1,4 +1,5 @@
 --information:別レイヤー同期@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:別レイヤーの座標や回転角度，拡大率や透明度を読み取って反映します．
 --label:Basic_S\配置
 --require:${LEAST_AVIUTL_VERSION}
 ---$select:レイヤー位置
@@ -48,6 +49,22 @@ local sync_sz = 100
 local sync_alpha = 100
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  index_base: string?,
+---     :  index: number?,
+---     :  sync_ox: number?,
+---     :  sync_oy: number?,
+---     :  sync_oz: number?,
+---     :  sync_cx: number?,
+---     :  sync_cy: number?,
+---     :  sync_cz: number?,
+---     :  sync_rot: number?,
+---     :  sync_sx: number?,
+---     :  sync_sy: number?,
+---     :  sync_sz: number?,
+---     :  sync_alpha: number?,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -57,23 +74,6 @@ local basic_s = require("Basic_S");
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		index_base:	string?,
-		index:		number?,
-		sync_ox:	number?,
-		sync_oy:	number?,
-		sync_oz:	number?,
-		sync_cx:	number?,
-		sync_cy:	number?,
-		sync_cz:	number?,
-		sync_rot:	number?,
-		sync_sx:	number?,
-		sync_sy:	number?,
-		sync_sz:	number?,
-		sync_alpha:	number?,
-	}
-]==]
 if PI.index_base then
 	local name2num = {
 		["絶対指定"] = 0, ["相対指定"] = 1,

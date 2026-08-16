@@ -1,4 +1,5 @@
 --information:テキスト合成@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:オブジェクトにテキストを重ね打ちするなど，様々な方法で合成します．
 --label:Basic_S\加工
 --filter
 --require:${LEAST_AVIUTL_VERSION}
@@ -66,9 +67,11 @@ local text_speed = 0
 local text_align = 0
 
 --group:描画,true
+---$nolang: name
 ---$track:X, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local X = 0
 
+---$nolang: name
 ---$track:Y, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local Y = 0
 
@@ -125,6 +128,7 @@ local mode_draw = 0
 local blend = 0
 
 --group:追加効果,false
+---$tips:合成前に，ロードした画像にフィルタ効果を適用できます．
 ---$select:追加のフィルタ効果
 ---なし = 0
 ---後続フィルタ = 1
@@ -135,6 +139,31 @@ local extra_filter = 0
 local extra_script = ""
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  text: string?,
+---     :  font_size: number?,
+---     :  font_name: string?,
+---     :  color_main: number?,
+---     :  color_sub: number?,
+---     :  type_char: string?,
+---     :  is_bold: boolean|number|nil,
+---     :  is_italic: boolean|number|nil,
+---     :  space_char: number?,
+---     :  space_line: number?,
+---     :  text_speed: number?,
+---     :  text_align: string?,
+---     :  X, Y: number?,
+---     :  zoom: number?,
+---     :  rotate: number?,
+---     :  alpha: number?,
+---     :  fixed_size: boolean|number|nil,
+---     :  no_smooth: boolean|number|nil,
+---     :  mode_tile: string?,
+---     :  mode_draw: string?,
+---     :  blend: string?,
+---     :  extra_filter: string?,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -147,33 +176,6 @@ if #text > 0 then
 end
 
 -- take parameters.
---[==[
-	PI = {
-		text:			string?,
-		font_size:		number?,
-		font_name:		string?,
-		color_main:		number?,
-		color_sub:		number?,
-		type_char:		string?,
-		is_bold:		boolean|number|nil,
-		is_italic:		boolean|number|nil,
-		space_char:		number?,
-		space_line:		number?,
-		text_speed:		number?,
-		text_align:		string?,
-		X:				number?,
-		Y:				number?,
-		zoom:			number?,
-		rotate:			number?,
-		alpha:			number?,
-		fixed_size:		boolean|number|nil,
-		no_smooth:		boolean|number|nil,
-		mode_tile:		string?,
-		mode_draw:		string?,
-		blend:			string?,
-		extra_filter:	string?,
-	}
-]==]
 if type(PI.text) == "string" then text = PI.text end
 font_size = tonumber(PI.font_size) or font_size;
 if type(PI.font_name) == "string" then font_name = PI.font_name end

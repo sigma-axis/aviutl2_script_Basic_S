@@ -1,19 +1,24 @@
 --information:中抜きクリッピング@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:オブジェクトの端ではなく中間部分で領域拡張やクリッピングします．
 --label:Basic_S\クリッピング
 --require:${LEAST_AVIUTL_VERSION}
+---$nolang: name
 ---$track:X, min = -4000, max = 4000, step = 0.1, scale = 0.25
 local X = 0
 
+---$nolang: name
 ---$track:Y, min = -4000, max = 4000, step = 0.1, scale = 0.25
 local Y = 0
 
 --trackgroup@X,Y:pos
+---$tips:「X」基準で「水平揃え」で指定した範囲をクリッピングや領域拡張します．
 ---$track:幅, min = -4000, max = 4000, step = 1, scale = 0.25
 local width = 0
 
 ---$track:余白幅, min = -4000, max = 4000, step = 1, scale = 0.25
 local gap_x = 0
 
+---$tips:「Y」基準で「垂直揃え」で指定した範囲をクリッピングや領域拡張します．
 ---$track:高さ, min = -4000, max = 4000, step = 1, scale = 0.25
 local height = 0
 
@@ -24,9 +29,11 @@ local gap_y = 0
 local move_center = false
 
 --group:整列,false
+---$tips:-100: 右揃え / 0: 中央揃え / +100: 左揃え
 ---$track:水平揃え, min = -100, max = 100, step = 0.001
 local align_x = 0
 
+---$tips:-100: 下揃え / 0: 中央揃え / +100: 上揃え
 ---$track:垂直揃え, min = -100, max = 100, step = 0.001
 local align_y = 0
 
@@ -49,6 +56,20 @@ local mode_padding = 0
 local mode_overlap = 0
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  X, Y: number?,
+---     :  width: number?,
+---     :  align_x: number?,
+---     :  gap_x: number?,
+---     :  height: number?,
+---     :  align_y: number?,
+---     :  gap_y: number?,
+---     :  mode_padding: string?,
+---     :  mode_overlap: string?,
+---     :  move_center: boolean|number|nil,
+---     :  center_based: boolean|number|nil,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -68,22 +89,6 @@ end
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		X:				number?,
-		Y:				number?,
-		width:			number?,
-		align_x:		number?,
-		gap_x:			number?,
-		height:			number?,
-		align_y:		number?,
-		gap_y:			number?,
-		mode_padding:	string?,
-		mode_overlap:	string?,
-		move_center:	boolean|number|nil,
-		center_based:	boolean|number|nil,
-	}
-]==]
 X = tonumber(PI.X) or X;
 Y = tonumber(PI.Y) or Y;
 width = tonumber(PI.width) or width;

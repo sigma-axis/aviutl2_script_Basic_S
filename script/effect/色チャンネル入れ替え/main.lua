@@ -1,4 +1,5 @@
 --information:色チャンネル入れ替え@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:各ピクセルの色成分，赤・緑・青・アルファ値を別の成分に差し替えたり，個別に反転したりできます．
 --label:Basic_S\色調整
 --filter
 --require:${LEAST_AVIUTL_VERSION}
@@ -58,6 +59,14 @@ local comp_A = 4
 ---$checksection:乗算済みα
 local premult = true
 
+---$nolang: name
+---$tips:PI = {
+---     :  comp_R: string?,
+---     :  comp_G: string?,
+---     :  comp_B: string?,
+---     :  comp_A: string?,
+---     :  premult: boolean|number|nil,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -73,15 +82,6 @@ local basic_s = require("Basic_S");
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		comp_R:		string?,
-		comp_G:		string?,
-		comp_B:		string?,
-		comp_A:		string?,
-		premult:	boolean|number|nil,
-	}
-]==]
 local name2num = {
 	["0固定"] = 0,
 	["赤"] = 1, ["緑"] = 2, ["青"] = 3, ["アルファ"] = 4,

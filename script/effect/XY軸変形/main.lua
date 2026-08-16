@@ -1,4 +1,5 @@
 --information:XY軸変形@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:X, Y 軸方向に伸びたアンカーをマウス操作することで変形します．
 --label:Basic_S\変形
 --require:${LEAST_AVIUTL_VERSION}
 ---$track:X軸移動先X, min = -4000, max = 4000, step = 0.01, scale = 0.25
@@ -8,6 +9,7 @@ local xX = 100
 local xY = 0
 
 --trackgroup@xX,xY:axis_x
+---$tips:X 軸方向に拡大縮小します．
 ---$checksection:X長さ変更
 local stretch_X = false
 
@@ -18,6 +20,7 @@ local yX = 0
 local yY = -100
 
 --trackgroup@yX,yY:axis_y
+---$tips:Y 軸方向に拡大縮小します．
 ---$checksection:Y長さ変更
 local stretch_Y = false
 
@@ -25,6 +28,14 @@ local stretch_Y = false
 local move_center = true
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  xX, xY: number?,
+---     :  stretch_X: boolean|number|nil,
+---     :  yX, yY: number?,
+---     :  stretch_Y: boolean|number|nil,
+---     :  move_center: boolean|number|nil,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -54,17 +65,6 @@ end
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		xX:				number?,
-		xY:				number?,
-		stretch_X:		boolean|number|nil,
-		yX:				number?,
-		yY:				number?,
-		stretch_Y:		boolean|number|nil,
-		move_center:	boolean|number|nil,
-	}
-]==]
 xX = tonumber(axis_X[1]) or tonumber(PI.xX) or xX;
 xY = tonumber(axis_X[2]) or tonumber(PI.xY) or xY;
 stretch_X = basic_s.PI.as_bool(PI.stretch_X, stretch_X);

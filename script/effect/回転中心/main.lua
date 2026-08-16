@@ -1,12 +1,16 @@
 --information:回転中心@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:オブジェクトの回転中心を移動します．
 --label:Basic_S\配置
 --require:${LEAST_AVIUTL_VERSION}
+---$nolang: name
 ---$track:X, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local X = 0
 
+---$nolang: name
 ---$track:Y, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local Y = 0
 
+---$nolang: name
 ---$track:Z, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local Z = 0
 

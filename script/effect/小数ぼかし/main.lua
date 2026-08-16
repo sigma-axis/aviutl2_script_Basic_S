@@ -1,10 +1,12 @@
 --information:小数ぼかし@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:小数点以下のピクセル数の精度で画像をぼかします．
 --label:Basic_S\ぼかし
 --filter
 --require:${LEAST_AVIUTL_VERSION}
 ---$track:範囲, min = 0, max = 1000, step = 0.01, scale = 0.3
 local range = 5
 
+---$tips:正で横長 / 負で縦長
 ---$track:縦横比, min = -100, max = 100, step = 0.001
 local aspect = 0
 
@@ -21,6 +23,14 @@ local fixed_size = false
 local distribution = 1
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  range: number?,
+---     :  aspect: number?,
+---     :  luma_weight: number?,
+---     :  fixed_size: boolean|number|nil,
+---     :  distribution: number?,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -51,15 +61,6 @@ local basic_s = require("Basic_S");
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		range:			number?,
-		aspect:			number?,
-		luma_weight:	number?,
-		fixed_size:		boolean|number|nil,
-		distribution:	number?,
-	}
-]==]
 range = tonumber(PI.range) or range;
 aspect = tonumber(PI.aspect) or aspect;
 luma_weight = tonumber(PI.luma_weight) or luma_weight;

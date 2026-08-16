@@ -1,14 +1,22 @@
 --information:透明度二値化@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
+---$script_tips:透明度を二値化します．ぼかしの境界を明確にしたい場合などに利用できます．
 --label:Basic_S\加工
 --filter
 --require:${LEAST_AVIUTL_VERSION}
+---$tips:この基準より透明なピクセルは完全透明になります．
 ---$track:基準透明度, min = 0, max = 100, step = 0.01
 local alpha = 50
 
+---$tips:基準透明度から，ぼかし幅以上不透明なピクセルは完全不透明になります．
 ---$track:ぼかし幅, min = 0, max = 100, step = 0.01
 local buffer = 8
 
 --group:その他,false
+---$nolang: name
+---$tips:PI = {
+---     :  alpha: number?,
+---     :  buffer: number?,
+---     :}
 ---$value:PI
 local PI = {}
 
@@ -20,12 +28,6 @@ local obj, math, tonumber = obj, math, tonumber;
 --#region PI / normalize parameters.
 
 -- take parameters.
---[==[
-	PI = {
-		alpha:	number?,
-		buffer:	number?,
-	}
-]==]
 alpha = tonumber(PI.alpha) or alpha;
 buffer = tonumber(PI.buffer) or buffer;
 
