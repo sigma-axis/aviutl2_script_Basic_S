@@ -6,7 +6,7 @@
 --param:周期,0.5
 --param:周期(分母),1
 --param:周期ずれ%,0
---param:終点を基準/check,0
+--param:周期の起点/select/始点=0/終点=1/始点近くのグリッド(BPMグリッド)=2/終点近くのグリッド(BPMグリッド)=3,0
 --param:モード/select/通常=0/往復=1,0
 --timecontrol
 local track = require("Basic_S").track;

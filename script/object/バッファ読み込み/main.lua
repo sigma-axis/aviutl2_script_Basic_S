@@ -48,4 +48,4 @@ local buff_name =
 -- load it.
 if buffer_type == 1 then
 	obj.copybuffer("object", buff_name);
-else obj.load(buff_name) end
+else local _ = obj.load(buff_name) end
