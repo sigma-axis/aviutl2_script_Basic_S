@@ -160,6 +160,8 @@ scripts:
         path: script/track/basic/exponential.lua
       - label: 円形
         path: script/track/basic/circle.lua
+      - label: 等速移動
+        path: script/track/uniform/main.lua
       - label: 等速移動(秒)
         path: script/track/uniform/second.lua
       - label: 等速移動(フレーム)

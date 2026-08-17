@@ -1,6 +1,8 @@
---information:等速移動(秒)@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
---label:Basic_S
---require:${LEAST_AVIUTL_VERSION}
+-- 非推奨化に伴い，このファイルは更新凍結 / information も固定．
+
+--information:等速移動(秒)@Basic_S v2.71 by σ軸
+--label:Basic_S\非推奨
+--require:2005400
 --twopoint
 --param:単位時間(秒),1
 local t, T, v0, v1 = obj.getpoint("time"), obj.getpoint("param"), obj.getpoint(0), obj.getpoint(1);
