@@ -1952,6 +1952,7 @@ function track_period_unit_bpmgrid(sample_pos, U_num, U_den, by_meas, auto_adjus
 		T0, t = L, t + (T0 - L);
 	end
 
+	-- count number of beats.
 	local c, n, d = 0, list[1].tempo * U_den, U_num * (by_meas and list[1].beat or 1);
 	if not from_tail then
 		local t0 = T0;
@@ -1978,6 +1979,7 @@ function track_period_unit_bpmgrid(sample_pos, U_num, U_den, by_meas, auto_adjus
 	end
 	c = (c + t * n / d) / 60 + ofs_cyc;
 
+	-- calculate the time from beat count.
 	local sc = -1;
 	if sample_pos then
 		sc = math_floor(c) + sample_pos - ofs_cyc;
