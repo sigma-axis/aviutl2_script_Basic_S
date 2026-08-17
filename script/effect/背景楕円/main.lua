@@ -22,7 +22,7 @@ local line = 4000
 ---$checksection:包含
 local inclusive = true
 
----$tips:幅と高さを一致させます．高さの設定が無視されます．
+---$tips:幅と高さを一致させます．
 ---$checksection:真円
 local circle = false
 
