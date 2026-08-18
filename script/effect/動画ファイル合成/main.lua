@@ -62,6 +62,9 @@ local mode_tile = 0
 ---輝度をアルファ値として乗算 = 7
 local mode_draw = 0
 
+--hide@fixed_size:mode_tile~=0
+--hide@fixed_size:mode_draw==1
+--hide@fixed_size:mode_draw>3
 ---$select:合成モード
 ---通常 = 0
 ---加算 = 1

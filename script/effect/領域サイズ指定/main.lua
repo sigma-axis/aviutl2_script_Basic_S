@@ -38,12 +38,18 @@ local align_y = 0
 local center_based = false
 
 --group:縦横無効化,false
----$checksection:幅指定有効
+---$check:幅指定有効
 local x_enabled = true
 
----$checksection:高さ指定有効
+--hide@X:x_enabled==0
+--hide@width:x_enabled==0
+--hide@align_x:x_enabled==0
+---$check:高さ指定有効
 local y_enabled = true
 
+--hide@Y:y_enabled==0
+--hide@height:y_enabled==0
+--hide@align_y:y_enabled==0
 --group:その他,false
 ---$checksection:反転マスク
 local inverted_mask = false
