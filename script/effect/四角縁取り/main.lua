@@ -21,7 +21,7 @@ local alpha = 0
 ---$track:前景透明度, min = 0, max = 100, step = 0.01
 local alpha_front = 0
 
---group:パターン画像,false
+--group:パターン画像設定,false
 ---$file:パターン画像
 local file_image = ""
 

@@ -37,7 +37,7 @@ local color = 0x000000
 ---差分 = 12
 local blend = 0
 
---group:パターン画像,false
+--group:パターン画像設定,false
 ---$file:パターン画像
 local file_image = ""
 
