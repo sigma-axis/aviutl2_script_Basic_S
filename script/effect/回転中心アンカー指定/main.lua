@@ -15,6 +15,12 @@ local Y = 0
 local Z = 0
 
 --trackgroup@X,Y,Z:pos
+---$select:アンカー範囲
+---平面 = 0
+---空間 = 1
+local space = 1
+
+--hide@Z:space==0
 ---$checksection:相対指定
 local relative = false
 
@@ -22,6 +28,7 @@ local relative = false
 ---$nolang: name
 ---$tips:PI = {
 ---     :  X, Y, Z: number?,
+---     :  space: number?,
 ---     :  relative: boolean|number|nil,
 ---     :}
 ---$value:PI
@@ -37,7 +44,11 @@ if obj.getoption("gui") then
 		cx, cy, cz = obj.getvalue("center");
 		cx, cy, cz = cx + obj.cx, cy + obj.cy, cz + obj.cz;
 	end
-	obj.setanchor("X,Y,Z", 0, "xyz", "line", "offset.xyz", cx, cy, cz);
+	if space == 0 then
+		obj.setanchor("X,Y", 0, "line", "offset", cx, cy);
+	else
+		obj.setanchor("X,Y,Z", 0, "xyz", "line", "offset.xyz", cx, cy, cz);
+	end
 end
 
 --#region PI / normalize parameters
@@ -46,13 +57,16 @@ end
 X = tonumber(PI.X) or X;
 Y = tonumber(PI.Y) or Y;
 Z = tonumber(PI.Z) or Z;
+space = tonumber(PI.space) or space;
 relative = basic_s.PI.as_bool(PI.relative, relative);
 
 -- normalize parameters.
-if relative then
+space = math.min(math.max(math.floor(0.5 + space), 0), 1);
+if relative or space == 0 then
 	local cx, cy, cz = obj.getvalue("center");
 	cx, cy, cz = cx + obj.cx, cy + obj.cy, cz + obj.cz;
-	X, Y, Z = X + cx, Y + cy, Z + cz;
+	if relative then X, Y, Z = X + cx, Y + cy, Z + cz end
+	if space == 0 then Z = cz end
 end
 
 --#endregion PI / normalize parameters
