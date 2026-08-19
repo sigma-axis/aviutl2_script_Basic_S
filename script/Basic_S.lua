@@ -2016,7 +2016,7 @@ end
 do
 	local function get_point_index(t)
 		local num = obj.getpoint("num") - 1;
-		local l, r = 0, num - 1;
+		local l, r = 0, num;
 		while l < r - 1 do
 			local i = math_floor(l + r) / 2;
 			if obj.getpoint("time", i) <= t then l = i;
