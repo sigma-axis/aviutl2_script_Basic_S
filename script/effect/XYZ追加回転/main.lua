@@ -20,14 +20,14 @@ local intensity = 100
 
 --group:描画処理,false
 ---$tips:回転結果を射影して画像化します．
----$check:描画する
+---$checksection:描画する
 local draw = false
 
 ---$tips:描画するが ON の場合のみ有効．グループ制御下でのカメラ位置に合わせます．
 ---$checksection:グループ制御
 local grouped = false
 
---hide@grouped:draw==0
+-- --hide@grouped:draw==0
 --group:その他,false
 ---$nolang: name
 ---$tips:PI = {

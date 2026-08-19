@@ -22,22 +22,22 @@ local radius = 40
 local shape = 0
 
 --group:丸角設定,false
----$check:半径均一
+---$checksection:半径均一
 local uniform = true
 
 ---$track:右上半径, min = 0, max = 2000, step = 0.01, scale = 0.25
 local r_RT = 40
 
---hide@r_RT:uniform~=0
+-- --hide@r_RT:uniform~=0
 ---$track:右下半径, min = 0, max = 2000, step = 0.01, scale = 0.25
 ---scale = 0.25
 local r_RB = 40
 
---hide@r_RB:uniform~=0
+-- --hide@r_RB:uniform~=0
 ---$track:左下半径, min = 0, max = 2000, step = 0.01, scale = 0.25
 local r_LB = 40
 
---hide@r_LB:uniform~=0
+-- --hide@r_LB:uniform~=0
 ---$tips:正で縦長 / 負で横長
 ---$track:縦横比, min = -100, max = 100, step = 0.001
 local aspect = 0
