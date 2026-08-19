@@ -1,7 +1,7 @@
 Texture2D src : register(t0);
 cbuffer constant0 : register(b0) {
 	float3x3 mat;
-	float add_light, sat;
+	float add_light, sat, gamma;
 };
 static const float3x3 m_srgb = {
 	0.4338769, 0.37622303, 0.18990006,
@@ -36,10 +36,11 @@ float3 to_lab(float3 c)
 	c = abs(c) <= K.w ? K.z * c : sign(c) * pow((abs(c) + K.x) * K.y, 2.4);
 	return cbrt_func(mul(m_srgb, c));
 }
-float3 from_lab(float3 c)
+float3 from_lab(float3 c, float g)
 {
 	c = mul(m_srgb_i, cbrt_func_i(c));
 	static const float4 K = { 0.055, 1.055, 12.92, 0.0031308 };
+	c = sign(c) * pow(abs(c), g);
 	return abs(c) <= K.w ? K.z * c : sign(c) * (K.y * pow(abs(c), 1 / 2.4) - K.x);
 }
 float4 by_cielab(float4 pos : SV_Position) : SV_Target
@@ -47,7 +48,7 @@ float4 by_cielab(float4 pos : SV_Position) : SV_Target
 	float4 c = src[pos.xy];
 	c.rgb = to_lab(c.a > 0 ? c.rgb / c.a : 0);
 	c.rgb = mul(mat, c.rgb) + delta[1] * add_light;
-	c.rgb = c.a * from_lab(c.rgb);
+	c.rgb = c.a * from_lab(c.rgb, gamma);
 	if (sat > 0) {
 		c.a = saturate(c.a);
 		c.rgb = clamp(c.rgb, 0, c.a);

@@ -8,21 +8,25 @@
 local add_light = 100
 
 ---$tips:輝度と彩度を乗算します．灰色が原点．
----$track:コントラスト, min = 0, max = 200, step = 0.01
+---$track:コントラスト, min = 0, max = 400, step = 0.01, scale = 0.5
 local contrast = 100
+
+---$tips:他の設定の色調補正後にガンマ補正します．
+---$track:ガンマ, min = -200, max = 200, step = 0.01, scale = 0.5
+local gamma = 0
 
 ---$track:色相, min = -1440, max = 1440, step = 0.01, scale = 0.25
 local angle = 0
 
 ---$tips:輝度に乗算します．黒が原点．
----$track:輝度, min = 0, max = 200, step = 0.01
+---$track:輝度, min = 0, max = 400, step = 0.01, scale = 0.5
 local mul_light = 100
 
 ---$checksection:輝度反転
 local rev_light = false
 
 ---$tips:彩度に乗算します．無彩色が原点．
----$track:彩度, min = 0, max = 200, step = 0.01
+---$track:彩度, min = 0, max = 400, step = 0.01, scale = 0.5
 local mul_sat = 100
 
 ---$tips:色成分を 0% ～ 100% の範囲内に (必要なら) 矯正します．
@@ -49,6 +53,7 @@ local space = 6
 ---$tips:PI = {
 ---     :  add_light: number?,
 ---     :  contrast: number?,
+---     :  gamma: number?,
 ---     :  angle: number?,
 ---     :  mul_light: number?,
 ---     :  rev_light: boolean|number|nil,
@@ -74,7 +79,10 @@ local PI = {}
 --[[pixelshader@by_hsvl:
 ---$include "by_hsvl.hlsl"
 ]]
-local obj, math, tonumber, type, unpack = obj, math, tonumber, type, unpack;
+--[[pixelshader@gamma_corr:
+---$include "gamma_corr.hlsl"
+]]
+local obj, math, tonumber, type = obj, math, tonumber, type;
 local basic_s = require("Basic_S");
 
 --#region PI / normalize parameters.
@@ -82,6 +90,7 @@ local basic_s = require("Basic_S");
 -- take parameters.
 add_light = tonumber(PI.add_light) or add_light;
 contrast = tonumber(PI.contrast) or contrast;
+gamma = tonumber(PI.gamma) or gamma;
 angle = tonumber(PI.angle) or angle;
 mul_light = tonumber(PI.mul_light) or mul_light;
 rev_light = basic_s.PI.as_bool(PI.rev_light, rev_light);
@@ -98,6 +107,7 @@ end
 -- normalize parameters.
 add_light = add_light / 100 - 1;
 contrast = math.max(contrast / 100, 0);
+gamma = 2 ^ (-gamma / 100);
 angle = angle % 360;
 mul_light = math.max(mul_light / 100, 0);
 mul_sat = math.max(mul_sat / 100, 0);
@@ -112,8 +122,12 @@ add_light, mul_light, mul_sat =
 	mul_light * contrast, mul_sat * contrast; -- do not cap to x2.0.
 
 -- early return for trivial cases.
-if add_light == 0 and angle == 0 and mul_light == 1 and mul_sat == 1
+if add_light == 0 and angle == 0 and mul_light == 1 and mul_sat == 1 and gamma == 1
 	and not saturate then return end
+
+-- take a copy.
+local cache_name = "cache:basic_s/color_corr/obj";
+obj.copybuffer(cache_name, "object");
 
 if space < 6 then
 	local mat_conv = space == 0 and {{
@@ -194,25 +208,46 @@ if space < 6 then
 		end
 	end
 
-	-- apply shader.
-	obj.pixelshader(
-		space == 0 and "by_xyz" or
-		space == 1 and "by_cielab" or
-		space == 2 and "by_oklab" or
-		"by_yuv",
-		"object", "object", {
-			M[1], M[4], M[7], 0;
-			M[2], M[5], M[8], 0;
-			M[3], M[6], M[9];
-			add_light;
-			saturate and 1 or 0;
-		});
+	-- prepare parameters.
+	local params = {
+		M[1], M[4], M[7], 0;
+		M[2], M[5], M[8], 0;
+		M[3], M[6], M[9];
+		add_light;
+		saturate and 1 or 0;
+	};
+
+	-- apply shaders.
+	if space <= 2 then
+		params[#params + 1] = gamma;
+		obj.pixelshader(
+			space == 0 and "by_xyz" or
+			space == 1 and "by_cielab" or
+			"by_oklab",
+			"object", cache_name, params);
+	else
+		local src_name, dst_name = cache_name, "object";
+		if gamma ~= 1 then src_name, dst_name = dst_name, src_name end
+
+		obj.pixelshader("by_yuv", dst_name, src_name, params);
+
+		if gamma ~= 1 then
+			obj.pixelshader("gamma_corr", "object", cache_name, { gamma });
+		end
+	end
 else
-	-- apply shader.
-	obj.pixelshader("by_hsvl", "object", "object", {
+	local src_name, dst_name = cache_name, "object";
+	if gamma ~= 1 then src_name, dst_name = dst_name, src_name end
+
+	-- apply shaders.
+	obj.pixelshader("by_hsvl", dst_name, src_name, {
 		1, mul_sat, mul_light, 0;
 		angle / 360, 0, add_light;
 		space - 6;
 		saturate and 1 or 0;
 	});
+
+	if gamma ~= 1 then
+		obj.pixelshader("gamma_corr", "object", cache_name, { gamma });
+	end
 end
