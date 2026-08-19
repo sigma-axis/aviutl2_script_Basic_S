@@ -40,6 +40,7 @@ jobs:
 
       - name: Create package
         run: |
+          mkdir -p ./build
           sed 's/\${ver}/${{ github.ref_name }}/g' ./Tooltip.aul2 > ./build/Default.${{ env.REPOSITORY_NAME }}.aul2
           aulua language update
           aulua pack
