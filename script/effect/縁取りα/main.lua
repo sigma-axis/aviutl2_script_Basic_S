@@ -5,6 +5,7 @@
 --require:2004200
 --separator:このスクリプトは現在は非推奨です．
 --separator:より高速で高機能な「縁取りσ」の利用を推奨します．
+---$nolang: name
 --separator:https://github.com/sigma-axis/aviutl2_Border_S
 ---$track:サイズ, min = -500, max = 500, step = 1
 local size = 5
@@ -33,6 +34,7 @@ local Y = 0
 
 --trackgroup@X,Y:pos
 --group:その他,false
+---$nolang: name
 ---$value:PI
 local PI = {}
 
