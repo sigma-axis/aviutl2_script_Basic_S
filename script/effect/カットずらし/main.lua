@@ -61,10 +61,10 @@ local mode_overlap = 0
 ---     :  crack_X2: number?,
 ---     :  crack_Y2: number?,
 ---     :  crop: number?,
----     :  mode_padding: string?,
----     :  mode_overlap: string?,
 ---     :  move_center: boolean|number|nil,
 ---     :  center_based: boolean|number|nil,
+---     :  mode_padding: string?,
+---     :  mode_overlap: string?,
 ---     :
 ---     :  crack: table?,
 ---     :}

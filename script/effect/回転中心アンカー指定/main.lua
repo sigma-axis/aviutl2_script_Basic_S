@@ -28,7 +28,7 @@ local relative = false
 ---$nolang: name
 ---$tips:PI = {
 ---     :  X, Y, Z: number?,
----     :  space: number?,
+---     :  space: string?,
 ---     :  relative: boolean|number|nil,
 ---     :}
 ---$value:PI
@@ -57,7 +57,12 @@ end
 X = tonumber(PI.X) or X;
 Y = tonumber(PI.Y) or Y;
 Z = tonumber(PI.Z) or Z;
-space = tonumber(PI.space) or space;
+if type(PI.space) == "string" then
+	local name2num = {
+		["平面"] = 0, ["空間"] = 1
+	};
+	space = name2num[PI.space] or space;
+end
 relative = basic_s.PI.as_bool(PI.relative, relative);
 
 -- normalize parameters.

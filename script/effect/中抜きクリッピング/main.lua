@@ -60,15 +60,15 @@ local mode_overlap = 0
 ---$tips:PI = {
 ---     :  X, Y: number?,
 ---     :  width: number?,
----     :  align_x: number?,
----     :  gap_x: number?,
 ---     :  height: number?,
----     :  align_y: number?,
+---     :  gap_x: number?,
 ---     :  gap_y: number?,
----     :  mode_padding: string?,
----     :  mode_overlap: string?,
+---     :  align_x: number?,
+---     :  align_y: number?,
 ---     :  move_center: boolean|number|nil,
 ---     :  center_based: boolean|number|nil,
+---     :  mode_padding: string?,
+---     :  mode_overlap: string?,
 ---     :}
 ---$value:PI
 local PI = {}

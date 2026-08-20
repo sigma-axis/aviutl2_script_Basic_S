@@ -58,14 +58,14 @@ local inverted_mask = false
 ---$tips:PI = {
 ---     :  X, Y: number?,
 ---     :  width: number?,
----     :  align_x: number?,
----     :  x_enabled: boolean|number|nil,
 ---     :  height: number?,
----     :  align_y: number?,
----     :  y_enabled: boolean|number|nil,
 ---     :  move_center: boolean|number|nil,
----     :  center_based: boolean|number|nil,
 ---     :  fill_blank: boolean|number|nil,
+---     :  align_x: number?,
+---     :  align_y: number?,
+---     :  center_based: boolean|number|nil,
+---     :  x_enabled: boolean|number|nil,
+---     :  y_enabled: boolean|number|nil,
 ---     :  inverted_mask: boolean|number|nil,
 ---     :}
 ---$value:PI
