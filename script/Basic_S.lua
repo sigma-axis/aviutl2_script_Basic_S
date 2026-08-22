@@ -2028,22 +2028,23 @@ do
 
 	---コマ落ち時間制御の実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
 	---@param unit 0|1|2|3|4|5|6 「周期の単位」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．指定は: `--param:周期の単位/select/秒=0/フレーム=1/Hz=2/回数=3/BPM=4/BPMグリッド(拍数線)=5/BPMグリッド(小節線)=6,0`.
-	---@param N number 「周期」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
-	---@param D number 「周期(分母)」のパラメタ．`obj.getpoint("param")` の第 3 戻り値．
-	---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 4 戻り値．
-	---@param origin 0|1|2|3 「周期の起点」のパラメタ．`obj.getpoint("param")` の第 5 戻り値．指定は: `--param:周期の起点/select/始点=0/終点=1/始点近くのグリッド(BPMグリッド)=2/終点近くのグリッド(BPMグリッド)=3,0`.
-	---@param mode 0|1|2|3 「モード」の値．`obj.getpoint("param")` の第 6 戻り値．指定は: `--param:モード/select/区間ごとに時間制御=0/全体で時間制御=1/区間ごとに時間制御(回転)=2/全体で時間制御(回転)=3,0`.
-	---@param cycle number 「1周角度」の値．`obj.getpoint("param")` の第 7 戻り値．
-	---@param sample_pos number 「サンプル位置%」の値．`obj.getpoint("param")` の第 8 戻り値．
+	---@param n number 「周期」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
+	---@param N number 「周期(倍率)」のパラメタ．`obj.getpoint("param")` の第 3 戻り値．
+	---@param D number 「周期(分母)」のパラメタ．`obj.getpoint("param")` の第 4 戻り値．
+	---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 5 戻り値．
+	---@param origin 0|1|2|3 「周期の起点」のパラメタ．`obj.getpoint("param")` の第 6 戻り値．指定は: `--param:周期の起点/select/始点=0/終点=1/始点近くのグリッド(BPMグリッド)=2/終点近くのグリッド(BPMグリッド)=3,0`.
+	---@param mode 0|1|2|3 「モード」の値．`obj.getpoint("param")` の第 7 戻り値．指定は: `--param:モード/select/区間ごとに時間制御=0/全体で時間制御=1/区間ごとに時間制御(回転)=2/全体で時間制御(回転)=3,0`.
+	---@param cycle number 「1周角度」の値．`obj.getpoint("param")` の第 8 戻り値．
+	---@param sample_pos number 「サンプル位置%」の値．`obj.getpoint("param")` の第 9 戻り値．
 	---@return number # トラックバーの計算値．
-	function track_curve_discrete(unit, N, D, d, origin, mode, cycle, sample_pos)
-		N, D = math_abs(N), math_abs(D);
+	function track_curve_discrete(unit, n, N, D, d, origin, mode, cycle, sample_pos)
+		n, D = math_abs(n * N), math_abs(D);
 		local T = obj.getpoint("time", obj.getpoint("num") - 1) + 1 / obj.getpoint("framerate");
-		local U_num, U_den, by_meas = N, D, nil; -- 秒
+		local U_num, U_den, by_meas = n, D, nil; -- 秒
 		if unit == 1 then U_den = obj.getpoint("framerate") * D; -- フレーム
-		elseif unit == 2 then U_num, U_den = D, N; -- Hz
-		elseif unit == 3 then U_num, U_den = T * D, N; -- 回数
-		elseif unit == 4 then U_num, U_den = 60 * D, N; -- BPM
+		elseif unit == 2 then U_num, U_den = D, n; -- Hz
+		elseif unit == 3 then U_num, U_den = T * D, n; -- 回数
+		elseif unit == 4 then U_num, U_den = 60 * D, n; -- BPM
 		elseif unit == 5 then by_meas = false; -- BPMグリッド(拍数線)
 		elseif unit == 6 then by_meas = true; -- BPMグリッド(小節線)
 		end
@@ -2077,21 +2078,22 @@ end
 
 ---トラックバーの周期系スクリプトで，単位をリスト選択で設定している場合の周期を計算する．
 ---@param unit 0|1|2|3|4|5|6 「周期の単位」のパラメタ．`obj.getpoint("param")` の第 1 戻り値．指定は: `--param:周期の単位/select/秒=0/フレーム=1/Hz=2/回数=3/BPM=4/BPMグリッド(拍数線)=5/BPMグリッド(小節線)=6,0`.
----@param N number 「周期」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
----@param D number 「周期(分母)」のパラメタ．`obj.getpoint("param")` の第 3 戻り値．
----@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 4 戻り値．
----@param origin 0|1|2|3 「周期の起点」のパラメタ．`obj.getpoint("param")` の第 5 戻り値．指定は: `--param:周期の起点/select/始点=0/終点=1/始点近くのグリッド(BPMグリッド)=2/終点近くのグリッド(BPMグリッド)=3,0`.
----@param ... any `obj.getpoint("param")` の第 6 以降の戻り値．この関数の戻り値として追加される．
+---@param n number 「周期」のパラメタ．`obj.getpoint("param")` の第 2 戻り値．
+---@param N number 「周期(倍率)」のパラメタ．`obj.getpoint("param")` の第 3 戻り値．
+---@param D number 「周期(分母)」のパラメタ．`obj.getpoint("param")` の第 4 戻り値．
+---@param d number 「周期ずれ%」のパラメタ．`obj.getpoint("param")` の第 5 戻り値．
+---@param origin 0|1|2|3 「周期の起点」のパラメタ．`obj.getpoint("param")` の第 6 戻り値．指定は: `--param:周期の起点/select/始点=0/終点=1/始点近くのグリッド(BPMグリッド)=2/終点近くのグリッド(BPMグリッド)=3,0`.
+---@param ... any `obj.getpoint("param")` の第 7 以降の戻り値．この関数の戻り値として追加される．
 ---@return number # 周期回数 (小数点以下の数値も含む).
----@return any ... `obj.getpoint("param")` の第 5 以降の戻り値．
-function track_period_select(unit, N, D, d, origin, ...)
-	N, D = math_abs(N), math_abs(D);
+---@return any ... `obj.getpoint("param")` の第 7 以降の戻り値．
+function track_period_select(unit, n, N, D, d, origin, ...)
+	n, D = math_abs(n * N), math_abs(D);
 	local T = obj.getpoint("time", obj.getpoint("num") - 1) + 1 / obj.getpoint("framerate");
-	local U_num, U_den, by_meas = N, D, nil; -- 秒
+	local U_num, U_den, by_meas = n, D, nil; -- 秒
 	if unit == 1 then U_den = obj.getpoint("framerate") * D; -- フレーム
-	elseif unit == 2 then U_num, U_den = D, N; -- Hz
-	elseif unit == 3 then U_num, U_den = T * D, N; -- 回数
-	elseif unit == 4 then U_num, U_den = 60 * D, N; -- BPM
+	elseif unit == 2 then U_num, U_den = D, n; -- Hz
+	elseif unit == 3 then U_num, U_den = T * D, n; -- 回数
+	elseif unit == 4 then U_num, U_den = 60 * D, n; -- BPM
 	elseif unit == 5 then by_meas = false; -- BPMグリッド(拍数線)
 	elseif unit == 6 then by_meas = true; -- BPMグリッド(小節線)
 	end
