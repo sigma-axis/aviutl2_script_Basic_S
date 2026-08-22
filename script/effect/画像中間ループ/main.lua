@@ -63,6 +63,7 @@ local pivot_y = 0
 ---全体サイズ(拡縮あり) = 10
 local unit_x = 0
 
+-- --hide@pivot_x:unit_x<4 or (unit_x>4 and unit_x<9) or unit_x>9
 ---$select:高さ指定
 ---回数 = 0
 ---サイズ(近似) = 1
@@ -77,6 +78,7 @@ local unit_x = 0
 ---全体サイズ(拡縮あり) = 10
 local unit_y = 0
 
+-- --hide@pivot_y:unit_y<4 or (unit_y>4 and unit_y<9) or unit_y>9
 ---$select:ループX
 ---ループ = 0
 ---ミラー = 1
@@ -84,6 +86,7 @@ local unit_y = 0
 ---引き伸ばし = 3
 local loop_x = 0
 
+--hide@offset_x:loop_x~=3
 ---$select:ループY
 ---ループ = 0
 ---ミラー = 1
@@ -91,6 +94,7 @@ local loop_x = 0
 ---引き伸ばし = 3
 local loop_y = 0
 
+--hide@offset_y:loop_y~=3
 --group:その他,false
 ---$nolang: name
 ---$tips:PI = {

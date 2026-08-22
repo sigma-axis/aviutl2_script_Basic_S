@@ -115,6 +115,7 @@ local mode_draw = 0
 --hide@fixed_size:mode_tile~=0
 --hide@fixed_size:mode_draw==1
 --hide@fixed_size:mode_draw>3
+--hide@fixed_size:filter==1
 ---$select:合成モード
 ---通常 = 0
 ---加算 = 1
@@ -131,6 +132,7 @@ local mode_draw = 0
 ---差分 = 12
 local blend = 0
 
+--hide@blend:mode_draw>3
 --group:追加効果,false
 ---$tips:合成前に，ロードした画像にフィルタ効果を適用できます．
 ---$select:追加のフィルタ効果
@@ -142,6 +144,7 @@ local extra_filter = 0
 ---$text:追加スクリプト
 local extra_script = ""
 
+--hide@extra_script:extra_filter~=2
 --group:その他,false
 ---$nolang: name
 ---$tips:PI = {

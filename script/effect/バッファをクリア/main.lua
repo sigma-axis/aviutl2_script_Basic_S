@@ -14,6 +14,7 @@ local buffer = 3
 ---$string:キャッシュ名
 local cache_name = "my_cache"
 
+--hide@cache_name:buffer~=1
 ---$color:色
 local color = nil
 

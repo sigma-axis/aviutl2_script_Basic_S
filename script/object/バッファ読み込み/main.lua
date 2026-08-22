@@ -13,6 +13,7 @@ local buffer_type = 0
 ---$string:キャッシュ名
 local cache_name = "my_cache"
 
+--hide@cache_name:buffer_type~=1
 --group:その他,false
 ---$nolang: name
 ---$tips:PI = {

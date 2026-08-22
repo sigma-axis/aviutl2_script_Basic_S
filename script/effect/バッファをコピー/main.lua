@@ -14,6 +14,7 @@ local buff_src = 3
 ---$string:src::キャッシュ名
 local cache_src = "my_cache"
 
+--hide@cache_src:buff_src~=1
 ---$tips:フレームバッファの場合は，コピー元がシーンのサイズと一致している必要があります．
 ---$select:コピー先
 ---仮想バッファ = 0
@@ -26,6 +27,7 @@ local buff_dst = 0
 ---$string:dst::キャッシュ名
 local cache_dst = "my_cache"
 
+--hide@cache_dst:buff_dst~=1
 ---$checksection:描画しない
 local suppress_draw = true
 
