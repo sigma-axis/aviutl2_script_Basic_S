@@ -1,7 +1,7 @@
 --information:コマ落ち時間制御@Basic_S ${PACKAGE_VERSION} by ${AUTHOR}
 --label:Basic_S\コマ落ち
 --require:${LEAST_AVIUTL_VERSION}
--- ---$nolang: option:Hz, option:BPM
+---$nolang: option:Hz, option:BPM
 --param:周期の単位/select/秒=0/フレーム=1/Hz=2/回数=3/BPM=4/BPMグリッド(拍数線)=5/BPMグリッド(小節線)=6,0
 --param:周期,0.5
 --param:周期(倍率),1

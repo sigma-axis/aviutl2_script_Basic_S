@@ -2,7 +2,7 @@
 --label:Basic_S\繰り返し
 --require:${LEAST_AVIUTL_VERSION}
 --twopoint
--- ---$nolang: option:Hz, option:BPM
+---$nolang: option:Hz, option:BPM
 --param:周期の単位/select/秒=0/フレーム=1/Hz=2/回数=3/BPM=4/BPMグリッド(拍数線)=5/BPMグリッド(小節線)=6,0
 --param:周期,0.5
 --param:周期(倍率),1
