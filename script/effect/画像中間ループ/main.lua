@@ -23,13 +23,6 @@ local margin_l = 0
 ---$track:右余白, min = 0, max = 2000, step = 1, scale = 0.25
 local margin_r = 0
 
---group:オフセット,false
----$track:オフセットX, min = -4000, max = 4000, step = 0.01, scale = 0.25
-local offset_x = 0
-
----$track:オフセットY, min = -4000, max = 4000, step = 0.01, scale = 0.25
-local offset_y = 0
-
 --trackgroup@offset_x,offset_y:offset
 --group:整列,false
 ---$tips:-100: 右揃え / 0: 中央揃え / +100: 左揃え
@@ -86,6 +79,9 @@ local unit_y = 0
 ---引き伸ばし = 3
 local loop_x = 0
 
+---$track:オフセットX, min = -4000, max = 4000, step = 0.01, scale = 0.25
+local offset_x = 0
+
 --hide@offset_x:loop_x~=3
 ---$select:ループY
 ---ループ = 0
@@ -93,6 +89,9 @@ local loop_x = 0
 ---ミラー(半ピクセル端) = 2
 ---引き伸ばし = 3
 local loop_y = 0
+
+---$track:オフセットY, min = -4000, max = 4000, step = 0.01, scale = 0.25
+local offset_y = 0
 
 --hide@offset_y:loop_y~=3
 --group:その他,false
@@ -104,8 +103,6 @@ local loop_y = 0
 ---     :  margin_d: number?,
 ---     :  margin_l: number?,
 ---     :  margin_r: number?,
----     :  offset_x: number?,
----     :  offset_y: number?,
 ---     :  align_x: number?,
 ---     :  align_y: number?,
 ---     :  pivot_x: number?,
@@ -114,6 +111,8 @@ local loop_y = 0
 ---     :  unit_y: string?,
 ---     :  loop_x: string?,
 ---     :  loop_y: string?,
+---     :  offset_x: number?,
+---     :  offset_y: number?,
 ---     :}
 ---$value:PI
 local PI = {}
