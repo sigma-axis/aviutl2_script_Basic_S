@@ -3,13 +3,13 @@ project:
   variables:
     NAME: Basic_S
     AUTHOR: σ軸
-    LEAST_AVIUTL_VERSION: "2010601"
-    LEAST_AVIUTL_VERSION_STRING: "2.1.6a"
+    LEAST_AVIUTL_VERSION: "2010700"
+    LEAST_AVIUTL_VERSION_STRING: "2.1.7"
 
 package:
   id: Basic_S
   name: 汎用スクリプト集 Basic_S
-  version: v2.84-wip
+  version: v2.84
   information: "{name} {version} by {AUTHOR}"
   script_sub_dir: ""
   uninstall_sub_folder_file: false
