@@ -41,12 +41,15 @@ local blend = 0
 ---$file:パターン画像
 local file_image = ""
 
+--hide@color:file_image~=0
 ---$track:画像X, min = -4000, max = 4000, step = 1, scale = 0.25
 local img_X = 0
 
+--hide@img_X:file_image==0
 ---$track:画像Y, min = -4000, max = 4000, step = 1, scale = 0.25
 local img_Y = 0
 
+--hide@img_Y:file_image==0
 --trackgroup@img_X,img_Y:img_pos
 --group:その他,false
 ---$nolang: name

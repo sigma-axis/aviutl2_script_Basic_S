@@ -33,12 +33,15 @@ local color = 0xc0c0c0
 ---$file:パターン画像
 local file_image = ""
 
+--hide@color:file_image~=0
 ---$track:画像X, min = -4000, max = 4000, step = 1, scale = 0.125
 local line_x = 0
 
+--hide@line_x:file_image==0
 ---$track:画像Y, min = -4000, max = 4000, step = 1, scale = 0.125
 local line_y = 0
 
+--hide@line_y:file_image==0
 --trackgroup@line_x,line_y:line_image_pos
 ---$tips:ライン幅が小さいときの内部色
 ---$color:背景色
@@ -48,12 +51,15 @@ local color_back = 0xc0c0c0
 ---$file:背景パターン画像
 local file_back = ""
 
+--hide@color_back:file_back~=0
 ---$track:back::画像X, min = -4000, max = 4000, step = 1, scale = 0.125
 local back_x = 0
 
+--hide@back_x:file_back==0
 ---$track:back::画像Y, min = -4000, max = 4000, step = 1, scale = 0.125
 local back_y = 0
 
+--hide@back_y:file_back==0
 --trackgroup@back_x,back_y:back_image_pos
 --group:透明度設定,false
 ---$track:透明度, min = 0, max = 100, step = 0.01

@@ -25,22 +25,28 @@ local alpha_front = 0
 ---$file:パターン画像
 local file_image = ""
 
+--hide@color:file_image~=0
 ---$track:画像X, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local X = 0
 
+--hide@X:file_image==0
 ---$track:画像Y, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local Y = 0
 
+--hide@Y:file_image==0
 --trackgroup@X,Y:pos
 ---$track:拡大率, min = 0.001, max = 5000, step = 0.001, scale = 0.16
 local zoom = 100
 
+--hide@zoom:file_image==0
 ---$track:回転, min = -1440, max = 1440, step = 0.01, scale = 0.25
 local rotate = 0
 
+--hide@rotate:file_image==0
 ---$checksection:補間なし
 local no_smooth = true
 
+--hide@no_smooth:file_image==0
 --group:その他,false
 ---$nolang: name
 ---$tips:PI = {
