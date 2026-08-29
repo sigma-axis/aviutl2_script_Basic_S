@@ -994,12 +994,12 @@ end
 ---@param line number ライン幅を指定．0 以上．
 ---@param clip `0`|`1`|`2` クリッピング．0 -> なし，1 -> あり，2 -> ライン内．
 ---@param alpha_fore number 前景の不透明度，0.0 -- 1.0.
----@param color_line number ライン部分の色．`image_line` が読めなかったときにも使われる．
+---@param color_line integer ライン部分の色．`image_line` が読めなかったときにも使われる．
 ---@param image_line string ライン部分の画像ファイルのパス．
 ---@param alpha_line number number ライン部分の不透明度，0.0 -- 1.0.
 ---@param pos_image_line_x integer ライン部分の画像の X 方向位置ずれ．範囲指定なし．
 ---@param pos_image_line_y integer ライン部分の画像の Y 方向位置ずれ．範囲指定なし．
----@param color_back number ライン内側の色．`image_back` が読めなかったときにも使われる．
+---@param color_back integer ライン内側の色．`image_back` が読めなかったときにも使われる．
 ---@param image_back string ライン内側の画像ファイルのパス．
 ---@param alpha_back number ライン内側の不透明度，0.0 -- 1.0.
 ---@param pos_image_back_x integer ライン内側の画像の X 方向位置ずれ．範囲指定なし．
@@ -1494,8 +1494,8 @@ do -- inner_loop
 end
 
 ---小数ぼかしの実体関数．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
----@param span_x number 横方向のぼかし範囲，0 -- 500.
----@param span_y number 縦方向のぼかし範囲，0 -- 500.
+---@param span_x number 横方向のぼかし範囲，0 -- 1000.
+---@param span_y number 縦方向のぼかし範囲，0 -- 1000.
 ---@param luma_weight number 光の強さ，0 -- 60.
 ---@param fixed_size boolean サイズ固定．
 ---@param distribution? `0`|`1`|`2` ぼかしの分布関数．0 -> 矩形分布，1 -> 三角分布，2 -> ガウス分布．
