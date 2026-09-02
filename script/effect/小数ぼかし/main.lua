@@ -16,6 +16,7 @@ local luma_weight = 0
 ---$checksection:サイズ固定
 local fixed_size = false
 
+--hide@fixed_size:filter~=0
 ---$select:分布
 ---矩形分布 = 0
 ---三角分布 = 1

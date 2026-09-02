@@ -115,7 +115,7 @@ local mode_draw = 0
 --hide@fixed_size:mode_tile~=0
 --hide@fixed_size:mode_draw==1
 --hide@fixed_size:mode_draw>3
---hide@fixed_size:filter==1
+--hide@fixed_size:filter~=0
 ---$select:合成モード
 ---通常 = 0
 ---加算 = 1
