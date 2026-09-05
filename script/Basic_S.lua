@@ -2414,4 +2414,6 @@ return {
 		["バック"] = track_back, back = track_back,
 		["バネ振動"] = track_elastic, elastic = track_elastic,
 	},
+
+	VERSION = "${PACKAGE_VERSION}",
 };
