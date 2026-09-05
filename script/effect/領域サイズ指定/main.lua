@@ -41,15 +41,15 @@ local center_based = false
 ---$checksection:幅指定有効
 local x_enabled = true
 
--- --hide@X:x_enabled==0
--- --hide@width:x_enabled==0
--- --hide@align_x:x_enabled==0
+--hide@X:x_enabled==0
+--hide@width:x_enabled==0
+--hide@align_x:x_enabled==0
 ---$checksection:高さ指定有効
 local y_enabled = true
 
--- --hide@Y:y_enabled==0
--- --hide@height:y_enabled==0
--- --hide@align_y:y_enabled==0
+--hide@Y:y_enabled==0
+--hide@height:y_enabled==0
+--hide@align_y:y_enabled==0
 --group:その他,false
 ---$checksection:反転マスク
 local inverted_mask = false

@@ -24,7 +24,7 @@ local draw = false
 ---$checksection:グループ制御
 local grouped = false
 
--- --hide@grouped:draw==0
+--hide@grouped:draw==0
 --group:その他,false
 ---$nolang: name
 ---$tips:PI = {
