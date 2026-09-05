@@ -545,7 +545,7 @@ AviUtl (無印) にあった「動画ファイル合成」と同等のことが�
 - **v2.86** (2026-09-05)
 
   - 特定の条件下で非表示にする GUI 項目を更に拡充．
-  - `require("Basic_S.lua")` の戻り値テーブルに `VERSION` フィールドを追加．Basic_S のバージョンを文字列型で取得できます．
+  - `require("Basic_S")` の戻り値テーブルに `VERSION` フィールドを追加．Basic_S のバージョンを文字列型で取得できます．
     
     ```lua
     local basic_s = require("Basic_S")
