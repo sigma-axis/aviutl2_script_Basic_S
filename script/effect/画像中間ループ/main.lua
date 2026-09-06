@@ -92,7 +92,7 @@ local loop_x = 0
 ---$track:オフセットX, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local offset_x = 0
 
---hide@offset_x:loop_x~=3
+--hide@offset_x:loop_x==3
 ---$select:ループY
 ---ループ = 0
 ---ミラー = 1
@@ -103,7 +103,7 @@ local loop_y = 0
 ---$track:オフセットY, min = -4000, max = 4000, step = 0.01, scale = 0.25
 local offset_y = 0
 
---hide@offset_y:loop_y~=3
+--hide@offset_y:loop_y==3
 --group:その他,false
 ---$nolang: name
 ---$tips:PI = {
