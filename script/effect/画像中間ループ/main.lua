@@ -56,7 +56,12 @@ local pivot_y = 0
 ---全体サイズ(拡縮あり) = 10
 local unit_x = 0
 
--- --hide@pivot_x:unit_x<4 or (unit_x>4 and unit_x<9) or unit_x>9
+--hide@pivot_x:unit_x<4
+--hide@pivot_x:unit_x==5
+--hide@pivot_x:unit_x==6
+--hide@pivot_x:unit_x==7
+--hide@pivot_x:unit_x==8
+--hide@pivot_x:unit_x>9
 ---$select:高さ指定
 ---回数 = 0
 ---サイズ(近似) = 1
@@ -71,7 +76,12 @@ local unit_x = 0
 ---全体サイズ(拡縮あり) = 10
 local unit_y = 0
 
--- --hide@pivot_y:unit_y<4 or (unit_y>4 and unit_y<9) or unit_y>9
+--hide@pivot_y:unit_y<4
+--hide@pivot_y:unit_y==5
+--hide@pivot_y:unit_y==6
+--hide@pivot_y:unit_y==7
+--hide@pivot_y:unit_y==8
+--hide@pivot_y:unit_y>9
 ---$select:ループX
 ---ループ = 0
 ---ミラー = 1
