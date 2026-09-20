@@ -20,9 +20,9 @@ local Z = 128
 ---$checksection:描画する
 local draw = false
 
----$tips:描画するが ON の場合のみ有効．グループ制御下でのカメラ位置に合わせます．
+---$tips:描画するが ON の場合のみ有効．グループ制御下にある場合，自動でそのカメラ位置に合わせます．
 ---$checksection:グループ制御
-local grouped = false
+local grouped = true
 
 --hide@grouped:draw==0
 --group:その他,false
