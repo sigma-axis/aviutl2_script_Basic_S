@@ -1,4 +1,4 @@
-local type, tonumber, tostring, unpack, loadstring, pcall, setfenv, setmetatable, bit = type, tonumber, tostring, unpack, loadstring, pcall, setfenv, setmetatable, require("bit");
+local type, tonumber, tostring, unpack, assert, loadstring, pcall, setfenv, setmetatable, bit = type, tonumber, tostring, unpack, assert, loadstring, pcall, setfenv, setmetatable, require("bit");
 local math_pi, math_tau, math_cos, math_sin, math_atan2, math_exp, math_log, math_abs, math_min, math_max, math_floor, math_ceil, math_modf, bit_band = math.pi, 2 * math.pi, math.cos, math.sin, math.atan2, math.exp, math.log, math.abs, math.min, math.max, math.floor, math.ceil, math.modf, bit.band;
 local image_max_w, image_max_h = obj.getinfo("image_max");
 
@@ -41,7 +41,7 @@ end
 ---@param qi2 number 右の四元数の i-虚部．
 ---@param qj2 number 右の四元数の j-虚部．
 ---@param qk2 number 右の四元数の k-虚部．
----@return number qr,number qi,number qj,number qk 計算結果のそれぞれ実部，i-虚部，j-虚部，k-虚部．
+---@return number qr, number qi, number qj, number qk 計算結果のそれぞれ実部，i-虚部，j-虚部，k-虚部．
 local function quat_mult(qr1, qi1, qj1, qk1, qr2, qi2, qj2, qk2)
 	return
 		qr1 * qr2 - qi1 * qi2 - qj1 * qj2 - qk1 * qk2,
@@ -55,7 +55,7 @@ end
 ---@param qi number 四元数の i-虚部．
 ---@param qj number 四元数の j-虚部．
 ---@param qk number 四元数の k-虚部．
----@return number qr,number qi,number qj,number qk 計算結果のそれぞれ実部，i-虚部，j-虚部，k-虚部．正規化済みで `qr >= 0`.
+---@return number qr, number qi, number qj, number qk 計算結果のそれぞれ実部，i-虚部，j-虚部，k-虚部．正規化済みで `qr >= 0`.
 local function quat_power(x, qr, qi, qj, qk)
 	local l = qi ^ 2 + qj ^ 2 + qk ^ 2;
 	if l <= 0 then return 1, 0, 0, 0 end
@@ -71,7 +71,7 @@ end
 ---@param rx number X 軸回転角度，ラジアン単位．
 ---@param ry number Y 軸回転角度，ラジアン単位．
 ---@param rz number Z 軸回転角度，ラジアン単位．
----@return number qr,number qi,number qj,number qk 計算結果のそれぞれ実部，i-虚部，j-虚部，k-虚部．正規化済みで `qr >= 0`.
+---@return number qr, number qi, number qj, number qk 計算結果のそれぞれ実部，i-虚部，j-虚部，k-虚部．正規化済みで `qr >= 0`.
 local function angle_euler_to_quat(rx, ry, rz)
 	local cx, sx, cy, sy, cz, sz =
 		math_cos(rx / 2), math_sin(rx / 2),
@@ -93,7 +93,7 @@ end
 ---@param axis_y number 回転軸の Y 成分．
 ---@param axis_z number 回転軸の Z 成分．
 ---@param angle number 回転角度．ラジアン単位で指定．方向は，X 軸の回転だと Y > 0 の部分が Z > 0 に移動する方向に正．
----@return number qr,number qi,number qj,number qk 計算結果のそれぞれ実部，i-虚部，j-虚部，k-虚部．正規化済みで `qr >= 0`.
+---@return number qr, number qi, number qj, number qk 計算結果のそれぞれ実部，i-虚部，j-虚部，k-虚部．正規化済みで `qr >= 0`.
 local function angle_axis_to_quat(axis_x, axis_y, axis_z, angle)
 	local l = axis_x ^ 2 + axis_y ^ 2 + axis_z ^ 2;
 	if l <= 0 then return 1, 0, 0, 0 end
@@ -115,7 +115,7 @@ local angle_quat_to_euler do
 	---@param qi number 四元数の i-虚部．
 	---@param qj number 四元数の j-虚部．
 	---@param qk number 四元数の k-虚部．
-	---@return number rx,number ry,number rz X, Y, Z 軸それぞれの回転角度，ラジアン単位．回転は Z -> Y -> X の順に適用されるものとする．
+	---@return number rx, number ry, number rz X, Y, Z 軸それぞれの回転角度，ラジアン単位．回転は Z -> Y -> X の順に適用されるものとする．
 	function angle_quat_to_euler(qr, qi, qj, qk)
 		local Rx = math_atan2(
 			2 * (qr * qi - qj * qk),
@@ -135,7 +135,7 @@ end
 ---@param qi number 四元数の i-虚部．
 ---@param qj number 四元数の j-虚部．
 ---@param qk number 四元数の k-虚部．
----@return number m11,number m12,number m13,number m21,number m22,number m23,number m31,number m32,number m33 計算結果の行列．X = m11 * x + m12 * y + m13 * z の形で変換する．
+---@return number m11, number m12, number m13, number m21, number m22, number m23, number m31, number m32, number m33 計算結果の行列．X = m11 * x + m12 * y + m13 * z の形で変換する．
 local function angle_quat_to_matrix(qr, qi, qj, qk)
 	-- matrix that represents the transform:
 	--   Xi + Yj + Zk = q (xi + yj + zk) q ^ -1.
@@ -153,7 +153,7 @@ end
 ---@param rx number X 軸回転角度，ラジアン単位．
 ---@param ry number Y 軸回転角度，ラジアン単位．
 ---@param rz number Z 軸回転角度，ラジアン単位．
----@return number m11,number m12,number m13,number m21,number m22,number m23,number m31,number m32,number m33 計算結果の行列．X = m11 * x + m12 * y + m13 * z の形で変換する．
+---@return number m11, number m12, number m13, number m21, number m22, number m23, number m31, number m32, number m33 計算結果の行列．X = m11 * x + m12 * y + m13 * z の形で変換する．
 local function angle_euler_to_matrix(rx, ry, rz)
 	local cx, sx, cy, sy, cz, sz =
 		math_cos(rx), math_sin(rx),
@@ -173,7 +173,7 @@ end
 ---@param qi number 四元数の i-虚部．
 ---@param qj number 四元数の j-虚部．
 ---@param qk number 四元数の k-虚部．
----@return number x,number y,number z 計算結果の座標．
+---@return number x, number y, number z 計算結果の座標．
 local function angle_quat_apply(x, y, z, qr, qi, qj, qk)
 	-- local r;
 	-- r, x, y, z = quat_mult(qr, qi, qj, qk, quat_mult(0, x, y, z, qr, -qi, -qj, -qk));
@@ -191,7 +191,7 @@ end
 ---@param rx number X 軸回転角度，ラジアン単位．
 ---@param ry number Y 軸回転角度，ラジアン単位．
 ---@param rz number Z 軸回転角度，ラジアン単位．
----@return number x,number y,number z 計算結果の座標．
+---@return number x, number y, number z 計算結果の座標．
 local function angle_euler_apply(x, y, z, rx, ry, rz)
 	local cx, sx, cy, sy, cz, sz =
 		math_cos(rx), math_sin(rx),
@@ -560,7 +560,7 @@ end
 ---@param R number 画像の右端の座標．
 ---@param T number 画像の上端の座標．
 ---@param B number 画像の下端の座標．
----@return number L1,number R1,number T1,number B1 補正結果．
+---@return number L1, number R1, number T1, number B1 補正結果．
 local function limit_image_extent(L, R, T, B)
 	-- cap to the maximum size.
 	if R - L > image_max_w then
@@ -818,7 +818,7 @@ local function set_rotation_center(cx, cy, cz, fix_pos)
 		-- apply.
 		obj.ox,	obj.oy,	obj.oz = obj.ox + dx, obj.oy + dy, obj.oz + dz;
 	end
-	obj.cx,obj.cy,obj.cz = cx, cy, cz;
+	obj.cx, obj.cy, obj.cz = cx, cy, cz;
 end
 
 ---合成系スクリプトの中核関数．2つのバッファを指定の位置や合成モードなどで合成する．
@@ -877,12 +877,12 @@ local function composite_core(dest_w, dest_h, dest_name, move_x, move_y, zoom_x,
 			-- 前方から合成 or 前方から合成(クリッピング)
 			obj.setoption("drawtarget", "tempbuffer");
 			if L < -dest_w / 2 or R > dest_w / 2 or T < -dest_h / 2 or B > dest_h / 2 then
-				obj.copybuffer("object", dest_name);
+				assert(obj.copybuffer("object", dest_name));
 				add_canvas_size(-L - dest_w / 2, R - dest_w / 2, -T - dest_h / 2, B - dest_h / 2);
-				obj.copybuffer(dest_name, "object");
+				assert(obj.copybuffer(dest_name, "object"));
 			end
-			obj.copybuffer("object", "tempbuffer");
-			obj.copybuffer("tempbuffer", dest_name);
+			assert(obj.copybuffer("object", "tempbuffer"));
+			assert(obj.copybuffer("tempbuffer", dest_name));
 
 			if mode_composite > 0 then
 				-- unalpha
@@ -893,7 +893,7 @@ local function composite_core(dest_w, dest_h, dest_name, move_x, move_y, zoom_x,
 			obj.setoption("blend", mode_blend);
 			obj.draw(0, 0, 0, 1, intensity);
 			obj.setoption("blend", prev_blend);
-			obj.copybuffer("object", "tempbuffer");
+			assert(obj.copybuffer("object", "tempbuffer"));
 
 			if mode_composite > 0 then
 				-- re-alpha
@@ -903,11 +903,11 @@ local function composite_core(dest_w, dest_h, dest_name, move_x, move_y, zoom_x,
 			-- 後方から合成 or 後方から合成(クリッピング)
 			obj.setoption("drawtarget", "tempbuffer");
 			apply_alpha(intensity, "tempbuffer");
-			obj.copybuffer("object", dest_name);
+			assert(obj.copybuffer("object", dest_name));
 
 			if mode_composite > 2 then
 				-- unalpha
-				obj.copybuffer(dest_name, "tempbuffer");
+				assert(obj.copybuffer(dest_name, "tempbuffer"));
 				obj.pixelshader("unalpha@画像ファイル合成@Basic_S", "tempbuffer", dest_name);
 			end
 
@@ -915,14 +915,14 @@ local function composite_core(dest_w, dest_h, dest_name, move_x, move_y, zoom_x,
 			obj.setoption("blend", mode_blend);
 			obj.draw(dcx, dcy);
 			obj.setoption("blend", prev_blend);
-			obj.copybuffer("object", "tempbuffer");
+			assert(obj.copybuffer("object", "tempbuffer"));
 
 			if mode_composite > 2 then
 				-- re-alpha
 				obj.pixelshader("mask@画像ファイル合成@Basic_S", "object", dest_name, { 1 }, "mask");
 			end
 		else
-			obj.copybuffer("object", dest_name);
+			assert(obj.copybuffer("object", dest_name));
 			if mode_composite == 4 then
 				-- アルファ値を乗算
 				obj.pixelshader("mask@画像ファイル合成@Basic_S", "object", "tempbuffer", { intensity }, "mask");
@@ -940,23 +940,23 @@ local function composite_core(dest_w, dest_h, dest_name, move_x, move_y, zoom_x,
 	else -- alpha <= 0
 		if mode_composite < 2 then
 			-- 前方から合成 or 前方から合成(クリッピング)
-			obj.copybuffer("object", dest_name);
+			assert(obj.copybuffer("object", dest_name));
 			add_canvas_size(-L - dest_w / 2, R - dest_w / 2, -T - dest_h / 2, B - dest_h / 2);
 		elseif mode_composite == 2 then
 			-- 後方から合成
 			obj.setoption("drawtarget", "tempbuffer", R - L, B - T);
-			obj.copybuffer("object", dest_name);
+			assert(obj.copybuffer("object", dest_name));
 			local prev_blend = obj.getoption("blend");
 			obj.setoption("blend", mode_blend);
 			obj.draw(dcx, dcy);
 			obj.setoption("blend", prev_blend);
-			obj.copybuffer("object", "tempbuffer");
+			assert(obj.copybuffer("object", "tempbuffer"));
 		elseif mode_composite == 3 then
 			-- 後方から合成(クリッピング)
 			obj.clearbuffer("object", R - L, B - T);
 		else
 			-- アルファ値を乗算, 色情報を上書き, 輝度をアルファ値として上書き or 輝度をアルファ値として乗算
-			obj.copybuffer("object", dest_name);
+			assert(obj.copybuffer("object", dest_name));
 		end
 	end
 
@@ -1050,7 +1050,7 @@ function back_round_rect(pad_L, pad_R, pad_T, pad_B, line, clip, alpha_fore,
 		1, 1, 1, 1, #image_line >= 4 and alpha_line > 0, #image_back >= 4 and not do_fill and alpha_back > 0;
 
 	-- backup the current object.
-	obj.copybuffer(cache_src, "object");
+	assert(obj.copybuffer(cache_src, "object"));
 
 	-- try to loading the images if specified.
 	if has_image_line or has_image_back then
@@ -1058,7 +1058,7 @@ function back_round_rect(pad_L, pad_R, pad_T, pad_B, line, clip, alpha_fore,
 
 		-- line image.
 		if has_image_line and obj.load("image", image_line) then
-			obj.copybuffer(cache_line_image, "object");
+			assert(obj.copybuffer(cache_line_image, "object"));
 			image_line_w, image_line_h = obj.w, obj.h;
 		else has_image_line = false end
 
@@ -1068,7 +1068,7 @@ function back_round_rect(pad_L, pad_R, pad_T, pad_B, line, clip, alpha_fore,
 			cache_back_image, has_image_back, image_back_w, image_back_h =
 				cache_line_image, has_image_line, image_line_w, image_line_h;
 		elseif has_image_back and obj.load("image", image_back) then
-			obj.copybuffer(cache_back_image, "object");
+			assert(obj.copybuffer(cache_back_image, "object"));
 			image_back_w, image_back_h = obj.w, obj.h;
 		else has_image_back = false end
 
@@ -1237,7 +1237,7 @@ function rotate_any_axis(angle, X, Y, Z, draw, group_control, is_axis_local)
 			-- draw to tempbuffer and load it.
 			obj.setoption("drawtarget", "tempbuffer", R - L, B - T);
 			obj.drawpoly(unpack(pts));
-			obj.copybuffer("object", "tempbuffer");
+			assert(obj.copybuffer("object", "tempbuffer"));
 		else obj.clearbuffer("object", R - L, B - T) end
 
 		-- flatten transforms.
@@ -1368,7 +1368,7 @@ function cut_move(X, Y, crack_x, crack_y, crack_dx, crack_dy, crop, move_center,
 
 	-- draw by shader.
 	local cache_name = "cache:basic_s/cut_move/dst";
-	obj.copybuffer(cache_name, "object");
+	assert(obj.copybuffer(cache_name, "object"));
 	obj.clearbuffer("object", R - L, B - T);
 	obj.pixelshader("place@カットずらし@Basic_S", "object", cache_name, {
 		w, h; -L - w / 2, -T - h / 2 ; crack_dy, -crack_dx; X, Y;
@@ -1476,7 +1476,7 @@ do -- inner_loop
 
 		-- invoke shader.
 		local cache_name = "cache:basic_s/inner_loop/dst";
-		obj.copybuffer(cache_name, "object");
+		assert(obj.copybuffer(cache_name, "object"));
 		obj.clearbuffer("object", W, H);
 		obj.pixelshader("mid_loop@画像中間ループ@Basic_S", "object", cache_name, {
 			margin_l, margin_u, len1_x + margin_l, len1_y + margin_u;
@@ -1650,8 +1650,8 @@ function rect_border(size_x, size_y, blur, color_border, image_border,
 		return;
 	end
 
-	local cache_name, cache_border = "cache:basic_s/rect_border/obj","cache:basic_s/rect_border/bdr";
-	obj.copybuffer(cache_name, "object");
+	local cache_name, cache_border = "cache:basic_s/rect_border/obj", "cache:basic_s/rect_border/bdr";
+	assert(obj.copybuffer(cache_name, "object"));
 
 	-- prepare border.
 	obj.pixelshader("promote@四角縁取り@Basic_S", "object", cache_name);

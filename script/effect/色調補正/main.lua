@@ -127,7 +127,7 @@ if add_light == 0 and angle == 0 and mul_light == 1 and mul_sat == 1 and gamma =
 
 -- take a copy.
 local cache_name = "cache:basic_s/color_corr/obj";
-obj.copybuffer(cache_name, "object");
+assert(obj.copybuffer(cache_name, "object"));
 
 if space < 6 then
 	local mat_conv = space == 0 and {{

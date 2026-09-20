@@ -244,7 +244,7 @@ fixed_size = fixed_size or obj.getinfo("filter");
 -- try loading the text.
 local w, h = obj.w, obj.h;
 local cache_name = "cache:basic_s/combine/obj#"..obj.effect_id;
-obj.copybuffer(cache_name, "object");
+assert(obj.copybuffer(cache_name, "object"));
 local prev_font = { obj.getfont() };
 obj.setfont(font_name, font_size, type_char, color_main, color_sub,
 	is_bold, is_italic, space_char, space_line);

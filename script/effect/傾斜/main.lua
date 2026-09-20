@@ -126,7 +126,7 @@ end
 -- draw the skew image.
 obj.setoption("drawtarget", "tempbuffer", R - L, B - T);
 obj.drawpoly(unpack(pts));
-obj.copybuffer("object", "tempbuffer");
+assert(obj.copybuffer("object", "tempbuffer"));
 
 -- adjust the center.
 obj.cx, obj.cy = obj.cx - cx, obj.cy - cy;

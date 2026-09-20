@@ -56,5 +56,5 @@ else
 	end
 	obj.drawpoly(unpack(pts));
 end
-obj.copybuffer("object", "tempbuffer");
+assert(obj.copybuffer("object", "tempbuffer"));
 if not move_center then obj.cx, obj.cy = obj.cx + (cx - cx0), obj.cy + (cy - cy0) end

@@ -72,7 +72,7 @@ local PI = {}
 --[[pixelshader@recol_one:
 ---$include "recol_one.hlsl"
 ]]
-local obj,math,tonumber,type=obj,math,tonumber,type;
+local obj, math, tonumber, type, assert = obj, math, tonumber, type, assert;
 local basic_s = require("Basic_S");
 
 -- set anchors.
@@ -103,15 +103,15 @@ local has_image = #file_image >= 4;
 
 -- prepare for blending.
 local cache_name, w, h = "cache:basic_s/inner_shadow/obj", obj.w, obj.h;
-obj.copybuffer(cache_name, "object");
+assert(obj.copybuffer(cache_name, "object"));
 if blur > 0 then basic_s.effect.prec_blur(blur, blur, 0, false, 1) end
 if X ~= 0 or Y ~= 0 or blur > 0 then
 	obj.setoption("drawtarget", "tempbuffer", w, h);
 	obj.draw(X, Y);
 	if not has_image then
-		obj.copybuffer("object", "tempbuffer");
+		assert(obj.copybuffer("object", "tempbuffer"));
 	end
-else obj.copybuffer("tempbuffer", "object") end
+else assert(obj.copybuffer("tempbuffer", "object")) end
 
 -- color the blurred shape.
 if has_image then
@@ -123,7 +123,7 @@ if has_image then
 		});
 	else has_image = false end
 
-	obj.copybuffer("object", "tempbuffer");
+	assert(obj.copybuffer("object", "tempbuffer"));
 	basic_s.load_obj_props(obj_props);
 end
 if not has_image then
@@ -143,4 +143,4 @@ obj.setoption("blend", prev_blend);
 
 -- carve the image.
 obj.pixelshader("mask@画像ファイル合成@Basic_S", "tempbuffer", cache_name, { 1 }, "mask");
-obj.copybuffer("object", "tempbuffer");
+assert(obj.copybuffer("object", "tempbuffer"));

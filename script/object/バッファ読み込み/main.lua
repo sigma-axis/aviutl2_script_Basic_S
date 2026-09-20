@@ -48,5 +48,5 @@ local buff_name =
 
 -- load it.
 if buffer_type == 1 then
-	obj.copybuffer("object", buff_name);
+	assert(obj.copybuffer("object", buff_name));
 else local _ = obj.load(buff_name) end

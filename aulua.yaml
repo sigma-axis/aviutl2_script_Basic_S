@@ -4,13 +4,13 @@ project:
     NAME: Basic_S
     AUTHOR: σ軸
     PUBLISH_PAGE: https://github.com/sigma-axis/aviutl2_script_Basic_S
-    LEAST_AVIUTL_VERSION: "2010800"
-    LEAST_AVIUTL_VERSION_STRING: "2.1.8"
+    LEAST_AVIUTL_VERSION: "2011000"
+    LEAST_AVIUTL_VERSION_STRING: "2.1.10"
 
 package:
   id: Basic_S
   name: 汎用スクリプト集 Basic_S
-  version: v2.88
+  version: v2.90-wip
   information: "{name} {version} by {AUTHOR}"
   script_sub_dir: ""
   uninstall_sub_folder_file: false

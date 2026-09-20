@@ -161,7 +161,7 @@ if #file < 4 then return end -- no valid file name.
 -- try loading the video.
 local w, h, obj_props = obj.w, obj.h, basic_s.save_obj_props();
 local cache_name = "cache:basic_s/combine/obj#"..obj.effect_id;
-obj.copybuffer(cache_name, "object");
+assert(obj.copybuffer(cache_name, "object"));
 local load_success, dcx, dcy = false, 0, 0;
 local video_len = nil do
 	local f, r, s = obj.load("movie.info", file);
@@ -198,7 +198,7 @@ if load_success then
 	dcx, dcy = basic_s.composite_core(w, h, cache_name,
 		X, Y, zoom_x, zoom_y, rotate, alpha,
 		fixed_size, no_smooth, mode_tile, mode_draw, blend_name);
-else obj.copybuffer("object", cache_name) end
+else assert(obj.copybuffer("object", cache_name)) end
 basic_s.load_obj_props(obj_props);
 
 -- adjust the center.

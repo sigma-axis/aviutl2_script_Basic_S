@@ -97,7 +97,7 @@ obj.setoption("drawtarget", "tempbuffer",
 obj.drawpoly(
 	-xX + yX, -xY + yY, 0,  xX + yX,  xY + yY, 0,
 	 xX - yX,  xY - yY, 0, -xX - yX, -xY - yY, 0);
-obj.copybuffer("object", "tempbuffer");
+assert(obj.copybuffer("object", "tempbuffer"));
 
 -- adjust the center.
 if not move_center then

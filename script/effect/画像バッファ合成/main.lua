@@ -155,7 +155,7 @@ fixed_size = fixed_size or obj.getinfo("filter");
 -- try loading the image.
 local w, h, obj_props = obj.w, obj.h, basic_s.save_obj_props();
 local cache_name_obj = "cache:basic_s/combine/obj#"..obj.effect_id;
-obj.copybuffer(cache_name_obj, "object");
+assert(obj.copybuffer(cache_name_obj, "object"));
 local load_success, dcx, dcy = false, 0, 0;
 local buffer_name =
 	buffer == 0 and "tempbuffer" or
@@ -183,7 +183,7 @@ if load_success then -- renders properly only when the image is loaded propertly
 	dcx, dcy = basic_s.composite_core(w, h, cache_name_obj,
 		X, Y, zoom_x, zoom_y, rotate, alpha,
 		fixed_size, no_smooth, mode_tile, mode_draw, blend_name);
-else obj.copybuffer("object", cache_name_obj) end
+else assert(obj.copybuffer("object", cache_name_obj)) end
 basic_s.load_obj_props(obj_props);
 
 -- adjust the center.
