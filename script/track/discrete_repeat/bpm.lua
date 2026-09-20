@@ -1,5 +1,5 @@
 -- 非推奨化に伴い，このファイルは更新凍結 / information も固定．
-
+--hidemenu
 --information:コマ落ち反復(BPM)@Basic_S v2.71 by σ軸
 --label:Basic_S\非推奨
 --require:2005400

@@ -1,5 +1,5 @@
 -- 非推奨化に伴い，このファイルは更新凍結 / information も固定．
-
+--hidemenu
 --information:縁取りα@Basic_S v2.20 (for beta49) by σ軸
 --label:Basic_S\非推奨
 --require:2004200
@@ -110,7 +110,7 @@ elseif size > 0 and alpha == 1 and alpha_front == 1 and not has_image then
 end
 
 -- prepare border.
-obj.copybuffer("tempbuffer", "object");
+assert(obj.copybuffer("tempbuffer", "object"));
 if size > 0 then
 	-- outer (ordinary) border.
 	obj.effect("縁取り", "サイズ", size, "ぼかし", blur, "縁色", color);
@@ -135,7 +135,7 @@ if has_image then
 	local obj_props = { obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, obj.sy, obj.sz, obj.alpha };
 	local w, h = obj.w, obj.h;
 	local cache_name = "cache:basic_s/border_alpha/bdr";
-	obj.copybuffer(cache_name, "object");
+	assert(obj.copybuffer(cache_name, "object"));
 
 	obj.load("image", file_image);
 	if obj.w > 0 or obj.h > 0 then
@@ -145,7 +145,7 @@ if has_image then
 		});
 	else has_image = false end
 
-	obj.copybuffer("object", cache_name);
+	assert(obj.copybuffer("object", cache_name));
 	obj.ox, obj.oy, obj.oz, obj.cx, obj.cy, obj.cz, obj.rx, obj.ry, obj.rz, obj.sx, obj.sy, obj.sz, obj.alpha = unpack(obj_props);
 end
 if not has_image and size < 0 then
