@@ -71,7 +71,7 @@ end
 ---@param rx number X 軸回転角度，ラジアン単位．
 ---@param ry number Y 軸回転角度，ラジアン単位．
 ---@param rz number Z 軸回転角度，ラジアン単位．
----@return number qr, number qi, number qj, number qk 計算結果のそれぞれ実部，i-虚部，j-虚部，k-虚部．正規化済みで `qr >= 0`.
+---@return number qr, number qi, number qj, number qk 計算結果のそれぞれ実部，i-虚部，j-虚部，k-虚部．正規化済みで `qr >= 0`. 回転は $Xi + Yj + Zk = q (xi + yj + zk) q ^ -1$ の形式．
 local function angle_euler_to_quat(rx, ry, rz)
 	local cx, sx, cy, sy, cz, sz =
 		math_cos(rx / 2), math_sin(rx / 2),
@@ -93,7 +93,7 @@ end
 ---@param axis_y number 回転軸の Y 成分．
 ---@param axis_z number 回転軸の Z 成分．
 ---@param angle number 回転角度．ラジアン単位で指定．方向は，X 軸の回転だと Y > 0 の部分が Z > 0 に移動する方向に正．
----@return number qr, number qi, number qj, number qk 計算結果のそれぞれ実部，i-虚部，j-虚部，k-虚部．正規化済みで `qr >= 0`.
+---@return number qr, number qi, number qj, number qk 計算結果のそれぞれ実部，i-虚部，j-虚部，k-虚部．正規化済みで `qr >= 0`. 回転は $Xi + Yj + Zk = q (xi + yj + zk) q ^ -1$ の形式．
 local function angle_axis_to_quat(axis_x, axis_y, axis_z, angle)
 	local l = axis_x ^ 2 + axis_y ^ 2 + axis_z ^ 2;
 	if l <= 0 then return 1, 0, 0, 0 end
@@ -110,7 +110,7 @@ local angle_quat_to_euler do
 		if x1 < 0 then x1, y1 = -x1, -y1 end
 		return 2 * math_atan2(y1, x1);
 	end
-	---四元数による回転を X, Y, Z 軸回転の合成として表現する．四元数は正規化されている必要はない．
+	---四元数による回転を X, Y, Z 軸回転の合成として表現する．四元数は正規化されている必要はない．回転は $Xi + Yj + Zk = q (xi + yj + zk) q ^ -1$ の形式．
 	---@param qr number 四元数の実部．
 	---@param qi number 四元数の i-虚部．
 	---@param qj number 四元数の j-虚部．
@@ -130,7 +130,7 @@ local angle_quat_to_euler do
 	end
 end
 
----四元数が表す回転を表す行列を計算する．四元数は正規化済みとする．
+---四元数が表す回転を表す行列を計算する．四元数は正規化済みとする．回転は $Xi + Yj + Zk = q (xi + yj + zk) q ^ -1$ の形式．
 ---@param qr number 四元数の実部．
 ---@param qi number 四元数の i-虚部．
 ---@param qj number 四元数の j-虚部．
@@ -165,7 +165,7 @@ local function angle_euler_to_matrix(rx, ry, rz)
 		-cx * sy * cz + sx * sz, sx * cz + cx * sy * sz,  cx * cy;
 end
 
----点 (x, y, z) に対して四元数による回転を適用する．四元数は正規化済みとする．
+---点 (x, y, z) に対して四元数による回転を適用する．四元数は正規化済みとする．回転は $Xi + Yj + Zk = q (xi + yj + zk) q ^ -1$ の形式．
 ---@param x number 点の X 座標．
 ---@param y number 点の Y 座標．
 ---@param z number 点の Z 座標．
