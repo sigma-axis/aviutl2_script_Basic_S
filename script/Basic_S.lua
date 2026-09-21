@@ -1,5 +1,5 @@
 local type, tonumber, tostring, unpack, assert, loadstring, pcall, setfenv, setmetatable, bit = type, tonumber, tostring, unpack, assert, loadstring, pcall, setfenv, setmetatable, require("bit");
-local math_pi, math_tau, math_cos, math_sin, math_atan2, math_exp, math_log, math_abs, math_min, math_max, math_floor, math_ceil, math_modf, bit_band = math.pi, 2 * math.pi, math.cos, math.sin, math.atan2, math.exp, math.log, math.abs, math.min, math.max, math.floor, math.ceil, math.modf, bit.band;
+local math_tau, math_cos, math_sin, math_atan2, math_exp, math_log, math_abs, math_min, math_max, math_floor, math_ceil, math_modf, bit_band = 2 * math.pi, math.cos, math.sin, math.atan2, math.exp, math.log, math.abs, math.min, math.max, math.floor, math.ceil, math.modf, bit.band;
 local image_max_w, image_max_h = obj.getinfo("image_max");
 
 if obj.getinfo("version") < tonumber("${LEAST_AVIUTL_VERSION}") then
@@ -1135,19 +1135,31 @@ end
 ---@param group_control boolean グループ制御．
 ---@param is_axis_local boolean `X`, `Y`, `Z` による軸の座標が，オブジェクトの局所座標での指定かどうか (`not PI.fix_axis` に相当).
 function rotate_any_axis(angle, X, Y, Z, draw, group_control, is_axis_local)
-	local cx, cy, cz = obj.getvalue("center");
-	local rx, ry, rz = obj.getvalue("angle");
-	cx, cy, cz, rx, ry, rz =
-		obj.cx + cx, obj.cy + cy, obj.cz + cz,
-		math_tau * (((obj.rx + rx) / 360) % 1),
-		math_tau * (((obj.ry + ry) / 360) % 1),
-		math_tau * (((obj.rz + rz) / 360) % 1);
+	local sx0, sy0, sz0 = obj.getvalue("scale");
+	local rx0, ry0, rz0 = obj.getvalue("angle");
+	local sx, sy, sz, rx, ry, rz =
+		obj.sx * sx0, obj.sy * sy0, obj.sz * sz0,
+		math_tau * (((obj.rx + rx0) / 360) % 1),
+		math_tau * (((obj.ry + ry0) / 360) % 1),
+		math_tau * (((obj.rz + rz0) / 360) % 1);
 
 	-- rotate the axis.
 	if is_axis_local then
-		local sx, sy, sz = obj.getvalue("scale");
-		X, Y, Z = angle_euler_apply(
-			obj.sx * sx * X, obj.sy * sy * Y, obj.sz * sz * Z, rx, ry, rz);
+		X, Y, Z = angle_euler_apply(sx * X, sy * Y, sz * Z, rx, ry, rz);
+	else
+		local gr, gi, gj, gk = 1, 0, 0, 0;
+		for i = 0, obj.layer - 2 do
+			local group_layer = obj.getoption("group_info", i);
+			if obj.effect_layer > group_layer then break end
+			local Qr, Qi, Qj, Qk = angle_euler_to_quat(
+				math_tau * (((tonumber(obj.getvalue(group_layer, "グループ制御", "X軸回転")) or 0) / 360) % 1),
+				math_tau * (((tonumber(obj.getvalue(group_layer, "グループ制御", "Y軸回転")) or 0) / 360) % 1),
+				math_tau * (((tonumber(obj.getvalue(group_layer, "グループ制御", "Z軸回転")) or 0) / 360) % 1));
+			gr, gi, gj, gk = quat_mult(Qr, Qi, Qj, Qk, gr, gi, gj, gk);
+		end
+		if gi ~= 0 or gj ~= 0 or gk ~= 0 then
+			X, Y, Z = angle_quat_apply(X, Y, Z, gr, -gi, -gj, -gk);
+		end
 	end
 	if X == 0 and Y == 0 and Z == 0 then X, Y, Z = 0, 0, 1 end -- defaults Z-axis.
 
@@ -1156,56 +1168,92 @@ function rotate_any_axis(angle, X, Y, Z, draw, group_control, is_axis_local)
 	qr, qi, qj, qk = quat_mult(qr, qi, qj, qk, angle_euler_to_quat(rx, ry, rz));
 
 	if draw then
+		local cx0, cy0, cz0 = obj.getvalue("center");
+		local ox0, oy0, oz0 = obj.getvalue("pos");
+		local cx, cy, cz, tx, ty, ox, oy, oz =
+			obj.cx + cx0, obj.cy + cy0, obj.cz + cz0,
+			obj.ox + ox0, obj.oy + oy0, 0, 0, obj.oz + oz0;
+
+		-- construct transforms by group controls.
+		local gox, goy, goz, gs, gr, gi, gj, gk = 0, 0, 0, 1, 1, 0, 0, 0;
+		local standalone = true;
+		if group_control then
+			local group_layer = obj.getoption("group_info");
+			if group_layer > 0 then
+				standalone = false;
+				tx, ty, ox, oy = 0, 0, tx + ox, ty + oy;
+				for i = 1, obj.layer - 1 do
+					local gx, gy, gz, gzm =
+						tonumber(obj.getvalue(group_layer, "グループ制御", "X")) or 0,
+						tonumber(obj.getvalue(group_layer, "グループ制御", "Y")) or 0,
+						tonumber(obj.getvalue(group_layer, "グループ制御", "Z")) or 0,
+						(tonumber(obj.getvalue(group_layer, "グループ制御", "拡大率")) or 100) / 100;
+					local Qr, Qi, Qj, Qk = angle_euler_to_quat(
+						math_tau * (((tonumber(obj.getvalue(group_layer, "グループ制御", "X軸回転")) or 0) / 360) % 1),
+						math_tau * (((tonumber(obj.getvalue(group_layer, "グループ制御", "Y軸回転")) or 0) / 360) % 1),
+						math_tau * (((tonumber(obj.getvalue(group_layer, "グループ制御", "Z軸回転")) or 0) / 360) % 1));
+
+					gox, goy, goz = angle_quat_apply(
+						gzm * (tx + gox), gzm * (ty + goy), gzm * goz, Qr, Qi, Qj, Qk);
+					tx, ty, goz = gx, gy, gz + goz;
+					gs = gzm * gs;
+					gr, gi, gj, gk = quat_mult(Qr, Qi, Qj, Qk, gr, gi, gj, gk);
+
+					group_layer = obj.getoption("group_info", i);
+					if group_layer <= 0 then break end
+				end
+			end
+		end
+		if obj.getoption("camera_mode") ~= 0 then
+			standalone = false;
+			tx, ty, gox, goy = 0, 0, tx + gox, ty + goy;
+		end
+
 		-- transform vertices.
-		local sx, sy, sz = obj.getvalue("scale");
-		sx, sy, sz, obj.sx, obj.sy, obj.sz =
-			obj.sx * sx, obj.sy * sy, obj.sz * sz,
-			1 / sx, 1 / sy, 1 / sz;
-		local ox, oy, oz = obj.getvalue("pos");
-		ox, oy, oz = obj.ox + ox, obj.oy + oy, obj.oz + oz;
-		local gx, gy, gz = 0, 0, oz; if group_control then gx, gy, gz = ox, oy, oz + obj.z end
+		local Ox, Oy, Oz = angle_quat_apply(gs * ox, gs * oy, gs * oz, gr, gi, gj, gk);
+		Ox, Oy, Oz = gox + Ox, goy + Oy, goz + Oz;
+		local Sx, Sy, Sz = gs * sx, gs * sy, gs * sz;
+		local mat = { angle_quat_to_matrix(quat_mult(gr, gi, gj, gk, qr, qi, qj, qk)) };
+
 		local pts = {
 			-obj.w / 2, -obj.h / 2, 0,
 			 obj.w / 2, -obj.h / 2, 0,
 			 obj.w / 2,  obj.h / 2, 0,
 			-obj.w / 2,  obj.h / 2, 0,
 		};
-		local mat = { angle_quat_to_matrix(qr, qi, qj, qk) };
 		local L, R, T, B;
 		for i = 1, 4 do
 			-- transform.
 			local x, y, z =
-				sx * (pts[3 * i - 2] - cx),
-				sy * (pts[3 * i - 1] - cy),
-				sz * (pts[3 * i    ] - cz);
+				Sx * (pts[3 * i - 2] - cx),
+				Sy * (pts[3 * i - 1] - cy),
+				Sz * (pts[3 * i    ] - cz);
 			x, y, z =
-				mat[1] * x + mat[2] * y + mat[3] * z + gx,
-				mat[4] * x + mat[5] * y + mat[6] * z + gy,
-				mat[7] * x + mat[8] * y + mat[9] * z + gz;
+				mat[1] * x + mat[2] * y + mat[3] * z + Ox,
+				mat[4] * x + mat[5] * y + mat[6] * z + Oy,
+				mat[7] * x + mat[8] * y + mat[9] * z + Oz;
 			pts[3 * i - 2], pts[3 * i - 1], pts[3 * i] = x, y, z;
 
 			-- find the position on the canvas.
-			local zx, zy, zz =
-				(ox - gx) + obj.screen_w / 2,
-				(oy - gy) + obj.screen_h / 2,
-				1 + z / 1024;
-			if zz > 0 then zx, zy = zx + x / zz, zy + y / zz;
+			local zx, zy, zz = 0, 0, 1 + z / 1024;
+			if zz > 0 then zx, zy = x / zz, y / zz;
 			else
 				zx, zy =
-					(x > 0 and 1 or x < 0 and -1 or 0) * image_max_w + ox + obj.screen_w / 2,
-					(y > 0 and 1 or y < 0 and -1 or 0) * image_max_h + oy + obj.screen_h / 2;
+					(x > 0 and 1 or x < 0 and -1 or 0) * image_max_w,
+					(y > 0 and 1 or y < 0 and -1 or 0) * image_max_h;
 			end
 			if i == 1 or L > zx then L = zx end
 			if i == 1 or R < zx then R = zx end
 			if i == 1 or T > zy then T = zy end
 			if i == 1 or B < zy then B = zy end
 		end
+
 		-- canvas position is determined.
 		L, R, T, B =
-			math_floor(L) - ox - obj.screen_w / 2,
-			math_ceil(R) - ox - obj.screen_w / 2,
-			math_floor(T) - oy - obj.screen_h / 2,
-			math_ceil(B) - oy - obj.screen_h / 2;
+			math_floor(L + (tx + obj.screen_w / 2)) - (tx + obj.screen_w / 2),
+			math_ceil(R + (tx + obj.screen_w / 2)) - (tx + obj.screen_w / 2),
+			math_floor(T + (ty + obj.screen_h / 2)) - (ty + obj.screen_h / 2),
+			math_ceil(B + (ty + obj.screen_h / 2)) - (ty + obj.screen_h / 2);
 
 		-- cap to the maximum size.
 		L, R, T, B = limit_image_extent(L, R, T, B);
@@ -1216,8 +1264,7 @@ function rotate_any_axis(angle, X, Y, Z, draw, group_control, is_axis_local)
 		for i = 1, 4 do
 			local zz = 1 + pts[3 * i] / 1024;
 			pts[3 * i - 2], pts[3 * i - 1] =
-				pts[3 * i - 2] + zz * (Cx - gx),
-				pts[3 * i - 1] + zz * (Cy - gy);
+				pts[3 * i - 2] + zz * Cx, pts[3 * i - 1] + zz * Cy;
 		end
 
 		-- check culling.
@@ -1232,6 +1279,13 @@ function rotate_any_axis(angle, X, Y, Z, draw, group_control, is_axis_local)
 			draw_flag = det > 0;
 		end
 
+		-- check vanishing.
+		Oz = 1 + Oz / 1024; Ox, Oy = Ox / Oz, Oy / Oz;
+		if Oz <= 0 then
+			draw_flag = false;
+			if Oz == 0 then Ox, Oy = 0, 0 end
+		end
+
 		-- render.
 		if draw_flag then
 			-- draw to tempbuffer and load it.
@@ -1241,23 +1295,27 @@ function rotate_any_axis(angle, X, Y, Z, draw, group_control, is_axis_local)
 		else obj.clearbuffer("object", R - L, B - T) end
 
 		-- flatten transforms.
-		obj.oz = obj.oz - gz;
-		obj.cx, obj.cy, obj.cz =
-			obj.cx + (Cx - cx),
-			obj.cy + (Cy - cy),
-			obj.cz - cz;
-		obj.rx, obj.ry, obj.rz =
-			obj.rx - 180 / math_pi * rx,
-			obj.ry - 180 / math_pi * ry,
-			obj.rz - 180 / math_pi * rz;
-	else
-		local Rx, Ry, Rz = angle_quat_to_euler(qr, qi, qj, qk);
+		cx, cy, cz = Ox + Cx, Oy + Cy, 0;
+		sx, sy, sz = 1 / gs, 1 / gs, 1 / gs;
+		rx, ry, rz = angle_quat_to_euler(gr, -gi, -gj, -gk);
+		ox, oy, oz = angle_quat_apply(
+			(Ox - gox) / gs, (Oy - goy) / gs, -goz / gs, gr, -gi, -gj, -gk);
+		if standalone then ox, oy = tx + ox, ty + oy end
 
-		-- apply the rotation.
+		obj.cx, obj.cy, obj.cz = cx - cx0, cy - cy0, cz - cz0;
+		obj.sx, obj.sy, obj.sz = sx / sx0, sy / sy0, sz / sz0;
 		obj.rx, obj.ry, obj.rz =
-			obj.rx + 180 / math_pi * (Rx - rx),
-			obj.ry + 180 / math_pi * (Ry - ry),
-			obj.rz + 180 / math_pi * (Rz - rz);
+			360 / math_tau * rx - rx0,
+			360 / math_tau * ry - ry0,
+			360 / math_tau * rz - rz0;
+		obj.ox, obj.oy, obj.oz = ox - ox0, oy - oy0, oz - oz0;
+	else
+		-- apply the rotation.
+		rx, ry, rz = angle_quat_to_euler(qr, qi, qj, qk);
+		obj.rx, obj.ry, obj.rz =
+			360 / math_tau * rx - rx0,
+			360 / math_tau * ry - ry0,
+			360 / math_tau * rz - rz0;
 	end
 end
 
@@ -2295,7 +2353,7 @@ end
 ---@return number # トラックバーの計算値．
 function track_back(t, value1, value2, momentum)
 	momentum = math_max(momentum, 0);
-	local rho = t ^ 3 - t * momentum * math_sin(math_pi * t);
+	local rho = t ^ 3 - t * momentum * math_sin((math_tau / 2) * t);
 	return value1 + (value2 - value1) * rho;
 end
 
