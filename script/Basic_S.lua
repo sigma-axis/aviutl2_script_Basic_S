@@ -1203,10 +1203,10 @@ function rotate_any_axis(angle, X, Y, Z, draw, group_control, is_axis_local)
 					if group_layer <= 0 then break end
 				end
 			end
-		end
-		if obj.getoption("camera_mode") ~= 0 then
-			standalone = false;
-			tx, ty, gox, goy = 0, 0, tx + gox, ty + goy;
+			if obj.getoption("camera_mode") ~= 0 then
+				standalone = false;
+				tx, ty, gox, goy = 0, 0, tx + gox, ty + goy;
+			end
 		end
 
 		-- transform vertices.
