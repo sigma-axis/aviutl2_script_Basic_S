@@ -575,7 +575,7 @@ AviUtl (無印) にあった「動画ファイル合成」と同等のことが�
     
     ```lua
     local basic_s = require("Basic_S")
-    assert(basic_s.VERSION == "v2.90")
+    assert(basic_s.VERSION == "v2.86")
     ```
 
 - **v2.85** (2026-09-02)
