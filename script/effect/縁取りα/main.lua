@@ -58,7 +58,7 @@ local obj, math, bit, tonumber, type = obj, math, bit, tonumber, type;
 --#region PI / normalize parameters.
 
 -- set anchors.
-if #file_image >= 4 then
+if #file_image >= 4 and obj.getoption("gui") then
 	obj.setanchor("X,Y", 0, "line");
 end
 

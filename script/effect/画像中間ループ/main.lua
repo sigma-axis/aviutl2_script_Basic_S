@@ -134,7 +134,7 @@ local obj, math, tonumber = obj, math, tonumber;
 local basic_s = require("Basic_S");
 
 -- set anchors.
-if loop_x ~= 3 or loop_y ~= 3 then
+if (loop_x ~= 3 or loop_y ~= 3) and obj.getoption("gui") then
 	obj.setanchor("offset_x,offset_y", 0, "line");
 end
 

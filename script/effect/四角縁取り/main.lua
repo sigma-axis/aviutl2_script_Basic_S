@@ -88,7 +88,7 @@ local PI = {}
 local obj, math, tonumber, type = obj, math, tonumber, type;
 local basic_s = require("Basic_S");
 
-if #file_image >= 4 then
+if #file_image >= 4 and obj.getoption("gui") then
 	obj.setanchor("X,Y", 0, "line");
 end
 

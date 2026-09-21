@@ -76,7 +76,9 @@ local obj, math, tonumber, type, assert = obj, math, tonumber, type, assert;
 local basic_s = require("Basic_S");
 
 -- set anchors.
-if #file_image >= 4 then obj.setanchor("img_X,img_Y", 0, "line") end
+if #file_image >= 4 and obj.getoption("gui") then
+	obj.setanchor("img_X,img_Y", 0, "line");
+end
 
 --#region PI / normalize parameters.
 

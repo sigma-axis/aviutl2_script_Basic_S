@@ -41,10 +41,12 @@ local obj, tonumber = obj, tonumber;
 local basic_s = require("Basic_S");
 
 -- set anchors.
-local cx, cy, cz = obj.getvalue("center");
-cx, cy, cz = obj.cx + cx, obj.cy + cy, obj.cz + cz;
-obj.setanchor("X,Y,Z", 0, "xyz", "offset.xyz", cx, cy, cz, "line");
-obj.setanchor({ 0, 0, 0; X, Y, Z }, 2, "xyz", "offset.xyz", cx, cy, cz, "line", "color", 0xc0ff80);
+if obj.getoption("gui") then
+	local cx, cy, cz = obj.getvalue("center");
+	cx, cy, cz = obj.cx + cx, obj.cy + cy, obj.cz + cz;
+	obj.setanchor("X,Y,Z", 0, "xyz", "offset.xyz", cx, cy, cz, "line");
+	obj.setanchor({ 0, 0, 0; X, Y, Z }, 2, "xyz", "offset.xyz", cx, cy, cz, "line", "color", 0xc0ff80);
+end
 
 --#region PI / normalize parameters.
 

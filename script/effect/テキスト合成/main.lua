@@ -178,7 +178,7 @@ local obj, math, type, tonumber = obj, math, type, tonumber;
 local basic_s = require("Basic_S");
 
 -- set anchors.
-if #text > 0 then
+if #text > 0 and obj.getoption("gui") then
 	obj.setanchor("X,Y", 0, "line");
 end
 

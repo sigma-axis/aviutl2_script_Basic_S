@@ -151,7 +151,9 @@ local math, tonumber, type = math, tonumber, type;
 local basic_s = require("Basic_S");
 
 -- set anchors.
-obj.setanchor("move_x,move_y", 0, "line");
+if obj.getoption("gui") then
+	obj.setanchor("move_x,move_y", 0, "line");
+end
 
 -- take parameters.
 aspect = math.min(math.max(aspect / 100, -1), 1);

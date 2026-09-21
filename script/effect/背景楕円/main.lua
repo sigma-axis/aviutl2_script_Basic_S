@@ -110,7 +110,9 @@ local obj, math, tonumber, type = obj, math, tonumber, type;
 local basic_s = require("Basic_S");
 
 -- set anchors.
-obj.setanchor("move_x,move_y", 0, "line");
+if obj.getoption("gui") then
+	obj.setanchor("move_x,move_y", 0, "line");
+end
 
 --#region PI / normalize parameters
 

@@ -120,7 +120,7 @@ local obj, math, type, tonumber = obj, math, type, tonumber;
 local basic_s = require("Basic_S");
 
 -- set anchors.
-if #file >= 4 then
+if #file >= 4 and obj.getoption("gui") then
 	obj.setanchor("X,Y", 0, "line");
 end
 
