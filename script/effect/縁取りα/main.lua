@@ -1,4 +1,4 @@
--- 非推奨化に伴い，このファイルは更新凍結 / information も固定．
+-- 非推奨化に伴い，このスクリプトは更新凍結 / information も固定．
 --hidemenu
 --information:縁取りα@Basic_S v2.20 (for beta49) by σ軸
 --label:Basic_S\非推奨
