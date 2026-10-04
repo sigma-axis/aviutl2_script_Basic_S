@@ -1,5 +1,6 @@
 local type, tonumber, tostring, unpack, assert, loadstring, pcall, setfenv, setmetatable, bit = type, tonumber, tostring, unpack, assert, loadstring, pcall, setfenv, setmetatable, require("bit");
-local math_tau, math_cos, math_sin, math_atan2, math_exp, math_log, math_abs, math_min, math_max, math_floor, math_ceil, math_modf, bit_band = 2 * math.pi, math.cos, math.sin, math.atan2, math.exp, math.log, math.abs, math.min, math.max, math.floor, math.ceil, math.modf, bit.band;
+local math_tau, math_cos, math_sin, math_atan2, math_exp, math_log, math_abs, math_min, math_max, math_floor, math_ceil, math_modf = 2 * math.pi, math.cos, math.sin, math.atan2, math.exp, math.log, math.abs, math.min, math.max, math.floor, math.ceil, math.modf;
+local bit_band, bit_bxor = bit.band, bit.bxor;
 local image_max_w, image_max_h = obj.getinfo("image_max");
 
 if obj.getinfo("version") < tonumber("${LEAST_AVIUTL_VERSION}") then
@@ -2269,7 +2270,12 @@ end
 ---@return number # トラックバーの計算値．
 function track_discrete_random(c, seed)
 	local v0, v1 = obj.getpoint(0), obj.getpoint(1);
-	return v0 + (v1 - v0) * obj.rand1(math_floor(0.5 + seed), math_floor(c) + 1);
+	seed = math_floor(0.5 + seed);
+	if seed >= 0 then
+		seed = bit_bxor(seed,
+			bit_band(13579 * obj.getpoint("multi_object", "index"), 0xffff00));
+	end
+	return v0 + (v1 - v0) * obj.rand1(seed, math_floor(c) + 1);
 end
 
 ---時間制御繰り返しの実体．値の型や範囲チェックは行われないので，事前に指定範囲内の保証をしておくこと．
