@@ -208,6 +208,9 @@ if space < 6 then
 		end
 	end
 
+	-- adjust the luminance for CIELAB (to reflect the constant -0.16).
+	if space == 1 then add_light = add_light + 0.16 * (1 - mul_light) end
+
 	-- prepare parameters.
 	local params = {
 		M[1], M[4], M[7], 0;
